@@ -15,67 +15,56 @@ export default function HomePage() {
   return (
     <>
       <Nav />
-      <main className="pt-20 min-h-screen">
+      <main
+        className="pt-20 min-h-screen"
+        style={{
+          background:
+            "radial-gradient(ellipse 100% 50% at 50% 0%, #e2e2e2 0%, #f3f2f2 40%, #fcf9f8 70%)",
+        }}
+      >
         {/* Hero */}
-        <section className="max-w-7xl mx-auto px-8 md:px-12 py-24 md:py-40 flex flex-col items-center text-center">
+        <section className="relative flex flex-col items-center text-center px-8 md:px-12 py-24 md:py-40 overflow-hidden">
+          {/* Pill badge */}
+          <div className="mb-8 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container border border-surface-container-highest">
+            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
+              Transparency First
+            </span>
+          </div>
+
           <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-foreground mb-8 max-w-4xl leading-[1.1]">
-            Uncover the Truth About Your Next Workplace.
+            Uncover the Truth About Your Next Workplace
           </h1>
 
-          <div className="w-full max-w-2xl mt-4">
-            <div className="relative group">
-              <div className="absolute inset-y-0 left-6 flex items-center pointer-events-none text-on-surface-variant">
-                <Search size={22} />
+          <p className="text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed mb-12">
+            Anonymous, verified insights from the people who actually work
+            there. No PR fluff, just honest experiences.
+          </p>
+
+          {/* Search bar */}
+          <div className="w-full max-w-2xl">
+            <div className="relative flex items-center bg-surface-container-lowest border border-border/20 shadow-[0_20px_60px_rgba(27,27,27,0.08)] rounded-2xl overflow-hidden">
+              <div className="pl-5 flex items-center pointer-events-none text-on-surface-variant shrink-0">
+                <Search size={20} />
               </div>
               <input
                 type="text"
-                placeholder="Search for an organization, role, or city..."
-                className="w-full h-20 pl-16 pr-20 bg-surface-container-lowest border border-border/20 shadow-[0_20px_50px_rgba(27,27,27,0.05)] rounded-xl text-lg font-medium placeholder:text-on-surface-variant focus:ring-1 focus:ring-primary focus:outline-none transition-all"
+                placeholder="Search for a company, role, or culture tag..."
+                className="flex-1 h-16 px-4 bg-transparent text-base font-medium placeholder:text-on-surface-variant focus:outline-none"
               />
-              <div className="absolute inset-y-0 right-4 flex items-center">
-                <span className="hidden md:block font-mono text-[10px] text-on-surface-variant border border-outline-variant/30 rounded px-2 py-1 bg-surface-container">
+              <div className="flex items-center gap-2 pr-3 shrink-0">
+                <button
+                  type="submit"
+                  className="h-10 px-5 bg-foreground text-background text-sm font-semibold rounded-xl hover:opacity-80 active:scale-[0.97] transition-all"
+                >
+                  Search
+                </button>
+                <span className="hidden md:inline-flex items-center justify-center w-8 h-8 font-mono text-[9px] font-bold text-on-surface-variant border border-outline-variant/40 rounded-lg bg-surface-container">
                   ⌘K
                 </span>
+                <span className="hidden md:inline-flex items-center justify-center w-8 h-8 font-mono text-[9px] font-bold text-on-surface-variant border border-outline-variant/40 rounded-lg bg-surface-container">
+                  ESC
+                </span>
               </div>
-            </div>
-
-            {/* Quick actions */}
-            <div className="flex flex-wrap justify-center gap-6 mt-12">
-              <Link
-                href="/orgs"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-surface-container-highest rounded-md transition-all duration-200 group"
-              >
-                <div className="w-10 h-10 flex items-center justify-center bg-surface-container rounded-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <Building2 size={18} />
-                </div>
-                <span className="text-sm font-medium text-on-surface-variant group-hover:text-foreground">
-                  Rate an Org
-                </span>
-              </Link>
-
-              <Link
-                href="/reviews/write"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-surface-container-highest rounded-md transition-all duration-200 group"
-              >
-                <div className="w-10 h-10 flex items-center justify-center bg-surface-container rounded-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <Star size={18} />
-                </div>
-                <span className="text-sm font-medium text-on-surface-variant group-hover:text-foreground">
-                  Write a Review
-                </span>
-              </Link>
-
-              <Link
-                href="/interviews/submit"
-                className="flex items-center gap-3 px-4 py-2 hover:bg-surface-container-highest rounded-md transition-all duration-200 group"
-              >
-                <div className="w-10 h-10 flex items-center justify-center bg-surface-container rounded-full group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
-                  <MessageSquare size={18} />
-                </div>
-                <span className="text-sm font-medium text-on-surface-variant group-hover:text-foreground">
-                  Share Interview Questions
-                </span>
-              </Link>
             </div>
           </div>
         </section>

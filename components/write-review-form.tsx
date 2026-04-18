@@ -148,29 +148,6 @@ export function WriteReviewForm() {
 
       {/* Submit row */}
       <div className="pt-10 flex flex-col md:flex-row items-center justify-between gap-8 border-t border-outline-variant/10">
-        <label className="flex items-center gap-3 cursor-pointer">
-          <button
-            type="button"
-            role="switch"
-            aria-checked={anonymous}
-            onClick={() => setAnonymous((a) => !a)}
-            className={cn(
-              "relative w-11 h-6 rounded-full transition-colors duration-200",
-              anonymous ? "bg-tertiary-fixed-dim" : "bg-surface-container-highest"
-            )}
-          >
-            <span
-              className={cn(
-                "absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full shadow transition-transform duration-200",
-                anonymous ? "translate-x-5" : "translate-x-0"
-              )}
-            />
-          </button>
-          <span className="text-sm font-medium uppercase tracking-wider">
-            Anonymous Post
-          </span>
-        </label>
-
         <button
           type="submit"
           className="w-full md:w-auto px-12 py-4 bg-gradient-to-b from-primary to-primary-container text-primary-foreground rounded-md font-bold tracking-tight hover:opacity-90 transition-all active:scale-[0.98]"

@@ -1,13 +1,5 @@
 import Link from "next/link";
-import {
-  Search,
-  Building2,
-  Star,
-  MessageSquare,
-  BadgeCheck,
-  TrendingUp,
-  Shield,
-} from "lucide-react";
+import { Search, BadgeCheck, Shield } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 
@@ -161,8 +153,8 @@ export default function HomePage() {
                     Senior Product Designer
                   </h4>
                   <p className="text-on-surface-variant border-surface-container-highest mb-6 border-l-2 pl-4 text-sm leading-relaxed italic">
-                    "The process was heavily focused on systems thinking rather than just visual
-                    execution..."
+                    &quot;The process was heavily focused on systems thinking rather than just
+                    visual execution...&quot;
                   </p>
                 </div>
                 <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
@@ -183,8 +175,8 @@ export default function HomePage() {
                     Great work-life balance
                   </h4>
                   <p className="text-on-surface-variant border-surface-container-highest mb-6 border-l-2 pl-4 text-sm leading-relaxed italic">
-                    "Transparent leadership and a strong emphasis on mental well-being across the
-                    entire org..."
+                    &quot;Transparent leadership and a strong emphasis on mental well-being across
+                    the entire org...&quot;
                   </p>
                 </div>
                 <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
@@ -249,8 +241,8 @@ export default function HomePage() {
               The Digital Curator
             </span>
             <blockquote className="text-primary text-4xl leading-tight font-medium tracking-tight md:text-5xl">
-              "We believe that the most valuable data isn&apos;t in a brochure, but in the
-              collective experiences of the people who do the work every day."
+              &quot;We believe that the most valuable data isn&apos;t in a brochure, but in the
+              collective experiences of the people who do the work every day.&quot;
             </blockquote>
             <div className="pt-4">
               <p className="text-on-surface-variant max-w-md text-lg leading-relaxed">

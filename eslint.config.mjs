@@ -22,6 +22,7 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    "types/**/*.d.ts",
   ]),
   // Disables ESLint rules that might conflict with prettier
   eslintConfigPrettier,

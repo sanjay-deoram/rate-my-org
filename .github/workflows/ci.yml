@@ -66,3 +66,5 @@ jobs:
           cache: "pnpm"
       - run: pnpm install --frozen-lockfile
       - run: pnpm run build
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}

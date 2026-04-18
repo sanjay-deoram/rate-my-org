@@ -23,7 +23,13 @@ export const metadata: Metadata = {
   },
   description:
     "Anonymously rate organizations, read real reviews, and discover honest interview experiences. No login required.",
-  keywords: ["company reviews", "anonymous reviews", "interview questions", "workplace culture", "salary data"],
+  keywords: [
+    "company reviews",
+    "anonymous reviews",
+    "interview questions",
+    "workplace culture",
+    "salary data",
+  ],
   openGraph: {
     siteName: "RateMyOrg",
     type: "website",
@@ -36,13 +42,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn(inter.variable, ibmPlexMono.variable, "antialiased")}
-    >
-      <body className="min-h-screen flex flex-col bg-background text-foreground">
-        {children}
-      </body>
+    <html lang="en" className={cn(inter.variable, ibmPlexMono.variable, "antialiased")}>
+      <body className="bg-background text-foreground flex min-h-screen flex-col">{children}</body>
     </html>
   );
 }

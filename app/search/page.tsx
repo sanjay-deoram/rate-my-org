@@ -16,74 +16,68 @@ export default async function SearchPage() {
     <>
       <Nav />
       <main
-        className="pt-20 min-h-screen"
+        className="min-h-screen pt-20"
         style={{
           background:
             "radial-gradient(ellipse 100% 50% at 50% 0%, #e2e2e2 0%, #f3f2f2 40%, #fcf9f8 70%)",
         }}
       >
-        <section className="max-w-5xl mx-auto px-8 md:px-12 py-24">
+        <section className="mx-auto max-w-5xl px-8 py-24 md:px-12">
           {/* Header */}
           <div className="mb-12">
-            <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-4 block">
+            <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.2em] uppercase">
               Neon DB · playing_with_neon
             </span>
-            <h1 className="text-5xl font-bold tracking-tighter text-foreground mb-4">
-              Search
-            </h1>
-            <p className="text-base text-on-surface-variant max-w-lg leading-relaxed">
+            <h1 className="text-foreground mb-4 text-5xl font-bold tracking-tighter">Search</h1>
+            <p className="text-on-surface-variant max-w-lg text-base leading-relaxed">
               Live data pulled directly from your Neon database via Drizzle ORM.
             </p>
           </div>
 
           {/* Stats bar */}
-          <div className="flex items-center gap-6 mb-10 p-4 bg-surface-container-lowest border border-surface-container-highest rounded-xl">
+          <div className="bg-surface-container-lowest border-surface-container-highest mb-10 flex items-center gap-6 rounded-xl border p-4">
             <div>
-              <span className="font-mono text-[10px] text-on-surface-variant block mb-0.5 uppercase tracking-widest">
+              <span className="text-on-surface-variant mb-0.5 block font-mono text-[10px] tracking-widest uppercase">
                 Total Rows
               </span>
               <span className="text-2xl font-black">{rows.length}</span>
             </div>
-            <div className="h-8 w-px bg-surface-container-highest" />
+            <div className="bg-surface-container-highest h-8 w-px" />
             <div>
-              <span className="font-mono text-[10px] text-on-surface-variant block mb-0.5 uppercase tracking-widest">
+              <span className="text-on-surface-variant mb-0.5 block font-mono text-[10px] tracking-widest uppercase">
                 Table
               </span>
-              <span className="text-sm font-semibold font-mono">
-                playing_with_neon
-              </span>
+              <span className="font-mono text-sm font-semibold">playing_with_neon</span>
             </div>
-            <div className="h-8 w-px bg-surface-container-highest" />
+            <div className="bg-surface-container-highest h-8 w-px" />
             <div>
-              <span className="font-mono text-[10px] text-on-surface-variant block mb-0.5 uppercase tracking-widest">
+              <span className="text-on-surface-variant mb-0.5 block font-mono text-[10px] tracking-widest uppercase">
                 Columns
               </span>
-              <span className="text-sm font-semibold font-mono">
-                id · name · value
-              </span>
+              <span className="font-mono text-sm font-semibold">id · name · value</span>
             </div>
           </div>
 
           {/* Table */}
           {rows.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 bg-surface-container-lowest border border-surface-container-highest rounded-xl text-center">
-              <span className="text-4xl mb-4">🗃️</span>
+            <div className="bg-surface-container-lowest border-surface-container-highest flex flex-col items-center justify-center rounded-xl border py-24 text-center">
+              <span className="mb-4 text-4xl">🗃️</span>
               <p className="text-on-surface-variant font-medium">
                 No rows found in playing_with_neon.
               </p>
             </div>
           ) : (
-            <div className="overflow-hidden rounded-xl border border-surface-container-highest bg-surface-container-lowest">
+            <div className="border-surface-container-highest bg-surface-container-lowest overflow-hidden rounded-xl border">
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-surface-container-highest bg-surface-container">
-                    <th className="px-6 py-4 text-left font-mono text-[10px] uppercase tracking-widest text-on-surface-variant w-16">
+                  <tr className="border-surface-container-highest bg-surface-container border-b">
+                    <th className="text-on-surface-variant w-16 px-6 py-4 text-left font-mono text-[10px] tracking-widest uppercase">
                       ID
                     </th>
-                    <th className="px-6 py-4 text-left font-mono text-[10px] uppercase tracking-widest text-on-surface-variant">
+                    <th className="text-on-surface-variant px-6 py-4 text-left font-mono text-[10px] tracking-widest uppercase">
                       Name
                     </th>
-                    <th className="px-6 py-4 text-right font-mono text-[10px] uppercase tracking-widest text-on-surface-variant w-32">
+                    <th className="text-on-surface-variant w-32 px-6 py-4 text-right font-mono text-[10px] tracking-widest uppercase">
                       Value
                     </th>
                   </tr>
@@ -92,20 +86,22 @@ export default async function SearchPage() {
                   {rows.map((row, i) => (
                     <tr
                       key={row.id}
-                      className={`border-b border-surface-container-highest last:border-0 transition-colors duration-150 hover:bg-surface-container ${
+                      className={`border-surface-container-highest hover:bg-surface-container border-b transition-colors duration-150 last:border-0 ${
                         i % 2 === 0 ? "" : "bg-surface-container/30"
                       }`}
                     >
-                      <td className="px-6 py-4 font-mono text-[11px] text-on-surface-variant">
+                      <td className="text-on-surface-variant px-6 py-4 font-mono text-[11px]">
                         {row.id}
                       </td>
-                      <td className="px-6 py-4 font-semibold text-foreground">
-                        {row.name}
-                      </td>
-                      <td className="px-6 py-4 text-right font-mono text-on-surface-variant">
-                        {row.value !== null && row.value !== undefined
-                          ? row.value.toFixed(4)
-                          : <span className="text-surface-container-highest italic text-xs">null</span>}
+                      <td className="text-foreground px-6 py-4 font-semibold">{row.name}</td>
+                      <td className="text-on-surface-variant px-6 py-4 text-right font-mono">
+                        {row.value !== null && row.value !== undefined ? (
+                          row.value.toFixed(4)
+                        ) : (
+                          <span className="text-surface-container-highest text-xs italic">
+                            null
+                          </span>
+                        )}
                       </td>
                     </tr>
                   ))}

@@ -16,52 +16,52 @@ export default function HomePage() {
     <>
       <Nav />
       <main
-        className="pt-20 min-h-screen"
+        className="min-h-screen pt-20"
         style={{
           background:
             "radial-gradient(ellipse 100% 50% at 50% 0%, #e2e2e2 0%, #f3f2f2 40%, #fcf9f8 70%)",
         }}
       >
         {/* Hero */}
-        <section className="relative flex flex-col items-center text-center px-8 md:px-12 py-24 md:py-40 overflow-hidden">
+        <section className="relative flex flex-col items-center overflow-hidden px-8 py-24 text-center md:px-12 md:py-40">
           {/* Pill badge */}
-          <div className="mb-8 inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-surface-container border border-surface-container-highest">
-            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-on-surface-variant">
+          <div className="bg-surface-container border-surface-container-highest mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5">
+            <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.18em] uppercase">
               Transparency First
             </span>
           </div>
 
-          <h1 className="text-5xl md:text-7xl font-bold tracking-tighter text-foreground mb-8 max-w-4xl leading-[1.1]">
+          <h1 className="text-foreground mb-8 max-w-4xl text-5xl leading-[1.1] font-bold tracking-tighter md:text-7xl">
             Uncover the Truth About Your Next Workplace
           </h1>
 
-          <p className="text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed mb-12">
-            Anonymous, verified insights from the people who actually work
-            there. No PR fluff, just honest experiences.
+          <p className="text-on-surface-variant mb-12 max-w-xl text-base leading-relaxed md:text-lg">
+            Anonymous, verified insights from the people who actually work there. No PR fluff, just
+            honest experiences.
           </p>
 
           {/* Search bar */}
           <div className="w-full max-w-2xl">
-            <div className="relative flex items-center bg-surface-container-lowest border border-border/20 shadow-[0_20px_60px_rgba(27,27,27,0.08)] rounded-2xl overflow-hidden">
-              <div className="pl-5 flex items-center pointer-events-none text-on-surface-variant shrink-0">
+            <div className="bg-surface-container-lowest border-border/20 relative flex items-center overflow-hidden rounded-2xl border shadow-[0_20px_60px_rgba(27,27,27,0.08)]">
+              <div className="text-on-surface-variant pointer-events-none flex shrink-0 items-center pl-5">
                 <Search size={20} />
               </div>
               <input
                 type="text"
                 placeholder="Search for a company, role, or culture tag..."
-                className="flex-1 h-16 px-4 bg-transparent text-base font-medium placeholder:text-on-surface-variant focus:outline-none"
+                className="placeholder:text-on-surface-variant h-16 flex-1 bg-transparent px-4 text-base font-medium focus:outline-none"
               />
-              <div className="flex items-center gap-2 pr-3 shrink-0">
+              <div className="flex shrink-0 items-center gap-2 pr-3">
                 <button
                   type="submit"
-                  className="h-10 px-5 bg-foreground text-background text-sm font-semibold rounded-xl hover:opacity-80 active:scale-[0.97] transition-all"
+                  className="bg-foreground text-background h-10 rounded-xl px-5 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.97]"
                 >
                   Search
                 </button>
-                <span className="hidden md:inline-flex items-center justify-center w-8 h-8 font-mono text-[9px] font-bold text-on-surface-variant border border-outline-variant/40 rounded-lg bg-surface-container">
+                <span className="text-on-surface-variant border-outline-variant/40 bg-surface-container hidden h-8 w-8 items-center justify-center rounded-lg border font-mono text-[9px] font-bold md:inline-flex">
                   ⌘K
                 </span>
-                <span className="hidden md:inline-flex items-center justify-center w-8 h-8 font-mono text-[9px] font-bold text-on-surface-variant border border-outline-variant/40 rounded-lg bg-surface-container">
+                <span className="text-on-surface-variant border-outline-variant/40 bg-surface-container hidden h-8 w-8 items-center justify-center rounded-lg border font-mono text-[9px] font-bold md:inline-flex">
                   ESC
                 </span>
               </div>
@@ -71,170 +71,156 @@ export default function HomePage() {
 
         {/* Trending section */}
         <section className="bg-surface-container-low py-32">
-          <div className="max-w-7xl mx-auto px-8 md:px-12">
-            <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-4">
+          <div className="mx-auto max-w-7xl px-8 md:px-12">
+            <div className="mb-16 flex flex-col justify-between gap-4 md:flex-row md:items-end">
               <div>
-                <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-on-surface-variant mb-4 block">
+                <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.2em] uppercase">
                   Trending Data
                 </span>
-                <h2 className="text-4xl font-bold tracking-tight">
-                  Most Searched This Week
-                </h2>
+                <h2 className="text-4xl font-bold tracking-tight">Most Searched This Week</h2>
               </div>
               <Link
                 href="/orgs"
-                className="text-sm font-bold border-b border-foreground pb-1 hover:opacity-70 transition-opacity"
+                className="border-foreground border-b pb-1 text-sm font-bold transition-opacity hover:opacity-70"
               >
                 View Full Index
               </Link>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
               {/* Featured org card */}
-              <div className="md:col-span-8 bg-surface-container-lowest p-10 rounded-xl flex flex-col justify-between group cursor-pointer border border-transparent hover:border-surface-container-highest transition-all duration-300">
+              <div className="bg-surface-container-lowest group hover:border-surface-container-highest flex cursor-pointer flex-col justify-between rounded-xl border border-transparent p-10 transition-all duration-300 md:col-span-8">
                 <div>
-                  <div className="flex items-center justify-between mb-8">
-                    <div className="w-16 h-16 bg-surface-container rounded-lg flex items-center justify-center text-3xl font-black">
+                  <div className="mb-8 flex items-center justify-between">
+                    <div className="bg-surface-container flex h-16 w-16 items-center justify-center rounded-lg text-3xl font-black">
                       S
                     </div>
-                    <div className="flex items-center gap-2 px-3 py-1 bg-[#d1fadf] text-[#00632d] rounded-full">
+                    <div className="flex items-center gap-2 rounded-full bg-[#d1fadf] px-3 py-1 text-[#00632d]">
                       <BadgeCheck size={14} className="fill-current" />
-                      <span className="text-[10px] font-bold uppercase tracking-wider">
+                      <span className="text-[10px] font-bold tracking-wider uppercase">
                         Top Rated
                       </span>
                     </div>
                   </div>
-                  <h3 className="text-3xl font-bold mb-3">Stripe</h3>
-                  <p className="text-on-surface-variant max-w-md leading-relaxed text-lg">
-                    Infrastructure for the internet economy. Known for rigorous
-                    engineering culture and high-impact work.
+                  <h3 className="mb-3 text-3xl font-bold">Stripe</h3>
+                  <p className="text-on-surface-variant max-w-md text-lg leading-relaxed">
+                    Infrastructure for the internet economy. Known for rigorous engineering culture
+                    and high-impact work.
                   </p>
                 </div>
                 <div className="mt-12 flex items-center gap-12">
                   <div>
-                    <span className="font-mono text-[10px] text-on-surface-variant block mb-1 uppercase tracking-widest">
+                    <span className="text-on-surface-variant mb-1 block font-mono text-[10px] tracking-widest uppercase">
                       Culture Rating
                     </span>
                     <span className="text-3xl font-black">4.8/5.0</span>
                   </div>
                   <div>
-                    <span className="font-mono text-[10px] text-on-surface-variant block mb-1 uppercase tracking-widest">
+                    <span className="text-on-surface-variant mb-1 block font-mono text-[10px] tracking-widest uppercase">
                       Growth Opportunity
                     </span>
-                    <div className="h-2 w-40 bg-surface-container-highest rounded-full mt-3">
-                      <div
-                        className="h-full bg-primary rounded-full"
-                        style={{ width: "92%" }}
-                      />
+                    <div className="bg-surface-container-highest mt-3 h-2 w-40 rounded-full">
+                      <div className="bg-primary h-full rounded-full" style={{ width: "92%" }} />
                     </div>
                   </div>
                 </div>
               </div>
 
               {/* Anonymity CTA card */}
-              <div className="md:col-span-4 bg-primary text-primary-foreground p-10 rounded-xl flex flex-col justify-between relative overflow-hidden group">
+              <div className="bg-primary text-primary-foreground group relative flex flex-col justify-between overflow-hidden rounded-xl p-10 md:col-span-4">
                 <div className="z-10">
-                  <span className="font-mono text-[10px] text-on-primary-container block mb-6 uppercase tracking-widest">
+                  <span className="text-on-primary-container mb-6 block font-mono text-[10px] tracking-widest uppercase">
                     Anonymity Guaranteed
                   </span>
-                  <h3 className="text-2xl font-bold mb-4 leading-snug">
+                  <h3 className="mb-4 text-2xl leading-snug font-bold">
                     The safe space for workplace transparency.
                   </h3>
                   <p className="text-on-primary-container text-sm leading-relaxed opacity-80">
-                    Join 40k+ professionals sharing honest insights without the
-                    fear of identification.
+                    Join 40k+ professionals sharing honest insights without the fear of
+                    identification.
                   </p>
                 </div>
                 <Link
                   href="/reviews/write"
-                  className="z-10 w-full py-4 bg-white text-primary font-bold text-sm rounded text-center transition-all hover:shadow-xl active:scale-[0.98] mt-12 block"
+                  className="text-primary z-10 mt-12 block w-full rounded bg-white py-4 text-center text-sm font-bold transition-all hover:shadow-xl active:scale-[0.98]"
                 >
                   Start Sharing
                 </Link>
-                <div className="absolute -bottom-8 -right-8 opacity-10 group-hover:scale-110 transition-transform duration-500">
+                <div className="absolute -right-8 -bottom-8 opacity-10 transition-transform duration-500 group-hover:scale-110">
                   <Shield size={140} />
                 </div>
               </div>
 
               {/* Recent interview */}
-              <div className="md:col-span-4 bg-surface-container-lowest border border-surface-container-highest hover:border-primary p-8 rounded-xl flex flex-col transition-all duration-300">
+              <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
                 <div className="flex-grow">
-                  <span className="font-mono text-[10px] text-on-surface-variant block mb-4 uppercase tracking-[0.15em]">
+                  <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
                     Recent Interview
                   </span>
-                  <h4 className="font-black text-xl mb-4 text-primary leading-tight">
+                  <h4 className="text-primary mb-4 text-xl leading-tight font-black">
                     Senior Product Designer
                   </h4>
-                  <p className="text-sm text-on-surface-variant leading-relaxed italic border-l-2 border-surface-container-highest pl-4 mb-6">
-                    "The process was heavily focused on systems thinking rather
-                    than just visual execution..."
+                  <p className="text-on-surface-variant border-surface-container-highest mb-6 border-l-2 pl-4 text-sm leading-relaxed italic">
+                    "The process was heavily focused on systems thinking rather than just visual
+                    execution..."
                   </p>
                 </div>
-                <div className="flex items-center justify-between pt-6 border-t border-surface-container-highest">
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
+                  <span className="text-primary text-xs font-bold tracking-wider uppercase">
                     Figma
                   </span>
-                  <span className="text-[10px] text-on-surface-variant font-mono">
-                    2 DAYS AGO
-                  </span>
+                  <span className="text-on-surface-variant font-mono text-[10px]">2 DAYS AGO</span>
                 </div>
               </div>
 
               {/* Recent review */}
-              <div className="md:col-span-4 bg-surface-container-lowest border border-surface-container-highest hover:border-primary p-8 rounded-xl flex flex-col transition-all duration-300">
+              <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
                 <div className="flex-grow">
-                  <span className="font-mono text-[10px] text-on-surface-variant block mb-4 uppercase tracking-[0.15em]">
+                  <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
                     Recent Review
                   </span>
-                  <h4 className="font-black text-xl mb-4 text-primary leading-tight">
+                  <h4 className="text-primary mb-4 text-xl leading-tight font-black">
                     Great work-life balance
                   </h4>
-                  <p className="text-sm text-on-surface-variant leading-relaxed italic border-l-2 border-surface-container-highest pl-4 mb-6">
-                    "Transparent leadership and a strong emphasis on mental
-                    well-being across the entire org..."
+                  <p className="text-on-surface-variant border-surface-container-highest mb-6 border-l-2 pl-4 text-sm leading-relaxed italic">
+                    "Transparent leadership and a strong emphasis on mental well-being across the
+                    entire org..."
                   </p>
                 </div>
-                <div className="flex items-center justify-between pt-6 border-t border-surface-container-highest">
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
+                  <span className="text-primary text-xs font-bold tracking-wider uppercase">
                     Linear
                   </span>
-                  <span className="text-[10px] text-on-surface-variant font-mono">
-                    5 DAYS AGO
-                  </span>
+                  <span className="text-on-surface-variant font-mono text-[10px]">5 DAYS AGO</span>
                 </div>
               </div>
 
               {/* Salary insight */}
-              <div className="md:col-span-4 bg-surface-container-lowest border border-surface-container-highest hover:border-primary p-8 rounded-xl flex flex-col transition-all duration-300">
+              <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
                 <div className="flex-grow">
-                  <span className="font-mono text-[10px] text-on-surface-variant block mb-4 uppercase tracking-[0.15em]">
+                  <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
                     Salary Insight
                   </span>
-                  <h4 className="font-medium text-sm text-on-surface-variant mb-1">
+                  <h4 className="text-on-surface-variant mb-1 text-sm font-medium">
                     Software Engineer L5
                   </h4>
-                  <div className="flex items-baseline gap-2 mb-4">
-                    <span className="text-4xl font-black text-primary">
-                      $245k
-                    </span>
-                    <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-tighter">
+                  <div className="mb-4 flex items-baseline gap-2">
+                    <span className="text-primary text-4xl font-black">$245k</span>
+                    <span className="text-on-surface-variant text-[10px] font-bold tracking-tighter uppercase">
                       Total Comp
                     </span>
                   </div>
-                  <p className="text-[11px] text-on-surface-variant leading-tight">
+                  <p className="text-on-surface-variant text-[11px] leading-tight">
                     Based on 14 recent entries verified by community members.
                   </p>
                 </div>
-                <div className="flex items-center justify-between pt-6 border-t border-surface-container-highest">
-                  <span className="text-xs font-bold uppercase tracking-wider text-primary">
+                <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
+                  <span className="text-primary text-xs font-bold tracking-wider uppercase">
                     Vercel
                   </span>
                   <div className="flex items-center gap-1">
-                    <BadgeCheck
-                      size={14}
-                      className="text-tertiary-fixed-dim fill-current"
-                    />
-                    <span className="text-[10px] font-bold text-tertiary-fixed-dim uppercase tracking-wider">
+                    <BadgeCheck size={14} className="text-tertiary-fixed-dim fill-current" />
+                    <span className="text-tertiary-fixed-dim text-[10px] font-bold tracking-wider uppercase">
                       Verified
                     </span>
                   </div>
@@ -245,12 +231,12 @@ export default function HomePage() {
         </section>
 
         {/* Editorial section */}
-        <section className="max-w-7xl mx-auto px-8 md:px-12 py-32 flex flex-col md:flex-row gap-20 items-center">
+        <section className="mx-auto flex max-w-7xl flex-col items-center gap-20 px-8 py-32 md:flex-row md:px-12">
           <div className="flex-1">
-            <div className="w-full aspect-square bg-surface-container rounded-xl overflow-hidden relative shadow-2xl group">
-              <div className="absolute inset-0 bg-gradient-to-br from-surface-container-high to-surface-dim" />
+            <div className="bg-surface-container group relative aspect-square w-full overflow-hidden rounded-xl shadow-2xl">
+              <div className="from-surface-container-high to-surface-dim absolute inset-0 bg-gradient-to-br" />
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-[120px] font-black tracking-tighter text-on-surface-variant/10 select-none leading-none">
+                <div className="text-on-surface-variant/10 text-[120px] leading-none font-black tracking-tighter select-none">
                   R
                 </div>
               </div>
@@ -259,20 +245,18 @@ export default function HomePage() {
           </div>
 
           <div className="flex-1 space-y-8">
-            <span className="font-mono text-xs uppercase tracking-widest text-on-surface-variant">
+            <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
               The Digital Curator
             </span>
-            <blockquote className="text-4xl md:text-5xl font-medium tracking-tight leading-tight text-primary">
-              "We believe that the most valuable data isn&apos;t in a brochure,
-              but in the collective experiences of the people who do the work
-              every day."
+            <blockquote className="text-primary text-4xl leading-tight font-medium tracking-tight md:text-5xl">
+              "We believe that the most valuable data isn&apos;t in a brochure, but in the
+              collective experiences of the people who do the work every day."
             </blockquote>
             <div className="pt-4">
-              <p className="text-on-surface-variant leading-relaxed text-lg max-w-md">
-                RateMyOrg isn&apos;t just another review site. We treat
-                organizational data as high-end editorial content, ensuring
-                every insight is presented with the weight and clarity it
-                deserves.
+              <p className="text-on-surface-variant max-w-md text-lg leading-relaxed">
+                RateMyOrg isn&apos;t just another review site. We treat organizational data as
+                high-end editorial content, ensuring every insight is presented with the weight and
+                clarity it deserves.
               </p>
             </div>
           </div>

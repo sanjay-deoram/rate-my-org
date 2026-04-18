@@ -112,11 +112,7 @@ export function generateStaticParams() {
   return Object.keys(orgs).map((slug) => ({ slug }));
 }
 
-export async function generateMetadata({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const org = orgs[slug];
   if (!org) return {};
@@ -126,11 +122,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function OrgProfilePage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
+export default async function OrgProfilePage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
   const org = orgs[slug];
 
@@ -141,25 +133,20 @@ export default async function OrgProfilePage({
       <Nav />
       <main className="pt-28 pb-24">
         {/* Brand header */}
-        <section className="max-w-7xl mx-auto px-8 md:px-12 mb-16">
-          <div className="flex flex-col md:flex-row md:items-end justify-between gap-8">
+        <section className="mx-auto mb-16 max-w-7xl px-8 md:px-12">
+          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div className="flex items-center gap-8">
-              <div className="w-32 h-32 bg-surface-container-lowest flex items-center justify-center rounded-xl border border-border/20 shadow-sm">
-                <span className="text-5xl font-black text-foreground">
-                  {org.initial}
-                </span>
+              <div className="bg-surface-container-lowest border-border/20 flex h-32 w-32 items-center justify-center rounded-xl border shadow-sm">
+                <span className="text-foreground text-5xl font-black">{org.initial}</span>
               </div>
               <div>
-                <div className="flex items-center gap-3 mb-2">
-                  <h1 className="text-5xl font-black tracking-[-0.04em] text-foreground">
+                <div className="mb-2 flex items-center gap-3">
+                  <h1 className="text-foreground text-5xl font-black tracking-[-0.04em]">
                     {org.name}
                   </h1>
-                  <BadgeCheck
-                    size={30}
-                    className="text-tertiary-fixed-dim fill-current"
-                  />
+                  <BadgeCheck size={30} className="text-tertiary-fixed-dim fill-current" />
                 </div>
-                <p className="text-on-surface-variant font-medium tracking-tight uppercase text-sm">
+                <p className="text-on-surface-variant text-sm font-medium tracking-tight uppercase">
                   {org.tagline}
                 </p>
               </div>
@@ -167,59 +154,51 @@ export default async function OrgProfilePage({
 
             <div className="flex items-baseline gap-4 text-right">
               <div className="flex flex-col items-end">
-                <span className="font-mono text-sm uppercase tracking-widest text-on-surface-variant mb-1">
+                <span className="text-on-surface-variant mb-1 font-mono text-sm tracking-widest uppercase">
                   Aggregate Rating
                 </span>
-                <div className="text-7xl font-black tracking-tighter leading-none">
+                <div className="text-7xl leading-none font-black tracking-tighter">
                   {org.rating.toFixed(1)}
                 </div>
               </div>
-              <div className="text-on-surface-variant font-mono text-xl">
-                / 5.0
-              </div>
+              <div className="text-on-surface-variant font-mono text-xl">/ 5.0</div>
             </div>
           </div>
         </section>
 
         {/* KPI grid */}
-        <section className="max-w-7xl mx-auto px-8 md:px-12 mb-20">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-surface-container-low p-8 rounded-xl flex flex-col justify-between h-48 hover:bg-surface-container-highest transition-all duration-300">
-              <span className="text-on-surface-variant text-xs font-mono uppercase tracking-widest">
+        <section className="mx-auto mb-20 max-w-7xl px-8 md:px-12">
+          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
+            <div className="bg-surface-container-low hover:bg-surface-container-highest flex h-48 flex-col justify-between rounded-xl p-8 transition-all duration-300">
+              <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
                 Recommend to Friend
               </span>
               <div className="flex items-end justify-between">
-                <span className="text-5xl font-bold tracking-tighter">
-                  {org.recommendPct}%
-                </span>
-                <div className="w-12 h-12 rounded-full border border-outline-variant/20 flex items-center justify-center">
+                <span className="text-5xl font-bold tracking-tighter">{org.recommendPct}%</span>
+                <div className="border-outline-variant/20 flex h-12 w-12 items-center justify-center rounded-full border">
                   <TrendingUp size={20} className="text-tertiary-fixed-dim" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-surface-container-low p-8 rounded-xl flex flex-col justify-between h-48 hover:bg-surface-container-highest transition-all duration-300">
-              <span className="text-on-surface-variant text-xs font-mono uppercase tracking-widest">
+            <div className="bg-surface-container-low hover:bg-surface-container-highest flex h-48 flex-col justify-between rounded-xl p-8 transition-all duration-300">
+              <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
                 CEO Approval ({org.ceoName})
               </span>
               <div className="flex items-end justify-between">
-                <span className="text-5xl font-bold tracking-tighter">
-                  {org.ceoApprovalPct}%
-                </span>
-                <div className="w-12 h-12 rounded-full border border-outline-variant/20 flex items-center justify-center">
+                <span className="text-5xl font-bold tracking-tighter">{org.ceoApprovalPct}%</span>
+                <div className="border-outline-variant/20 flex h-12 w-12 items-center justify-center rounded-full border">
                   <UserCheck size={20} className="text-tertiary-fixed-dim" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-primary text-primary-foreground p-8 rounded-xl flex flex-col justify-between h-48">
-              <span className="text-on-primary-container text-xs font-mono uppercase tracking-widest">
+            <div className="bg-primary text-primary-foreground flex h-48 flex-col justify-between rounded-xl p-8">
+              <span className="text-on-primary-container font-mono text-xs tracking-widest uppercase">
                 Top Rated Pillar
               </span>
               <div className="flex items-end justify-between">
-                <span className="text-2xl font-bold tracking-tighter">
-                  {org.topPillar}
-                </span>
+                <span className="text-2xl font-bold tracking-tighter">{org.topPillar}</span>
                 <Terminal size={28} />
               </div>
             </div>
@@ -227,25 +206,23 @@ export default async function OrgProfilePage({
         </section>
 
         {/* Main content */}
-        <section className="max-w-7xl mx-auto px-8 md:px-12 grid grid-cols-1 lg:grid-cols-12 gap-16">
+        <section className="mx-auto grid max-w-7xl grid-cols-1 gap-16 px-8 md:px-12 lg:grid-cols-12">
           {/* Left: stats */}
-          <div className="lg:col-span-4 space-y-16">
+          <div className="space-y-16 lg:col-span-4">
             <div>
-              <h2 className="text-2xl font-bold tracking-tight mb-8">
-                Culture Fingerprint
-              </h2>
+              <h2 className="mb-8 text-2xl font-bold tracking-tight">Culture Fingerprint</h2>
               <div className="space-y-10">
                 {org.cultureFingerprint.map((item) => (
                   <div key={item.label} className="space-y-3">
-                    <div className="flex justify-between items-end">
+                    <div className="flex items-end justify-between">
                       <span className="text-sm font-medium">{item.label}</span>
-                      <span className="font-mono text-xs text-on-surface-variant">
+                      <span className="text-on-surface-variant font-mono text-xs">
                         {item.score.toFixed(1)}/5.0
                       </span>
                     </div>
-                    <div className="h-1.5 w-full bg-surface-container-highest rounded-full overflow-hidden">
+                    <div className="bg-surface-container-highest h-1.5 w-full overflow-hidden rounded-full">
                       <div
-                        className="h-full bg-primary rounded-full"
+                        className="bg-primary h-full rounded-full"
                         style={{ width: `${(item.score / 5) * 100}%` }}
                       />
                     </div>
@@ -254,17 +231,15 @@ export default async function OrgProfilePage({
               </div>
             </div>
 
-            <div className="bg-surface-container-lowest p-8 rounded-xl border border-outline-variant/10 shadow-sm">
-              <h3 className="font-bold mb-4">Interview Difficulty</h3>
+            <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-8 shadow-sm">
+              <h3 className="mb-4 font-bold">Interview Difficulty</h3>
               <div className="flex items-center gap-4">
-                <span className="text-4xl font-black font-mono">
-                  {org.interviewDifficulty}
-                </span>
+                <span className="font-mono text-4xl font-black">{org.interviewDifficulty}</span>
                 <div className="flex gap-1">
                   {[1, 2, 3, 4, 5].map((i) => (
                     <div
                       key={i}
-                      className={`w-8 h-2 rounded-full ${
+                      className={`h-2 w-8 rounded-full ${
                         i <= org.interviewDifficultyLevel
                           ? "bg-primary"
                           : "bg-surface-container-highest"
@@ -273,7 +248,7 @@ export default async function OrgProfilePage({
                   ))}
                 </div>
               </div>
-              <p className="mt-4 text-sm text-on-surface-variant leading-relaxed">
+              <p className="text-on-surface-variant mt-4 text-sm leading-relaxed">
                 {org.interviewNote}
               </p>
             </div>
@@ -281,15 +256,13 @@ export default async function OrgProfilePage({
 
           {/* Right: reviews */}
           <div className="lg:col-span-8">
-            <div className="flex items-center justify-between mb-12">
-              <h2 className="text-2xl font-bold tracking-tight">
-                Anonymous Feedback
-              </h2>
+            <div className="mb-12 flex items-center justify-between">
+              <h2 className="text-2xl font-bold tracking-tight">Anonymous Feedback</h2>
               <div className="flex gap-4">
-                <button className="text-sm font-mono uppercase tracking-widest border-b border-primary pb-1">
+                <button className="border-primary border-b pb-1 font-mono text-sm tracking-widest uppercase">
                   Recent
                 </button>
-                <button className="text-sm font-mono uppercase tracking-widest text-on-surface-variant hover:text-foreground transition-colors">
+                <button className="text-on-surface-variant hover:text-foreground font-mono text-sm tracking-widest uppercase transition-colors">
                   Highest Rated
                 </button>
               </div>
@@ -299,40 +272,34 @@ export default async function OrgProfilePage({
               {org.reviews.map((review, i) => (
                 <article
                   key={i}
-                  className="bg-surface-container-lowest p-10 rounded-xl hover:bg-surface-container-low transition-colors duration-500"
+                  className="bg-surface-container-lowest hover:bg-surface-container-low rounded-xl p-10 transition-colors duration-500"
                 >
-                  <div className="flex justify-between items-start mb-6">
+                  <div className="mb-6 flex items-start justify-between">
                     <div>
-                      <h3 className="text-xl font-bold mb-1 italic">
+                      <h3 className="mb-1 text-xl font-bold italic">
                         &ldquo;{review.title}&rdquo;
                       </h3>
-                      <p className="text-xs font-mono uppercase tracking-widest text-on-surface-variant">
+                      <p className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
                         {review.role} • {review.location} • {review.timeAgo}
                       </p>
                     </div>
-                    <div className="flex items-center gap-1 bg-primary text-primary-foreground px-3 py-1 rounded shrink-0 ml-4">
-                      <span className="text-sm font-bold">
-                        {review.rating.toFixed(1)}
-                      </span>
+                    <div className="bg-primary text-primary-foreground ml-4 flex shrink-0 items-center gap-1 rounded px-3 py-1">
+                      <span className="text-sm font-bold">{review.rating.toFixed(1)}</span>
                     </div>
                   </div>
 
                   <div className="space-y-6">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
                       <div>
-                        <h4 className="text-xs font-black uppercase tracking-widest mb-3 flex items-center gap-2">
-                          <PlusCircle
-                            size={16}
-                            className="text-tertiary-fixed-dim"
-                          />{" "}
-                          Pros
+                        <h4 className="mb-3 flex items-center gap-2 text-xs font-black tracking-widest uppercase">
+                          <PlusCircle size={16} className="text-tertiary-fixed-dim" /> Pros
                         </h4>
                         <p className="text-on-surface-variant text-sm leading-relaxed">
                           {review.pros}
                         </p>
                       </div>
                       <div>
-                        <h4 className="text-xs font-black uppercase tracking-widest mb-3 flex items-center gap-2 text-on-surface-variant">
+                        <h4 className="text-on-surface-variant mb-3 flex items-center gap-2 text-xs font-black tracking-widest uppercase">
                           <MinusCircle size={16} /> Cons
                         </h4>
                         <p className="text-on-surface-variant text-sm leading-relaxed">
@@ -341,8 +308,8 @@ export default async function OrgProfilePage({
                       </div>
                     </div>
 
-                    <div className="pt-6 border-t border-outline-variant/20">
-                      <p className="text-foreground italic leading-relaxed text-lg">
+                    <div className="border-outline-variant/20 border-t pt-6">
+                      <p className="text-foreground text-lg leading-relaxed italic">
                         &ldquo;{review.highlight}&rdquo;
                       </p>
                     </div>
@@ -352,7 +319,7 @@ export default async function OrgProfilePage({
             </div>
 
             <div className="mt-16 flex justify-center">
-              <button className="bg-surface-container-highest px-8 py-4 rounded-md font-bold uppercase tracking-widest text-xs hover:bg-inverse-surface hover:text-inverse-on-surface transition-all">
+              <button className="bg-surface-container-highest hover:bg-inverse-surface hover:text-inverse-on-surface rounded-md px-8 py-4 text-xs font-bold tracking-widest uppercase transition-all">
                 Load More Archives
               </button>
             </div>

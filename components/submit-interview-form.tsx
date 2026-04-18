@@ -15,9 +15,7 @@ const categories = [
 type Category = (typeof categories)[number];
 
 export function SubmitInterviewForm() {
-  const [selectedCategory, setSelectedCategory] = useState<Category | null>(
-    null
-  );
+  const [selectedCategory, setSelectedCategory] = useState<Category | null>(null);
   const [anonymous, setAnonymous] = useState(true);
   const [submitted, setSubmitted] = useState(false);
 
@@ -29,15 +27,13 @@ export function SubmitInterviewForm() {
   if (submitted) {
     return (
       <div className="flex flex-col items-center justify-center py-32 text-center">
-        <div className="w-16 h-16 bg-tertiary-fixed-dim rounded-full flex items-center justify-center mb-6">
+        <div className="bg-tertiary-fixed-dim mb-6 flex h-16 w-16 items-center justify-center rounded-full">
           <Shield size={28} className="text-on-tertiary-fixed" />
         </div>
-        <h2 className="text-3xl font-bold tracking-tight mb-4">
-          Contribution Published
-        </h2>
+        <h2 className="mb-4 text-3xl font-bold tracking-tight">Contribution Published</h2>
         <p className="text-on-surface-variant max-w-sm">
-          Your interview experience has been added to the archive. Thank you for
-          helping the community prepare.
+          Your interview experience has been added to the archive. Thank you for helping the
+          community prepare.
         </p>
       </div>
     );
@@ -47,49 +43,49 @@ export function SubmitInterviewForm() {
     <form onSubmit={handleSubmit} className="space-y-16">
       {/* 01 Organization */}
       <section className="space-y-6">
-        <label className="block text-sm font-mono uppercase tracking-widest text-on-surface-variant">
+        <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
           01. Select Organization
         </label>
-        <div className="relative group">
+        <div className="group relative">
           <Search
             size={20}
-            className="absolute left-0 top-1/2 -translate-y-1/2 text-outline group-focus-within:text-primary transition-colors"
+            className="text-outline group-focus-within:text-primary absolute top-1/2 left-0 -translate-y-1/2 transition-colors"
           />
           <input
             type="text"
             placeholder="Search for a company..."
-            className="w-full pl-8 py-4 bg-transparent border-b border-outline-variant/20 focus:border-primary focus:ring-0 transition-colors text-xl font-medium placeholder:text-outline-variant outline-none"
+            className="border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 pl-8 text-xl font-medium transition-colors outline-none focus:ring-0"
           />
         </div>
       </section>
 
       {/* 02 + 03 Role & Department */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-12">
+      <section className="grid grid-cols-1 gap-12 md:grid-cols-2">
         <div className="space-y-6">
-          <label className="block text-sm font-mono uppercase tracking-widest text-on-surface-variant">
+          <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
             02. Role Title
           </label>
           <input
             type="text"
             placeholder="e.g. Senior Product Designer"
-            className="w-full py-4 bg-transparent border-b border-outline-variant/20 focus:border-primary focus:ring-0 transition-colors font-medium outline-none placeholder:text-outline-variant"
+            className="border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0"
           />
         </div>
         <div className="space-y-6">
-          <label className="block text-sm font-mono uppercase tracking-widest text-on-surface-variant">
+          <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
             03. Department
           </label>
           <input
             type="text"
             placeholder="e.g. Engineering"
-            className="w-full py-4 bg-transparent border-b border-outline-variant/20 focus:border-primary focus:ring-0 transition-colors font-medium outline-none placeholder:text-outline-variant"
+            className="border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0"
           />
         </div>
       </section>
 
       {/* 04 Category */}
       <section className="space-y-6">
-        <label className="block text-sm font-mono uppercase tracking-widest text-on-surface-variant">
+        <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
           04. Question Category
         </label>
         <div className="flex flex-wrap gap-4">
@@ -97,14 +93,12 @@ export function SubmitInterviewForm() {
             <button
               key={cat}
               type="button"
-              onClick={() =>
-                setSelectedCategory(selectedCategory === cat ? null : cat)
-              }
+              onClick={() => setSelectedCategory(selectedCategory === cat ? null : cat)}
               className={cn(
-                "px-6 py-3 rounded-full border transition-all text-sm font-medium",
+                "rounded-full border px-6 py-3 text-sm font-medium transition-all",
                 selectedCategory === cat
                   ? "border-primary bg-primary text-primary-foreground"
-                  : "border-outline-variant/30 hover:border-primary text-foreground"
+                  : "border-outline-variant/30 hover:border-primary text-foreground",
               )}
             >
               {cat}
@@ -115,40 +109,38 @@ export function SubmitInterviewForm() {
 
       {/* 05 The Question */}
       <section className="space-y-6">
-        <div className="flex justify-between items-end">
-          <label className="block text-sm font-mono uppercase tracking-widest text-on-surface-variant">
+        <div className="flex items-end justify-between">
+          <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
             05. The Question
           </label>
-          <span className="text-[10px] font-mono text-outline-variant">
+          <span className="text-outline-variant font-mono text-[10px]">
             REDACT NAMES &amp; SENSITIVE INFO
           </span>
         </div>
         <textarea
           rows={6}
           placeholder="Describe the specific question or challenge you were presented with..."
-          className="w-full p-6 bg-surface-container-low border-0 focus:ring-1 focus:ring-primary rounded-lg text-lg leading-relaxed placeholder:text-outline-variant outline-none resize-none"
+          className="bg-surface-container-low focus:ring-primary placeholder:text-outline-variant w-full resize-none rounded-lg border-0 p-6 text-lg leading-relaxed outline-none focus:ring-1"
         />
       </section>
 
       {/* Submit row */}
-      <section className="pt-8 flex flex-col md:flex-row items-center justify-between gap-8 border-t border-outline-variant/10">
-        <label className="flex items-center gap-3 cursor-pointer">
+      <section className="border-outline-variant/10 flex flex-col items-center justify-between gap-8 border-t pt-8 md:flex-row">
+        <label className="flex cursor-pointer items-center gap-3">
           <button
             type="button"
             role="switch"
             aria-checked={anonymous}
             onClick={() => setAnonymous((a) => !a)}
             className={cn(
-              "relative w-12 h-6 rounded-full transition-colors duration-200",
-              anonymous
-                ? "bg-tertiary-fixed-dim"
-                : "bg-surface-container-highest"
+              "relative h-6 w-12 rounded-full transition-colors duration-200",
+              anonymous ? "bg-tertiary-fixed-dim" : "bg-surface-container-highest",
             )}
           >
             <span
               className={cn(
-                "absolute top-[2px] left-[2px] w-5 h-5 bg-white rounded-full shadow transition-transform duration-200",
-                anonymous ? "translate-x-6" : "translate-x-0"
+                "absolute top-[2px] left-[2px] h-5 w-5 rounded-full bg-white shadow transition-transform duration-200",
+                anonymous ? "translate-x-6" : "translate-x-0",
               )}
             />
           </button>
@@ -157,7 +149,7 @@ export function SubmitInterviewForm() {
 
         <button
           type="submit"
-          className="w-full md:w-auto px-12 py-5 bg-gradient-to-b from-primary to-primary-container text-primary-foreground rounded-lg font-bold tracking-tight text-lg active:scale-95 transition-transform hover:opacity-90"
+          className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-gradient-to-b px-12 py-5 text-lg font-bold tracking-tight transition-transform hover:opacity-90 active:scale-95 md:w-auto"
         >
           Publish Contribution
         </button>
@@ -186,55 +178,42 @@ export function AnonymitySidebar() {
   ];
 
   return (
-    <aside className="lg:col-span-4 space-y-8 lg:sticky lg:top-28 h-fit">
-      <div className="bg-surface-container-low p-10 rounded-xl space-y-8">
+    <aside className="h-fit space-y-8 lg:sticky lg:top-28 lg:col-span-4">
+      <div className="bg-surface-container-low space-y-8 rounded-xl p-10">
         <div className="space-y-2">
-          <div className="w-8 h-8 rounded-full bg-tertiary-fixed-dim flex items-center justify-center mb-4">
+          <div className="bg-tertiary-fixed-dim mb-4 flex h-8 w-8 items-center justify-center rounded-full">
             <Shield size={16} className="text-on-tertiary-fixed" />
           </div>
-          <h2 className="text-2xl font-bold tracking-tight">
-            Guarding Your Anonymity
-          </h2>
+          <h2 className="text-2xl font-bold tracking-tight">Guarding Your Anonymity</h2>
         </div>
 
         <div className="space-y-8">
           {steps.map((s) => (
             <div key={s.num} className="flex gap-6">
-              <span className="font-mono text-outline-variant text-sm">
-                {s.num}
-              </span>
+              <span className="text-outline-variant font-mono text-sm">{s.num}</span>
               <div className="space-y-1">
                 <h3 className="font-bold">{s.title}</h3>
-                <p className="text-sm text-on-surface-variant leading-relaxed">
-                  {s.desc}
-                </p>
+                <p className="text-on-surface-variant text-sm leading-relaxed">{s.desc}</p>
               </div>
             </div>
           ))}
         </div>
 
-        <div className="pt-8 border-t border-outline-variant/20">
-          <a
-            href="#"
-            className="text-sm font-bold flex items-center gap-2 group"
-          >
+        <div className="border-outline-variant/20 border-t pt-8">
+          <a href="#" className="group flex items-center gap-2 text-sm font-bold">
             Review our Trust Charter
-            <ArrowRight
-              size={12}
-              className="group-hover:translate-x-1 transition-transform"
-            />
+            <ArrowRight size={12} className="transition-transform group-hover:translate-x-1" />
           </a>
         </div>
       </div>
 
       {/* Decorative editorial block */}
-      <div className="h-64 rounded-xl overflow-hidden relative group bg-surface-container">
-        <div className="absolute inset-0 bg-gradient-to-br from-surface-container-high to-inverse-surface opacity-30 group-hover:opacity-50 transition-opacity duration-700" />
+      <div className="group bg-surface-container relative h-64 overflow-hidden rounded-xl">
+        <div className="from-surface-container-high to-inverse-surface absolute inset-0 bg-gradient-to-br opacity-30 transition-opacity duration-700 group-hover:opacity-50" />
         <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent,transparent_8px,rgba(27,27,27,0.04)_8px,rgba(27,27,27,0.04)_16px)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/60 to-transparent flex items-end p-8">
-          <p className="text-white text-sm font-medium italic">
-            &ldquo;The power of collective intelligence lies in secure
-            sharing.&rdquo;
+        <div className="from-primary/60 absolute inset-0 flex items-end bg-gradient-to-t to-transparent p-8">
+          <p className="text-sm font-medium text-white italic">
+            &ldquo;The power of collective intelligence lies in secure sharing.&rdquo;
           </p>
         </div>
       </div>

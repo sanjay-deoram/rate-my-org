@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { Search, ShieldCheck, Lock, Globe } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 type RatingSliderProps = {
   label: string;
@@ -40,7 +39,6 @@ export function WriteReviewForm() {
     careerGrowth: 7.5,
     compensation: 7.5,
   });
-  const [anonymous, setAnonymous] = useState(true);
   const [submitted, setSubmitted] = useState(false);
 
   function handleSubmit(e: React.FormEvent) {

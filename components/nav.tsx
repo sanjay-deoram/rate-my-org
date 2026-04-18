@@ -9,6 +9,7 @@ const navLinks = [
   { label: "Reviews", href: "/reviews/write", match: ["/reviews"] },
   { label: "Interviews", href: "/interviews/submit", match: ["/interviews"] },
   { label: "Salaries", href: "/salaries", match: ["/salaries"] },
+  { label: "Search", href: "/search", match: ["/search"] },
 ];
 
 export function Nav() {

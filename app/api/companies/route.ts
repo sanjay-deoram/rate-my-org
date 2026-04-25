@@ -7,7 +7,7 @@ import { sql, gt, ilike, desc } from "drizzle-orm";
 export const runtime = "nodejs";
 
 const querySchema = z.object({
-  q: z.string().optional(),
+  search: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(50).default(20),
   cursor: z.string().optional(),
 });
@@ -21,11 +21,11 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { q, limit, cursor } = parsed.data;
+  const { search, limit, cursor } = parsed.data;
 
   let rows: { slug: string; name: string; logoKey: string | null }[];
 
-  if (q) {
+  if (search) {
     rows = await db
       .select({
         slug: companies.slug,
@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
         logoKey: companies.logoKey,
       })
       .from(companies)
-      .where(ilike(companies.name, `%${q}%`))
-      .orderBy(desc(sql`similarity(${companies.name}, ${q})`), companies.name)
+      .where(ilike(companies.name, `%${search}%`))
+      .orderBy(desc(sql`similarity(${companies.name}, ${search})`), companies.name)
       .limit(limit + 1);
   } else {
     rows = await db

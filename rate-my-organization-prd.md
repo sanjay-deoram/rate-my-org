@@ -2,13 +2,13 @@
 
 **Anonymous Company Review Platform**
 
-| Field   | Detail                                                                                         |
-| ------- | ---------------------------------------------------------------------------------------------- |
-| Version | 1.0                                                                                            |
-| Date    | April 2026                                                                                     |
-| Status  | Draft                                                                                          |
-| Stack   | TypeScript, Next.js, Neon (Postgres), Drizzle ORM, TanStack Form, Zod, Tailwind CSS, shadcn/ui |
-| Hosting | Vercel (free tier)                                                                             |
+| Field   | Detail                                                                                                         |
+| ------- | -------------------------------------------------------------------------------------------------------------- |
+| Version | 1.0                                                                                                            |
+| Date    | April 2026                                                                                                     |
+| Status  | Draft                                                                                                          |
+| Stack   | TypeScript, Next.js, Neon (Postgres), Drizzle ORM, TanStack Form, TanStack Query, Zod, Tailwind CSS, shadcn/ui |
+| Hosting | Vercel (free tier)                                                                                             |
 
 ---
 
@@ -44,21 +44,21 @@ The product will launch as a free-tier deployment using Next.js on Vercel, Neon 
 
 ## 3. Tech Stack
 
-| Layer            | Technology                          | Notes                                                                                                                                                                              |
-| ---------------- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Language         | TypeScript                          | Strict mode across the entire codebase, shared types between frontend and backend                                                                                                  |
-| Framework        | Next.js (App Router)                | SSR for public pages, API routes for submissions                                                                                                                                   |
-| Database         | Neon (Postgres)                     | Free tier: 0.5 GB, serverless, autoscale-to-zero                                                                                                                                   |
-| ORM              | Drizzle ORM                         | Lightweight, SQL-like syntax, type-safe, native Neon serverless support, minimal bundle size                                                                                       |
-| Styling          | Tailwind CSS                        | Utility-first, pairs with shadcn/ui                                                                                                                                                |
-| Components       | shadcn/ui                           | Accessible, composable UI primitives                                                                                                                                               |
-| Forms            | TanStack Form                       | Type-safe form state, field validation, integrates with Zod                                                                                                                        |
-| Validation       | Zod                                 | Schema validation shared between client forms and server API routes                                                                                                                |
-| State Management | None (React built-ins)              | No global state library needed. `useState` for local component state, `useSearchParams` for filters/sort. No auth, no sessions, no complex client-side data flow.                  |
-| Hosting          | Vercel                              | Free tier: 100 GB bandwidth, serverless functions                                                                                                                                  |
-| Anti-Bot         | Cloudflare Turnstile                | Free invisible CAPTCHA on all submission forms                                                                                                                                     |
-| Search           | Postgres pg_trgm + full-text search | Fuzzy autocomplete, no external API, scales to thousands of companies for free                                                                                                     |
-| Logo Storage     | Cloudflare R2 + Cloudflare CDN      | Free tier: 10 GB storage, 10M reads/mo, zero egress. Served via custom subdomain (e.g. `logos.yourdomain.com`) through Cloudflare's free CDN for caching and fast global delivery. |
+| Layer            | Technology                          | Notes                                                                                                                                                                                                                                |
+| ---------------- | ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Language         | TypeScript                          | Strict mode across the entire codebase, shared types between frontend and backend                                                                                                                                                    |
+| Framework        | Next.js (App Router)                | SSR for public pages, API routes for submissions                                                                                                                                                                                     |
+| Database         | Neon (Postgres)                     | Free tier: 0.5 GB, serverless, autoscale-to-zero                                                                                                                                                                                     |
+| ORM              | Drizzle ORM                         | Lightweight, SQL-like syntax, type-safe, native Neon serverless support, minimal bundle size                                                                                                                                         |
+| Styling          | Tailwind CSS                        | Utility-first, pairs with shadcn/ui                                                                                                                                                                                                  |
+| Components       | shadcn/ui                           | Accessible, composable UI primitives                                                                                                                                                                                                 |
+| Forms            | TanStack Form + Zod                 | Type-safe form state and field validation. Zod schemas shared between client forms and server API routes — define once, validate in both places.                                                                                     |
+| Data Fetching    | TanStack Query                      | Client-side data fetching for search autocomplete, votes, and reports. Provides caching, deduplication, stale-while-revalidate, automatic retries, and loading/error states. Not used for server-rendered pages (SSR handles those). |
+| State Management | None (React built-ins)              | No global state library needed. `useState` for local component state, `useSearchParams` for filters/sort. TanStack Query manages server state for client-side interactions.                                                          |
+| Hosting          | Vercel                              | Free tier: 100 GB bandwidth, serverless functions                                                                                                                                                                                    |
+| Anti-Bot         | Cloudflare Turnstile                | Free invisible CAPTCHA on all submission forms                                                                                                                                                                                       |
+| Search           | Postgres pg_trgm + full-text search | Fuzzy autocomplete, no external API, scales to thousands of companies for free                                                                                                                                                       |
+| Logo Storage     | Cloudflare R2 + Cloudflare CDN      | Free tier: 10 GB storage, 10M reads/mo, zero egress. Served via custom subdomain (e.g. `logos.yourdomain.com`) through Cloudflare's free CDN for caching and fast global delivery.                                                   |
 
 ---
 
@@ -71,7 +71,7 @@ The product will launch as a free-tier deployment using Next.js on Vercel, Neon 
 **Homepage Search Bar:**
 
 - Prominent search input on the homepage
-- As the user types, a lightweight autocomplete dropdown suggests matching company names (debounced, powered by `pg_trgm` fuzzy matching)
+- As the user types, a lightweight autocomplete dropdown suggests matching company names (debounced, powered by `pg_trgm` fuzzy matching). Autocomplete queries managed via TanStack Query for caching, deduplication, and stale-while-revalidate (e.g. hitting backspace serves cached results instantly).
 - Pressing Enter or clicking a suggestion navigates to `/search?q=<query>` — the dedicated search page
 - The search bar is also present in the global navigation header on every page
 
@@ -152,8 +152,8 @@ The product will launch as a free-tier deployment using Next.js on Vercel, Neon 
 **Requirements:**
 
 - Every review and interview entry displays three inline actions: thumbs up (helpful), thumbs down (not helpful), and a report/flag button
-- **Thumbs up / Thumbs down:** Simple like/dislike count displayed on each entry. One vote per IP per entry (tracked via hashed IP, no sign-in). Helps surface the most trusted reviews.
-- **Report button:** Opens a small dropdown or modal with predefined report reasons: "False information," "Spam or fake review," "Offensive content," "Not relevant to this company," and an optional free-text field for additional context
+- **Thumbs up / Thumbs down:** Simple like/dislike count displayed on each entry. One vote per IP per entry (tracked via hashed IP, no sign-in). Helps surface the most trusted reviews. Vote mutations handled via TanStack Query with optimistic updates (count updates instantly in the UI, rolls back on failure).
+- **Report button:** Opens a small dropdown or modal with predefined report reasons: "False information," "Spam or fake review," "Offensive content," "Not relevant to this company," and an optional free-text field for additional context. Report form uses TanStack Form + Zod for validation, submission via TanStack Query mutation.
 - Reports are logged to the moderation queue in the admin panel with the report reason, the content ID, and a timestamp
 - Content that accumulates a configurable number of reports (e.g. 3+) is auto-hidden with a "This review has been flagged by the community" notice, pending admin review
 - Turnstile verification on report submissions to prevent bot abuse of the flagging system

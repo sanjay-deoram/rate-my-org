@@ -1,16 +1,16 @@
 import { db } from "@/lib/db";
-import { playingWithNeon } from "@/drizzle/schema";
+import { companies } from "@/drizzle/schema";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Search — Playing With Neon",
-  description: "Browse raw data from the playing_with_neon table.",
+  title: "Search — Companies",
+  description: "Browse companies in the database.",
 };
 
 export default async function SearchPage() {
-  const rows = await db.select().from(playingWithNeon);
+  const rows = await db.select().from(companies).limit(50);
 
   return (
     <>
@@ -26,9 +26,9 @@ export default async function SearchPage() {
           {/* Header */}
           <div className="mb-12">
             <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.2em] uppercase">
-              Neon DB · playing_with_neon
+              Neon DB · companies
             </span>
-            <h1 className="text-foreground mb-4 text-5xl font-bold tracking-tighter">Search</h1>
+            <h1 className="text-foreground mb-4 text-5xl font-bold tracking-tighter">Companies</h1>
             <p className="text-on-surface-variant max-w-lg text-base leading-relaxed">
               Live data pulled directly from your Neon database via Drizzle ORM.
             </p>
@@ -47,14 +47,14 @@ export default async function SearchPage() {
               <span className="text-on-surface-variant mb-0.5 block font-mono text-[10px] tracking-widest uppercase">
                 Table
               </span>
-              <span className="font-mono text-sm font-semibold">playing_with_neon</span>
+              <span className="font-mono text-sm font-semibold">companies</span>
             </div>
             <div className="bg-surface-container-highest h-8 w-px" />
             <div>
               <span className="text-on-surface-variant mb-0.5 block font-mono text-[10px] tracking-widest uppercase">
                 Columns
               </span>
-              <span className="font-mono text-sm font-semibold">id · name · value</span>
+              <span className="font-mono text-sm font-semibold">slug · name · logoKey</span>
             </div>
           </div>
 
@@ -62,23 +62,21 @@ export default async function SearchPage() {
           {rows.length === 0 ? (
             <div className="bg-surface-container-lowest border-surface-container-highest flex flex-col items-center justify-center rounded-xl border py-24 text-center">
               <span className="mb-4 text-4xl">🗃️</span>
-              <p className="text-on-surface-variant font-medium">
-                No rows found in playing_with_neon.
-              </p>
+              <p className="text-on-surface-variant font-medium">No rows found in companies.</p>
             </div>
           ) : (
             <div className="border-surface-container-highest bg-surface-container-lowest overflow-hidden rounded-xl border">
               <table className="w-full text-sm">
                 <thead>
                   <tr className="border-surface-container-highest bg-surface-container border-b">
-                    <th className="text-on-surface-variant w-16 px-6 py-4 text-left font-mono text-[10px] tracking-widest uppercase">
-                      ID
+                    <th className="text-on-surface-variant px-6 py-4 text-left font-mono text-[10px] tracking-widest uppercase">
+                      Slug
                     </th>
                     <th className="text-on-surface-variant px-6 py-4 text-left font-mono text-[10px] tracking-widest uppercase">
                       Name
                     </th>
-                    <th className="text-on-surface-variant w-32 px-6 py-4 text-right font-mono text-[10px] tracking-widest uppercase">
-                      Value
+                    <th className="text-on-surface-variant px-6 py-4 text-left font-mono text-[10px] tracking-widest uppercase">
+                      Logo Key
                     </th>
                   </tr>
                 </thead>
@@ -91,13 +89,11 @@ export default async function SearchPage() {
                       }`}
                     >
                       <td className="text-on-surface-variant px-6 py-4 font-mono text-[11px]">
-                        {row.id}
+                        {row.slug}
                       </td>
                       <td className="text-foreground px-6 py-4 font-semibold">{row.name}</td>
-                      <td className="text-on-surface-variant px-6 py-4 text-right font-mono">
-                        {row.value !== null && row.value !== undefined ? (
-                          row.value.toFixed(4)
-                        ) : (
+                      <td className="text-on-surface-variant px-6 py-4 font-mono text-[11px]">
+                        {row.logoKey ?? (
                           <span className="text-surface-container-highest text-xs italic">
                             null
                           </span>

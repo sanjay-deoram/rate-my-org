@@ -1,6 +1,17 @@
 import { pgTable, pgEnum, uuid, text, smallint, integer, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
+export const interviewExperienceEnum = pgEnum("interview_experience", [
+  "Great",
+  "Neutral",
+  "Negative",
+]);
+export const interviewOfferOutcomeEnum = pgEnum("interview_offer_outcome", [
+  "Yes",
+  "No",
+  "Yes but Declined",
+]);
+
 export const companies = pgTable("companies", {
   id: uuid("id")
     .primaryKey()
@@ -56,6 +67,24 @@ export const reviews = pgTable("reviews", {
   pros: text("pros").notNull(),
   cons: text("cons").notNull(),
   adviceToManagement: text("advice_to_management").notNull(),
+  createdAt: timestamp("created_at", { withTimezone: true })
+    .notNull()
+    .default(sql`now()`),
+});
+
+export const interviews = pgTable("interviews", {
+  id: uuid("id")
+    .primaryKey()
+    .default(sql`gen_random_uuid()`),
+  companyId: uuid("company_id")
+    .notNull()
+    .references(() => companies.id, { onDelete: "cascade" }),
+  roleTitle: text("role_title").notNull(),
+  department: text("department"),
+  difficulty: smallint("difficulty").notNull(),
+  overallExperience: interviewExperienceEnum("overall_experience").notNull(),
+  description: text("description").notNull(),
+  offerReceived: interviewOfferOutcomeEnum("offer_received").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .default(sql`now()`),

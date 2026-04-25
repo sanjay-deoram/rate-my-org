@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter, IBM_Plex_Mono } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { Providers } from "@/components/providers";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -43,7 +44,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className={cn(inter.variable, ibmPlexMono.variable, "antialiased")}>
-      <body className="bg-background text-foreground flex min-h-screen flex-col">{children}</body>
+      <body className="bg-background text-foreground flex min-h-screen flex-col">
+        <Providers>{children}</Providers>
+      </body>
     </html>
   );
 }

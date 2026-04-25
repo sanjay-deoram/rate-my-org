@@ -1,79 +1,20 @@
 "use client";
 
+import { useForm } from "@tanstack/react-form";
 import { useState, useRef } from "react";
+import { z } from "zod";
 import { Search, ShieldCheck, Lock, Globe, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
-
-const EMPLOYMENT_TYPES = [
-  ["full_time", "Full Time"],
-  ["part_time", "Part Time"],
-  ["temporary", "Temporary"],
-  ["contract", "Contract"],
-  ["seasonal", "Seasonal"],
-  ["self_employed", "Self Employed"],
-  ["per_diem", "Per Diem"],
-  ["reserve", "Reserve"],
-  ["freelance", "Freelance"],
-  ["apprenticeship", "Apprenticeship"],
-] as const;
-
-const EMPLOYMENT_STATUSES = [
-  { value: "current_employee" as const, label: "Current Employee" },
-  { value: "former_employee" as const, label: "Former Employee" },
-];
-
-const CURRENT_YEAR = new Date().getFullYear();
-const YEARS = Array.from({ length: 30 }, (_, i) => CURRENT_YEAR - i);
-
-type CompanySuggestion = { slug: string; name: string; logoUrl: string | null };
-
-interface ReviewFormState {
-  companySlug: string;
-  companyName: string;
-  companyLogoUrl: string | null;
-  overallRating: number;
-  employmentStatus: "current_employee" | "former_employee" | "";
-  formerYear: number | null;
-  employmentType: string;
-  jobTitle: string;
-  headline: string;
-  pros: string;
-  cons: string;
-  adviceToManagement: string;
-}
-
-type FormErrors = Partial<Record<keyof ReviewFormState, string>>;
-
-const INITIAL_STATE: ReviewFormState = {
-  companySlug: "",
-  companyName: "",
-  companyLogoUrl: null,
-  overallRating: 0,
-  employmentStatus: "",
-  formerYear: null,
-  employmentType: "",
-  jobTitle: "",
-  headline: "",
-  pros: "",
-  cons: "",
-  adviceToManagement: "",
-};
-
-function validate(form: ReviewFormState): FormErrors {
-  const errs: FormErrors = {};
-  if (!form.companySlug) errs.companySlug = "Select a company";
-  if (form.overallRating === 0) errs.overallRating = "Select a rating";
-  if (!form.employmentStatus) errs.employmentStatus = "Select your employment status";
-  if (form.employmentStatus === "former_employee" && !form.formerYear)
-    errs.formerYear = "Select the year you left";
-  if (!form.employmentType) errs.employmentType = "Select employment type";
-  if (!form.jobTitle.trim()) errs.jobTitle = "Job title is required";
-  if (!form.headline.trim()) errs.headline = "Headline is required";
-  if (!form.pros.trim()) errs.pros = "Pros are required";
-  if (!form.cons.trim()) errs.cons = "Cons are required";
-  if (!form.adviceToManagement.trim()) errs.adviceToManagement = "Advice is required";
-  return errs;
-}
+import {
+  EMPLOYMENT_TYPE_VALUES,
+  EMPLOYMENT_TYPE_OPTIONS,
+  EMPLOYMENT_STATUS_OPTIONS,
+  FORMER_YEARS,
+  type EmploymentTypeValue,
+} from "@/constants/employment";
+import { useCompanySearch } from "@/hooks/use-company-search";
+import { useSubmitReview } from "@/hooks/use-submit-review";
+import type { ReviewPostBody, CompanySuggestion } from "@/types/review";
 
 type StarRatingProps = {
   value: number;
@@ -116,6 +57,12 @@ function StarRating({ value, onChange }: StarRatingProps) {
   );
 }
 
+function errMsg(err: unknown): string {
+  if (typeof err === "string") return err;
+  if (err && typeof err === "object" && "message" in err) return String(err.message);
+  return "Invalid value";
+}
+
 const inputCls =
   "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0";
 
@@ -123,90 +70,62 @@ const textareaCls =
   "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full resize-none border-b bg-transparent py-4 text-lg leading-relaxed transition-all outline-none focus:ring-0";
 
 export function WriteReviewForm() {
-  const [form, setForm] = useState<ReviewFormState>(INITIAL_STATE);
-  const [errors, setErrors] = useState<FormErrors>({});
   const [submitted, setSubmitted] = useState(false);
-  const [submitting, setSubmitting] = useState(false);
-
-  // Company search
-  const [query, setQuery] = useState("");
-  const [suggestions, setSuggestions] = useState<CompanySuggestion[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  function handleQueryChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const { data: searchData } = useCompanySearch(debouncedQuery);
+  const suggestions = searchData?.items ?? [];
+
+  const submitReview = useSubmitReview(() => setSubmitted(true));
+
+  const form = useForm({
+    defaultValues: {
+      companySlug: "",
+      companyName: "",
+      companyLogoUrl: null as string | null,
+      overallRating: 0,
+      employmentStatus: "" as "current_employee" | "former_employee" | "",
+      formerYear: null as number | null,
+      employmentType: "" as EmploymentTypeValue | "",
+      jobTitle: "",
+      headline: "",
+      pros: "",
+      cons: "",
+      adviceToManagement: "",
+    },
+    onSubmit: async ({ value }) => {
+      const { companyName: _name, companyLogoUrl: _logo, ...postBody } = value;
+      await submitReview.mutateAsync(postBody as ReviewPostBody);
+    },
+  });
+
+  function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
-    setQuery(val);
-    setForm((f) => ({ ...f, companySlug: "", companyName: "", companyLogoUrl: null }));
+    setSearchQuery(val);
+    form.setFieldValue("companySlug", "");
+    form.setFieldValue("companyName", "");
+    form.setFieldValue("companyLogoUrl", null);
 
     if (debounceRef.current) clearTimeout(debounceRef.current);
     if (!val.trim()) {
-      setSuggestions([]);
       setShowDropdown(false);
       return;
     }
-
-    debounceRef.current = setTimeout(async () => {
-      const res = await fetch(`/api/companies?search=${encodeURIComponent(val)}&limit=6`);
-      if (res.ok) {
-        const data = await res.json();
-        setSuggestions(data.items);
-        setShowDropdown(true);
-      }
+    debounceRef.current = setTimeout(() => {
+      setDebouncedQuery(val);
+      setShowDropdown(true);
     }, 500);
   }
 
   function handleSelectCompany(item: CompanySuggestion) {
-    setForm((f) => ({
-      ...f,
-      companySlug: item.slug,
-      companyName: item.name,
-      companyLogoUrl: item.logoUrl,
-    }));
-    setQuery(item.name);
+    form.setFieldValue("companySlug", item.slug);
+    form.setFieldValue("companyName", item.name);
+    form.setFieldValue("companyLogoUrl", item.logoUrl);
+    setSearchQuery(item.name);
     setShowDropdown(false);
-    setErrors((e) => ({ ...e, companySlug: undefined }));
-  }
-
-  function set<K extends keyof ReviewFormState>(key: K, value: ReviewFormState[K]) {
-    setForm((f) => ({ ...f, [key]: value }));
-    setErrors((e) => ({ ...e, [key]: undefined }));
-  }
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const errs = validate(form);
-    if (Object.keys(errs).length > 0) {
-      setErrors(errs);
-      return;
-    }
-    setSubmitting(true);
-    try {
-      const res = await fetch("/api/reviews", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          companySlug: form.companySlug,
-          overallRating: form.overallRating,
-          employmentStatus: form.employmentStatus,
-          formerYear: form.formerYear,
-          employmentType: form.employmentType,
-          jobTitle: form.jobTitle,
-          headline: form.headline,
-          pros: form.pros,
-          cons: form.cons,
-          adviceToManagement: form.adviceToManagement,
-        }),
-      });
-      if (res.ok) {
-        setSubmitted(true);
-      } else {
-        const data = await res.json();
-        setErrors({ companySlug: data.error ?? "Submission failed. Please try again." });
-      }
-    } finally {
-      setSubmitting(false);
-    }
   }
 
   if (submitted) {
@@ -225,7 +144,13 @@ export function WriteReviewForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-20">
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        form.handleSubmit();
+      }}
+      className="space-y-20"
+    >
       {/* Step 01 — Organization */}
       <div className="space-y-6" id="step-1">
         <div className="mb-2 flex items-center gap-4">
@@ -234,46 +159,65 @@ export function WriteReviewForm() {
         </div>
         <h2 className="text-2xl font-bold tracking-tight">Organization Search</h2>
 
-        <div className="relative">
-          <div className="group relative">
-            <Search
-              size={20}
-              className="text-on-surface-variant group-focus-within:text-primary absolute top-1/2 left-0 -translate-y-1/2 transition-colors"
-            />
-            <input
-              type="text"
-              value={query}
-              onChange={handleQueryChange}
-              onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-              onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
-              placeholder="Search for a company or institution..."
-              className={cn(inputCls, "pl-8 text-lg", errors.companySlug && "border-destructive")}
-            />
-          </div>
+        <form.Field
+          name="companySlug"
+          validators={{ onSubmit: z.string().min(1, "Select a company") }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <div className="relative">
+                <div className="group relative">
+                  <Search
+                    size={20}
+                    className="text-on-surface-variant group-focus-within:text-primary absolute top-1/2 left-0 -translate-y-1/2 transition-colors"
+                  />
+                  <input
+                    type="text"
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
+                    onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
+                    placeholder="Search for a company or institution..."
+                    className={cn(
+                      inputCls,
+                      "pl-8 text-lg",
+                      field.state.meta.errors.length > 0 && "border-destructive",
+                    )}
+                  />
+                </div>
 
-          {showDropdown && suggestions.length > 0 && (
-            <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-50 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
-              {suggestions.map((item) => (
-                <button
-                  key={item.slug}
-                  type="button"
-                  onMouseDown={() => handleSelectCompany(item)}
-                  className="hover:bg-surface-container-low flex w-full items-center gap-4 px-4 py-3 text-left transition-colors"
-                >
-                  {item.logoUrl ? (
-                    <img src={item.logoUrl} alt="" className="h-8 w-8 rounded object-contain" />
-                  ) : (
-                    <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded text-xs font-black">
-                      {item.name[0]}
-                    </div>
-                  )}
-                  <span className="font-medium">{item.name}</span>
-                </button>
-              ))}
+                {showDropdown && suggestions.length > 0 && (
+                  <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-50 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
+                    {suggestions.map((item) => (
+                      <button
+                        key={item.slug}
+                        type="button"
+                        onMouseDown={() => handleSelectCompany(item)}
+                        className="hover:bg-surface-container-low flex w-full items-center gap-4 px-4 py-3 text-left transition-colors"
+                      >
+                        {item.logoUrl ? (
+                          <img
+                            src={item.logoUrl}
+                            alt=""
+                            className="h-8 w-8 rounded object-contain"
+                          />
+                        ) : (
+                          <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded text-xs font-black">
+                            {item.name[0]}
+                          </div>
+                        )}
+                        <span className="font-medium">{item.name}</span>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
             </div>
           )}
-        </div>
-        {errors.companySlug && <p className="text-destructive text-xs">{errors.companySlug}</p>}
+        </form.Field>
       </div>
 
       {/* Step 02 — Your Role */}
@@ -284,120 +228,184 @@ export function WriteReviewForm() {
         </div>
         <h2 className="text-2xl font-bold tracking-tight">Your Role</h2>
 
-        <div className="space-y-4">
-          <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-            Overall Rating
-          </label>
-          <StarRating value={form.overallRating} onChange={(v) => set("overallRating", v)} />
-          {errors.overallRating && (
-            <p className="text-destructive text-xs">{errors.overallRating}</p>
-          )}
-        </div>
-
-        <div className="space-y-4">
-          <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-            Employment Status
-          </label>
-          <div className="flex flex-wrap gap-4">
-            {EMPLOYMENT_STATUSES.map(({ value, label }) => (
-              <button
-                key={value}
-                type="button"
-                onClick={() => {
-                  set("employmentStatus", value);
-                  if (value === "current_employee") set("formerYear", null);
-                }}
-                className={cn(
-                  "rounded-full border px-6 py-3 text-sm font-medium transition-all",
-                  form.employmentStatus === value
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-outline-variant/30 hover:border-primary text-foreground",
-                )}
-              >
-                {label}
-              </button>
-            ))}
-          </div>
-          {errors.employmentStatus && (
-            <p className="text-destructive text-xs">{errors.employmentStatus}</p>
-          )}
-        </div>
-
-        {form.employmentStatus === "former_employee" && (
-          <div className="space-y-2">
-            <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-              Year You Left
-            </label>
-            <div className="relative">
-              <select
-                value={form.formerYear ?? ""}
-                onChange={(e) => set("formerYear", e.target.value ? Number(e.target.value) : null)}
-                className={cn(
-                  inputCls,
-                  "cursor-pointer appearance-none pr-8",
-                  errors.formerYear && "border-destructive",
-                )}
-              >
-                <option value="">Select year...</option>
-                {YEARS.map((y) => (
-                  <option key={y} value={y}>
-                    {y}
-                  </option>
-                ))}
-              </select>
-              <ChevronDown
-                size={16}
-                className="text-on-surface-variant pointer-events-none absolute top-1/2 right-0 -translate-y-1/2"
-              />
-            </div>
-            {errors.formerYear && <p className="text-destructive text-xs">{errors.formerYear}</p>}
-          </div>
-        )}
-
-        <div className="space-y-2">
-          <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-            Employment Type
-          </label>
-          <div className="relative">
-            <select
-              value={form.employmentType}
-              onChange={(e) => set("employmentType", e.target.value)}
-              className={cn(
-                inputCls,
-                "cursor-pointer appearance-none pr-8",
-                errors.employmentType && "border-destructive",
+        <form.Field
+          name="overallRating"
+          validators={{ onSubmit: z.number().int().min(1, "Select a rating").max(5) }}
+        >
+          {(field) => (
+            <div className="space-y-4">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Overall Rating
+              </label>
+              <StarRating value={field.state.value} onChange={(v) => field.handleChange(v)} />
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
               )}
-            >
-              <option value="">Select type...</option>
-              {EMPLOYMENT_TYPES.map(([value, label]) => (
-                <option key={value} value={value}>
-                  {label}
-                </option>
-              ))}
-            </select>
-            <ChevronDown
-              size={16}
-              className="text-on-surface-variant pointer-events-none absolute top-1/2 right-0 -translate-y-1/2"
-            />
-          </div>
-          {errors.employmentType && (
-            <p className="text-destructive text-xs">{errors.employmentType}</p>
+            </div>
           )}
-        </div>
+        </form.Field>
 
-        <div className="space-y-2">
-          <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-            Job Title
-          </label>
-          <input
-            type="text"
-            value={form.jobTitle}
-            onChange={(e) => set("jobTitle", e.target.value)}
-            placeholder="e.g. Senior Product Designer"
-            className={cn(inputCls, errors.jobTitle && "border-destructive")}
-          />
-          {errors.jobTitle && <p className="text-destructive text-xs">{errors.jobTitle}</p>}
-        </div>
+        <form.Field
+          name="employmentStatus"
+          validators={{
+            onSubmit: z.enum(["current_employee", "former_employee"], {
+              error: "Select your employment status",
+            }),
+          }}
+        >
+          {(field) => (
+            <div className="space-y-4">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Employment Status
+              </label>
+              <div className="flex flex-wrap gap-4">
+                {EMPLOYMENT_STATUS_OPTIONS.map(({ value, label }) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => {
+                      field.handleChange(value);
+                      if (value === "current_employee") {
+                        form.setFieldValue("formerYear", null);
+                      }
+                    }}
+                    className={cn(
+                      "rounded-full border px-6 py-3 text-sm font-medium transition-all",
+                      field.state.value === value
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-outline-variant/30 hover:border-primary text-foreground",
+                    )}
+                  >
+                    {label}
+                  </button>
+                ))}
+              </div>
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <form.Subscribe selector={(s) => s.values.employmentStatus}>
+          {(employmentStatus) =>
+            employmentStatus === "former_employee" ? (
+              <form.Field
+                name="formerYear"
+                validators={{
+                  onSubmit: z
+                    .number({ error: "Select the year you left" })
+                    .int()
+                    .min(1950)
+                    .max(new Date().getFullYear()),
+                }}
+              >
+                {(field) => (
+                  <div className="space-y-2">
+                    <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                      Year You Left
+                    </label>
+                    <div className="relative">
+                      <select
+                        value={field.state.value ?? ""}
+                        onChange={(e) =>
+                          field.handleChange(e.target.value ? Number(e.target.value) : null)
+                        }
+                        onBlur={field.handleBlur}
+                        className={cn(
+                          inputCls,
+                          "cursor-pointer appearance-none pr-8",
+                          field.state.meta.errors.length > 0 && "border-destructive",
+                        )}
+                      >
+                        <option value="">Select year...</option>
+                        {FORMER_YEARS.map((y) => (
+                          <option key={y} value={y}>
+                            {y}
+                          </option>
+                        ))}
+                      </select>
+                      <ChevronDown
+                        size={16}
+                        className="text-on-surface-variant pointer-events-none absolute top-1/2 right-0 -translate-y-1/2"
+                      />
+                    </div>
+                    {field.state.meta.errors[0] && (
+                      <p className="text-destructive text-xs">
+                        {errMsg(field.state.meta.errors[0])}
+                      </p>
+                    )}
+                  </div>
+                )}
+              </form.Field>
+            ) : null
+          }
+        </form.Subscribe>
+
+        <form.Field
+          name="employmentType"
+          validators={{
+            onSubmit: z.enum(EMPLOYMENT_TYPE_VALUES, { error: "Select employment type" }),
+          }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Employment Type
+              </label>
+              <div className="relative">
+                <select
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value as EmploymentTypeValue)}
+                  onBlur={field.handleBlur}
+                  className={cn(
+                    inputCls,
+                    "cursor-pointer appearance-none pr-8",
+                    field.state.meta.errors.length > 0 && "border-destructive",
+                  )}
+                >
+                  <option value="">Select type...</option>
+                  {EMPLOYMENT_TYPE_OPTIONS.map(({ value, label }) => (
+                    <option key={value} value={value}>
+                      {label}
+                    </option>
+                  ))}
+                </select>
+                <ChevronDown
+                  size={16}
+                  className="text-on-surface-variant pointer-events-none absolute top-1/2 right-0 -translate-y-1/2"
+                />
+              </div>
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <form.Field
+          name="jobTitle"
+          validators={{ onSubmit: z.string().min(1, "Job title is required").max(120) }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Job Title
+              </label>
+              <input
+                type="text"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                placeholder="e.g. Senior Product Designer"
+                className={cn(inputCls, field.state.meta.errors.length > 0 && "border-destructive")}
+              />
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
+          )}
+        </form.Field>
       </div>
 
       {/* Step 03 — Your Review */}
@@ -408,71 +416,129 @@ export function WriteReviewForm() {
         </div>
         <h2 className="text-2xl font-bold tracking-tight">Your Review</h2>
 
-        <div className="space-y-2">
-          <input
-            type="text"
-            value={form.headline}
-            onChange={(e) => set("headline", e.target.value)}
-            placeholder="Review Headline"
-            className={cn(inputCls, "text-xl font-bold", errors.headline && "border-destructive")}
-          />
-          {errors.headline && <p className="text-destructive text-xs">{errors.headline}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-            Pros
-          </label>
-          <textarea
-            value={form.pros}
-            onChange={(e) => set("pros", e.target.value)}
-            placeholder="What did you enjoy about working here?"
-            rows={4}
-            className={cn(textareaCls, errors.pros && "border-destructive")}
-          />
-          {errors.pros && <p className="text-destructive text-xs">{errors.pros}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-            Cons
-          </label>
-          <textarea
-            value={form.cons}
-            onChange={(e) => set("cons", e.target.value)}
-            placeholder="What could be improved?"
-            rows={4}
-            className={cn(textareaCls, errors.cons && "border-destructive")}
-          />
-          {errors.cons && <p className="text-destructive text-xs">{errors.cons}</p>}
-        </div>
-
-        <div className="space-y-2">
-          <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-            Advice to Management
-          </label>
-          <textarea
-            value={form.adviceToManagement}
-            onChange={(e) => set("adviceToManagement", e.target.value)}
-            placeholder="What advice would you give to leadership?"
-            rows={4}
-            className={cn(textareaCls, errors.adviceToManagement && "border-destructive")}
-          />
-          {errors.adviceToManagement && (
-            <p className="text-destructive text-xs">{errors.adviceToManagement}</p>
+        <form.Field
+          name="headline"
+          validators={{ onSubmit: z.string().min(1, "Headline is required").max(200) }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <input
+                type="text"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                placeholder="Review Headline"
+                className={cn(
+                  inputCls,
+                  "text-xl font-bold",
+                  field.state.meta.errors.length > 0 && "border-destructive",
+                )}
+              />
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
           )}
-        </div>
+        </form.Field>
+
+        <form.Field
+          name="pros"
+          validators={{ onSubmit: z.string().min(1, "Pros are required").max(5000) }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Pros
+              </label>
+              <textarea
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                placeholder="What did you enjoy about working here?"
+                rows={4}
+                className={cn(
+                  textareaCls,
+                  field.state.meta.errors.length > 0 && "border-destructive",
+                )}
+              />
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <form.Field
+          name="cons"
+          validators={{ onSubmit: z.string().min(1, "Cons are required").max(5000) }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Cons
+              </label>
+              <textarea
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                placeholder="What could be improved?"
+                rows={4}
+                className={cn(
+                  textareaCls,
+                  field.state.meta.errors.length > 0 && "border-destructive",
+                )}
+              />
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
+          )}
+        </form.Field>
+
+        <form.Field
+          name="adviceToManagement"
+          validators={{ onSubmit: z.string().min(1, "Advice is required").max(5000) }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Advice to Management
+              </label>
+              <textarea
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                placeholder="What advice would you give to leadership?"
+                rows={4}
+                className={cn(
+                  textareaCls,
+                  field.state.meta.errors.length > 0 && "border-destructive",
+                )}
+              />
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
+          )}
+        </form.Field>
       </div>
 
       {/* Submit */}
       <div className="border-outline-variant/10 flex flex-col items-center justify-between gap-8 border-t pt-10 md:flex-row">
-        <button
-          type="submit"
-          disabled={submitting}
-          className="from-primary to-primary-container text-primary-foreground w-full rounded-md bg-gradient-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 md:w-auto"
-        >
-          {submitting ? "Publishing..." : "Publish Review"}
-        </button>
+        <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting] as const}>
+          {([canSubmit, isSubmitting]) => (
+            <button
+              type="submit"
+              disabled={!canSubmit || isSubmitting || submitReview.isPending}
+              className="from-primary to-primary-container text-primary-foreground w-full rounded-md bg-gradient-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 md:w-auto"
+            >
+              {submitReview.isPending ? "Publishing..." : "Publish Review"}
+            </button>
+          )}
+        </form.Subscribe>
+        {submitReview.isError && (
+          <p className="text-destructive text-sm">{submitReview.error.message}</p>
+        )}
       </div>
     </form>
   );

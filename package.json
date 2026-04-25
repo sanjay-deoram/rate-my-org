@@ -5,6 +5,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "start:all": "pnpm run dev && pnpm run studio",
+    "db:studio": "drizzle-kit studio",
+    "db:push": "drizzle-kit push",
+    "db:migrate": "drizzle-kit migrate",
     "start": "next start",
     "lint": "eslint",
     "format:check": "prettier --check .",

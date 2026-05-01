@@ -15,6 +15,7 @@ import {
 import { useCompanySearch } from "@/hooks/use-company-search";
 import { useSubmitReview } from "@/hooks/use-submit-review";
 import type { ReviewPostBody, CompanySuggestion } from "@/types/review";
+import { errMsg } from "@/shared/err-msg";
 
 type StarRatingProps = {
   value: number;
@@ -55,12 +56,6 @@ function StarRating({ value, onChange }: StarRatingProps) {
       ))}
     </div>
   );
-}
-
-function errMsg(err: unknown): string {
-  if (typeof err === "string") return err;
-  if (err && typeof err === "object" && "message" in err) return String(err.message);
-  return "Invalid value";
 }
 
 const inputCls =

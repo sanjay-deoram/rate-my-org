@@ -10,12 +10,7 @@ import { useCompanySearch } from "@/hooks/use-company-search";
 import { useSubmitInterview } from "@/hooks/use-submit-interview";
 import type { CompanySuggestion } from "@/types/review";
 import type { InterviewPostBody } from "@/lib/api/interviews";
-
-function errMsg(err: unknown): string {
-  if (typeof err === "string") return err;
-  if (err && typeof err === "object" && "message" in err) return String(err.message);
-  return "Invalid value";
-}
+import { errMsg } from "@/shared/err-msg";
 
 const inputCls =
   "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0";

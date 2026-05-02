@@ -8,6 +8,20 @@
       "when": 1776544731926,
       "tag": "0000_sticky_prodigy",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1776544731927,
+      "tag": "0001_reviews",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1776544731928,
+      "tag": "0002_interviews",
+      "breakpoints": true
     }
   ]
 }

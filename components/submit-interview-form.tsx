@@ -342,7 +342,7 @@ export function SubmitInterviewForm() {
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitInterview.isPending}
-              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-gradient-to-b px-12 py-5 text-lg font-bold tracking-tight transition-transform hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
+              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-12 py-5 text-lg font-bold tracking-tight transition-transform hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
             >
               {submitInterview.isPending ? "Publishing..." : "Publish Contribution"}
             </button>
@@ -408,7 +408,7 @@ export function AnonymitySidebar() {
       </div>
 
       <div className="group bg-surface-container relative h-64 overflow-hidden rounded-xl">
-        <div className="from-surface-container-high to-inverse-surface absolute inset-0 bg-gradient-to-br opacity-30 transition-opacity duration-700 group-hover:opacity-50" />
+        <div className="from-surface-container-high to-inverse-surface absolute inset-0 bg-linear-to-br opacity-30 transition-opacity duration-700 group-hover:opacity-50" />
         <div className="absolute inset-0 bg-[repeating-linear-gradient(135deg,transparent,transparent_8px,rgba(27,27,27,0.04)_8px,rgba(27,27,27,0.04)_16px)]" />
         <div className="from-primary/60 absolute inset-0 flex items-end bg-gradient-to-t to-transparent p-8">
           <p className="text-sm font-medium text-white italic">

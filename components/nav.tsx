@@ -49,7 +49,7 @@ export function Nav() {
         <div className="flex shrink-0 items-center gap-4">
           <Link
             href="/reviews/write"
-            className="text-primary-foreground from-primary to-primary-container rounded-md bg-gradient-to-b px-5 py-2 text-sm font-medium shadow-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
+            className="text-primary-foreground from-primary to-primary-container rounded-md bg-linear-to-b px-5 py-2 text-sm font-medium shadow-sm transition-all duration-200 hover:opacity-90 active:scale-[0.98]"
           >
             Post Review
           </Link>

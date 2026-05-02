@@ -123,7 +123,7 @@ export default function HomePage() {
 
               {/* Recent interview */}
               <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
-                <div className="flex-grow">
+                <div className="grow">
                   <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
                     Recent Interview
                   </span>
@@ -145,7 +145,7 @@ export default function HomePage() {
 
               {/* Recent review */}
               <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
-                <div className="flex-grow">
+                <div className="grow">
                   <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
                     Recent Review
                   </span>
@@ -167,7 +167,7 @@ export default function HomePage() {
 
               {/* Salary insight */}
               <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
-                <div className="flex-grow">
+                <div className="grow">
                   <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
                     Salary Insight
                   </span>
@@ -204,7 +204,7 @@ export default function HomePage() {
         <section className="mx-auto flex max-w-7xl flex-col items-center gap-20 px-8 py-32 md:flex-row md:px-12">
           <div className="flex-1">
             <div className="bg-surface-container group relative aspect-square w-full overflow-hidden rounded-xl shadow-2xl">
-              <div className="from-surface-container-high to-surface-dim absolute inset-0 bg-gradient-to-br" />
+              <div className="from-surface-container-high to-surface-dim absolute inset-0 bg-linear-to-br" />
               <div className="absolute inset-0 flex items-center justify-center">
                 <div className="text-on-surface-variant/10 text-[120px] leading-none font-black tracking-tighter select-none">
                   R

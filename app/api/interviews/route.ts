@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import { interviews, companies } from "@/drizzle/schema";
-import { interviewFormSchema } from "@/lib/schemas/interview";
+import { interviewPostBodySchema } from "@/lib/schemas/interview";
 import { eq } from "drizzle-orm";
 
 export const runtime = "nodejs";
@@ -14,12 +14,12 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
   }
 
-  const parsed = interviewFormSchema.safeParse(body);
+  const parsed = interviewPostBodySchema.safeParse(body);
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
   }
 
-  const { companySlug, companyName: _name, ...data } = parsed.data;
+  const { companySlug, ...data } = parsed.data;
 
   const [company] = await db
     .select({ id: companies.id })

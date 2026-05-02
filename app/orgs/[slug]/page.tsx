@@ -3,7 +3,7 @@ import { BadgeCheck, TrendingUp, BookOpen, MessageSquare } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { getCompanyWithStats } from "@/lib/queries/orgs";
-import { OrgFeed } from "@/components/org-feed";
+import { OrgContent } from "@/components/org-content";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -12,7 +12,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { company, stats } = data;
   return {
     title: `${company.name} Reviews — ${stats.avgRating.toFixed(1)}/5.0`,
-    description: `${company.name}: ${company.description ?? company.industry}. ${stats.recommendPct}% recommend to a friend.`,
+    description: `${company.name}`,
   };
 }
 
@@ -25,6 +25,9 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
   const { company, stats } = data;
   const initial = company.name[0].toUpperCase();
   const tagline = company.description ?? company.industry ?? "";
+  const logoUrl = company.logoKey
+    ? `${process.env.NEXT_PUBLIC_LOGO_CDN ?? ""}/${company.logoKey}`
+    : null;
 
   return (
     <>
@@ -34,8 +37,17 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         <section className="mx-auto mb-16 max-w-7xl px-8 md:px-12">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
             <div className="flex items-center gap-8">
-              <div className="bg-surface-container-lowest border-border/20 flex h-32 w-32 items-center justify-center rounded-xl border shadow-sm">
-                <span className="text-foreground text-5xl font-black">{initial}</span>
+              <div className="bg-surface-container-lowest border-border/20 flex h-32 w-32 items-center justify-center overflow-hidden rounded-xl border shadow-sm">
+                {logoUrl ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <img
+                    src={logoUrl}
+                    alt={`${company.name} logo`}
+                    className="h-full w-full object-contain p-3"
+                  />
+                ) : (
+                  <span className="text-foreground text-5xl font-black">{initial}</span>
+                )}
               </div>
               <div>
                 <div className="mb-2 flex items-center gap-3">
@@ -105,84 +117,8 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
           </div>
         </section>
 
-        {/* Main content */}
-        <section className="mx-auto grid max-w-7xl grid-cols-1 gap-16 px-8 md:px-12 lg:grid-cols-12">
-          {/* Left: interview stats */}
-          <div className="space-y-16 lg:col-span-4">
-            <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-8 shadow-sm">
-              <h3 className="mb-4 font-bold">Interview Difficulty</h3>
-              {stats.interviewCount > 0 ? (
-                <>
-                  <div className="flex items-center gap-4">
-                    <span className="font-mono text-4xl font-black">
-                      {stats.avgDifficultyLabel}
-                    </span>
-                    <div className="flex gap-1">
-                      {[1, 2, 3, 4, 5].map((i) => (
-                        <div
-                          key={i}
-                          className={`h-2 w-8 rounded-full ${
-                            i <= stats.avgDifficultyLevel
-                              ? "bg-primary"
-                              : "bg-surface-container-highest"
-                          }`}
-                        />
-                      ))}
-                    </div>
-                  </div>
-                  <p className="text-on-surface-variant mt-4 text-sm leading-relaxed">
-                    Based on {stats.interviewCount} interview{stats.interviewCount !== 1 ? "s" : ""}{" "}
-                    submitted by candidates.
-                  </p>
-                </>
-              ) : (
-                <p className="text-on-surface-variant text-sm">No interview reports yet.</p>
-              )}
-            </div>
-
-            {company.headquarters && (
-              <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-8 shadow-sm">
-                <h3 className="mb-4 font-bold">About</h3>
-                <dl className="space-y-3 text-sm">
-                  {company.headquarters && (
-                    <div>
-                      <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                        HQ
-                      </dt>
-                      <dd className="mt-1">{company.headquarters}</dd>
-                    </div>
-                  )}
-                  {company.size && (
-                    <div>
-                      <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                        Size
-                      </dt>
-                      <dd className="mt-1">{company.size} employees</dd>
-                    </div>
-                  )}
-                  {company.founded && (
-                    <div>
-                      <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                        Founded
-                      </dt>
-                      <dd className="mt-1">{company.founded}</dd>
-                    </div>
-                  )}
-                  {company.industry && (
-                    <div>
-                      <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                        Industry
-                      </dt>
-                      <dd className="mt-1">{company.industry}</dd>
-                    </div>
-                  )}
-                </dl>
-              </div>
-            )}
-          </div>
-
-          <OrgFeed reviews={data.reviews} interviews={data.interviews} />
-        </section>
+        {/* Main content — client component owns sidebar filters + feed */}
+        <OrgContent data={data} />
       </main>
       <Footer />
     </>

@@ -103,13 +103,15 @@ export function SubmitInterviewForm() {
         e.preventDefault();
         form.handleSubmit();
       }}
-      className="space-y-16"
+      className="space-y-20"
     >
-      {/* 01 Organization */}
-      <section className="space-y-6">
-        <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
-          01. Select Organization
-        </label>
+      {/* Step 01 — Organization */}
+      <section className="space-y-6" id="step-1">
+        <div className="mb-2 flex items-center gap-4">
+          <span className="text-outline font-mono text-xs tracking-widest uppercase">Step 01</span>
+          <div className="bg-outline-variant/20 h-px flex-1" />
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight">Organization Search</h2>
         <form.Field
           name="companySlug"
           validators={{ onSubmit: z.string().min(1, "Select a company") }}
@@ -166,56 +168,68 @@ export function SubmitInterviewForm() {
         </form.Field>
       </section>
 
-      {/* 02 + 03 Role & Department */}
-      <section className="grid grid-cols-1 gap-12 md:grid-cols-2">
-        <form.Field
-          name="roleTitle"
-          validators={{ onSubmit: z.string().min(1, "Role title is required").max(120) }}
-        >
-          {(field) => (
-            <div className="space-y-6">
-              <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
-                02. Role Title
-              </label>
-              <input
-                type="text"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="e.g. Senior Product Designer"
-                className={cn(inputCls, field.state.meta.errors.length > 0 && "border-destructive")}
-              />
-              {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-              )}
-            </div>
-          )}
-        </form.Field>
+      {/* Step 02 — Role & Department */}
+      <section className="space-y-10" id="step-2">
+        <div className="mb-2 flex items-center gap-4">
+          <span className="text-outline font-mono text-xs tracking-widest uppercase">Step 02</span>
+          <div className="bg-outline-variant/20 h-px flex-1" />
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight">Role &amp; Department</h2>
+        <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
+          <form.Field
+            name="roleTitle"
+            validators={{ onSubmit: z.string().min(1, "Role title is required").max(120) }}
+          >
+            {(field) => (
+              <div className="space-y-6">
+                <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                  Role Title
+                </label>
+                <input
+                  type="text"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="e.g. Senior Product Designer"
+                  className={cn(
+                    inputCls,
+                    field.state.meta.errors.length > 0 && "border-destructive",
+                  )}
+                />
+                {field.state.meta.errors[0] && (
+                  <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                )}
+              </div>
+            )}
+          </form.Field>
 
-        <form.Field name="department">
-          {(field) => (
-            <div className="space-y-6">
-              <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
-                03. Department
-              </label>
-              <input
-                type="text"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="e.g. Engineering"
-                className={inputCls}
-              />
-            </div>
-          )}
-        </form.Field>
+          <form.Field name="department">
+            {(field) => (
+              <div className="space-y-6">
+                <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                  Department
+                </label>
+                <input
+                  type="text"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="e.g. Engineering"
+                  className={inputCls}
+                />
+              </div>
+            )}
+          </form.Field>
+        </div>
       </section>
 
-      {/* 04 Difficulty */}
-      <section className="space-y-6">
-        <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
-          04. Interview Difficulty
-        </label>
+      {/* Step 03 — Difficulty */}
+      <section className="space-y-6" id="step-3">
+        <div className="mb-2 flex items-center gap-4">
+          <span className="text-outline font-mono text-xs tracking-widest uppercase">Step 03</span>
+          <div className="bg-outline-variant/20 h-px flex-1" />
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight">Interview Difficulty</h2>
         <form.Field
           name="difficulty"
           validators={{ onSubmit: z.number().int().min(1, "Select a difficulty rating").max(5) }}
@@ -240,7 +254,7 @@ export function SubmitInterviewForm() {
                 ))}
               </div>
               {field.state.value > 0 && (
-                <p className="text-on-surface-variant font-mono text-xs">
+                <p className="text-on-surface-variant text-sm">
                   {DIFFICULTY_LABELS[field.state.value]}
                 </p>
               )}
@@ -252,11 +266,13 @@ export function SubmitInterviewForm() {
         </form.Field>
       </section>
 
-      {/* 05 Overall Experience */}
-      <section className="space-y-6">
-        <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
-          05. Overall Experience
-        </label>
+      {/* Step 04 — Overall Experience */}
+      <section className="space-y-6" id="step-4">
+        <div className="mb-2 flex items-center gap-4">
+          <span className="text-outline font-mono text-xs tracking-widest uppercase">Step 04</span>
+          <div className="bg-outline-variant/20 h-px flex-1" />
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight">Overall Experience</h2>
         <form.Field
           name="overallExperience"
           validators={{
@@ -294,14 +310,16 @@ export function SubmitInterviewForm() {
         </form.Field>
       </section>
 
-      {/* 06 Interview Description */}
-      <section className="space-y-6">
-        <div className="flex items-end justify-between">
-          <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
-            06. Interview Process
-          </label>
-          <span className="text-outline-variant font-mono text-[10px]">
-            REDACT NAMES &amp; SENSITIVE INFO
+      {/* Step 05 — Interview Process */}
+      <section className="space-y-6" id="step-5">
+        <div className="mb-2 flex items-center gap-4">
+          <span className="text-outline font-mono text-xs tracking-widest uppercase">Step 05</span>
+          <div className="bg-outline-variant/20 h-px flex-1" />
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <h2 className="text-2xl font-bold tracking-tight">Interview Process</h2>
+          <span className="text-outline-variant text-[10px] font-medium tracking-wide uppercase">
+            Redact names &amp; sensitive info
           </span>
         </div>
         <form.Field
@@ -321,7 +339,7 @@ export function SubmitInterviewForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 className={cn(
-                  "bg-surface-container-low focus:ring-primary placeholder:text-outline-variant w-full resize-none rounded-lg border-0 p-6 font-mono text-sm leading-relaxed outline-none focus:ring-1",
+                  "bg-surface-container-low focus:ring-primary placeholder:text-outline-variant w-full resize-none rounded-lg border-0 p-6 text-sm leading-relaxed outline-none focus:ring-1",
                   field.state.meta.errors.length > 0 && "ring-destructive ring-1",
                 )}
               />
@@ -333,11 +351,13 @@ export function SubmitInterviewForm() {
         </form.Field>
       </section>
 
-      {/* 07 Offer Received */}
-      <section className="space-y-6">
-        <label className="text-on-surface-variant block font-mono text-sm tracking-widest uppercase">
-          07. Did You Receive an Offer?
-        </label>
+      {/* Step 06 — Offer */}
+      <section className="space-y-6" id="step-6">
+        <div className="mb-2 flex items-center gap-4">
+          <span className="text-outline font-mono text-xs tracking-widest uppercase">Step 06</span>
+          <div className="bg-outline-variant/20 h-px flex-1" />
+        </div>
+        <h2 className="text-2xl font-bold tracking-tight">Did You Receive an Offer?</h2>
         <form.Field
           name="offerReceived"
           validators={{
@@ -424,7 +444,9 @@ export function AnonymitySidebar() {
         <div className="space-y-8">
           {steps.map((s) => (
             <div key={s.num} className="flex gap-6">
-              <span className="text-outline-variant font-mono text-sm">{s.num}</span>
+              <span className="text-outline shrink-0 font-mono text-xs tracking-widest tabular-nums">
+                {s.num}
+              </span>
               <div className="space-y-1">
                 <h3 className="font-bold">{s.title}</h3>
                 <p className="text-on-surface-variant text-sm leading-relaxed">{s.desc}</p>

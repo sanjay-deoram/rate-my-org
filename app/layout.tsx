@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, IBM_Plex_Mono } from "next/font/google";
+import { Inter } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { Providers } from "@/components/providers";
@@ -7,13 +7,6 @@ import { Providers } from "@/components/providers";
 const inter = Inter({
   subsets: ["latin"],
   variable: "--font-inter",
-  display: "swap",
-});
-
-const ibmPlexMono = IBM_Plex_Mono({
-  subsets: ["latin"],
-  weight: ["400", "500"],
-  variable: "--font-ibm-plex-mono",
   display: "swap",
 });
 
@@ -43,7 +36,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn(inter.variable, ibmPlexMono.variable, "antialiased")}>
+    <html lang="en" className={cn(inter.variable, "antialiased")}>
       <body className="bg-background text-foreground flex min-h-screen flex-col">
         <Providers>{children}</Providers>
       </body>

@@ -60,11 +60,11 @@ All colors are exposed as CSS custom properties in `app/globals.css` and availab
 
 ## Typography
 
-| Role    | Font          | Variable               | Tailwind class |
-| ------- | ------------- | ---------------------- | -------------- |
-| Body    | Inter         | `--font-inter`         | `font-sans`    |
-| Heading | Inter         | `--font-inter`         | `font-sans`    |
-| Mono    | IBM Plex Mono | `--font-ibm-plex-mono` | `font-mono`    |
+| Role    | Font  | Variable       | Tailwind class                       |
+| ------- | ----- | -------------- | ------------------------------------ |
+| Body    | Inter | `--font-inter` | `font-sans`                          |
+| Heading | Inter | `--font-inter` | `font-sans`                          |
+| Utility | Inter | `--font-inter` | `font-mono` (same family; caps / UI) |
 
 ### Type Scale Usage
 
@@ -73,7 +73,7 @@ All colors are exposed as CSS custom properties in `app/globals.css` and availab
 - **Card headings**: `text-2xl font-bold tracking-tight`
 - **Body large**: `text-lg leading-relaxed`
 - **Body**: `text-sm leading-relaxed`
-- **Label / mono caps**: `font-mono text-[10px] uppercase tracking-widest`
+- **Label / small caps**: `font-mono text-[10px] uppercase tracking-widest` (uses Inter via theme)
 - **Italic quotes**: `italic font-bold` or `italic leading-relaxed`
 
 ---
@@ -141,7 +141,7 @@ Key shadcn mappings:
 <button className="px-5 py-2 text-sm font-medium text-primary-foreground bg-gradient-to-b from-primary to-primary-container rounded-md shadow-sm active:scale-[0.98] hover:opacity-90">
 ```
 
-### Mono Label
+### Small caps label
 
 ```tsx
 <span className="font-mono text-[10px] uppercase tracking-widest text-on-surface-variant">

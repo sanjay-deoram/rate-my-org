@@ -52,8 +52,7 @@ See `design.md` for full design system documentation.
 - Surface hierarchy: lowest (#fff) → low → default → high → highest (#e5e2e1)
 
 ### Fonts
-- Body/heading: Inter (`font-sans`)
-- Mono labels: IBM Plex Mono (`font-mono`)
+- Body, headings, and label styling: Inter (`font-sans`; `font-mono` maps to the same family in `@theme`)
 
 ## Known Gotchas
 

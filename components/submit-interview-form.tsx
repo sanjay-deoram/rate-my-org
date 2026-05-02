@@ -1,16 +1,16 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { z } from "zod";
-import { Search, Shield, ArrowRight } from "lucide-react";
+import { Shield, ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { INTERVIEW_EXPERIENCES, OFFER_OUTCOMES } from "@/lib/schemas/interview";
-import { useCompanySearch } from "@/hooks/use-company-search";
 import { useSubmitInterview } from "@/hooks/use-submit-interview";
 import type { CompanySuggestion } from "@/types/review";
 import type { InterviewPostBody } from "@/lib/api/interviews";
 import { errMsg } from "@/shared/err-msg";
+import { CompanySearchInput } from "@/components/company-search-input";
 
 const inputCls =
   "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0";
@@ -31,14 +31,6 @@ const DESCRIPTION_TEMPLATE = `[Interview Process]
 
 export function SubmitInterviewForm() {
   const [submitted, setSubmitted] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const { data: searchData } = useCompanySearch(debouncedQuery);
-  const suggestions = searchData?.items ?? [];
-
   const submitInterview = useSubmitInterview(() => setSubmitted(true));
 
   const form = useForm({
@@ -58,28 +50,14 @@ export function SubmitInterviewForm() {
     },
   });
 
-  function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value;
-    setSearchQuery(val);
-    form.setFieldValue("companySlug", "");
-    form.setFieldValue("companyName", "");
-
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (!val.trim()) {
-      setShowDropdown(false);
-      return;
-    }
-    debounceRef.current = setTimeout(() => {
-      setDebouncedQuery(val);
-      setShowDropdown(true);
-    }, 500);
-  }
-
   function handleSelectCompany(item: CompanySuggestion) {
     form.setFieldValue("companySlug", item.slug);
     form.setFieldValue("companyName", item.name);
-    setSearchQuery(item.name);
-    setShowDropdown(false);
+  }
+
+  function handleSearchClear() {
+    form.setFieldValue("companySlug", "");
+    form.setFieldValue("companyName", "");
   }
 
   if (submitted) {
@@ -118,48 +96,14 @@ export function SubmitInterviewForm() {
         >
           {(field) => (
             <div className="space-y-2">
-              <div className="group relative">
-                <Search
-                  size={20}
-                  className="text-outline group-focus-within:text-primary absolute top-1/2 left-0 -translate-y-1/2 transition-colors"
-                />
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={handleSearchChange}
-                  onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                  onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
-                  placeholder="Search for a company..."
-                  className={cn(
-                    inputCls,
-                    "pl-8 text-xl",
-                    field.state.meta.errors.length > 0 && "border-destructive",
-                  )}
-                />
-              </div>
-
-              {showDropdown && suggestions.length > 0 && (
-                <div className="bg-surface-container-lowest border-outline-variant/20 absolute z-50 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
-                  {suggestions.map((item) => (
-                    <button
-                      key={item.slug}
-                      type="button"
-                      onMouseDown={() => handleSelectCompany(item)}
-                      className="hover:bg-surface-container-low flex w-full items-center gap-4 px-4 py-3 text-left transition-colors"
-                    >
-                      {item.logoUrl ? (
-                        <img src={item.logoUrl} alt="" className="h-8 w-8 rounded object-contain" />
-                      ) : (
-                        <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded text-xs font-black">
-                          {item.name[0]}
-                        </div>
-                      )}
-                      <span className="font-medium">{item.name}</span>
-                    </button>
-                  ))}
-                </div>
-              )}
-
+              <CompanySearchInput
+                onSelect={handleSelectCompany}
+                onInputChange={handleSearchClear}
+                showAddCompany
+                hasError={field.state.meta.errors.length > 0}
+                placeholder="Search for a company..."
+                inputSize="lg"
+              />
               {field.state.meta.errors[0] && (
                 <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
               )}

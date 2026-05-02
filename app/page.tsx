@@ -1,7 +1,8 @@
 import Link from "next/link";
-import { Search, BadgeCheck, Shield } from "lucide-react";
+import { BadgeCheck, Shield } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { HomeSearchBar } from "@/components/home-search-bar";
 
 export default function HomePage() {
   return (
@@ -34,30 +35,7 @@ export default function HomePage() {
 
           {/* Search bar */}
           <div className="w-full max-w-2xl">
-            <div className="bg-surface-container-lowest border-border/20 relative flex items-center overflow-hidden rounded-2xl border shadow-[0_20px_60px_rgba(27,27,27,0.08)]">
-              <div className="text-on-surface-variant pointer-events-none flex shrink-0 items-center pl-5">
-                <Search size={20} />
-              </div>
-              <input
-                type="text"
-                placeholder="Search for a company, role, or culture tag..."
-                className="placeholder:text-on-surface-variant h-16 flex-1 bg-transparent px-4 text-base font-medium focus:outline-none"
-              />
-              <div className="flex shrink-0 items-center gap-2 pr-3">
-                <button
-                  type="submit"
-                  className="bg-foreground text-background h-10 rounded-xl px-5 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.97]"
-                >
-                  Search
-                </button>
-                <span className="text-on-surface-variant border-outline-variant/40 bg-surface-container hidden h-8 w-8 items-center justify-center rounded-lg border font-mono text-[9px] font-bold md:inline-flex">
-                  ⌘K
-                </span>
-                <span className="text-on-surface-variant border-outline-variant/40 bg-surface-container hidden h-8 w-8 items-center justify-center rounded-lg border font-mono text-[9px] font-bold md:inline-flex">
-                  ESC
-                </span>
-              </div>
-            </div>
+            <HomeSearchBar />
           </div>
         </section>
 

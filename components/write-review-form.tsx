@@ -1,9 +1,9 @@
 "use client";
 
 import { useForm } from "@tanstack/react-form";
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { z } from "zod";
-import { Search, ShieldCheck, Lock, Globe, ChevronDown } from "lucide-react";
+import { ShieldCheck, Lock, Globe, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   EMPLOYMENT_TYPE_VALUES,
@@ -12,10 +12,10 @@ import {
   FORMER_YEARS,
   type EmploymentTypeValue,
 } from "@/constants/employment";
-import { useCompanySearch } from "@/hooks/use-company-search";
 import { useSubmitReview } from "@/hooks/use-submit-review";
 import type { ReviewPostBody, CompanySuggestion } from "@/types/review";
 import { errMsg } from "@/shared/err-msg";
+import { CompanySearchInput } from "@/components/company-search-input";
 
 type StarRatingProps = {
   value: number;
@@ -66,14 +66,6 @@ const textareaCls =
 
 export function WriteReviewForm() {
   const [submitted, setSubmitted] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [showDropdown, setShowDropdown] = useState(false);
-  const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  const { data: searchData } = useCompanySearch(debouncedQuery);
-  const suggestions = searchData?.items ?? [];
-
   const submitReview = useSubmitReview(() => setSubmitted(true));
 
   const form = useForm({
@@ -97,30 +89,16 @@ export function WriteReviewForm() {
     },
   });
 
-  function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const val = e.target.value;
-    setSearchQuery(val);
-    form.setFieldValue("companySlug", "");
-    form.setFieldValue("companyName", "");
-    form.setFieldValue("companyLogoUrl", null);
-
-    if (debounceRef.current) clearTimeout(debounceRef.current);
-    if (!val.trim()) {
-      setShowDropdown(false);
-      return;
-    }
-    debounceRef.current = setTimeout(() => {
-      setDebouncedQuery(val);
-      setShowDropdown(true);
-    }, 500);
-  }
-
   function handleSelectCompany(item: CompanySuggestion) {
     form.setFieldValue("companySlug", item.slug);
     form.setFieldValue("companyName", item.name);
     form.setFieldValue("companyLogoUrl", item.logoUrl);
-    setSearchQuery(item.name);
-    setShowDropdown(false);
+  }
+
+  function handleSearchClear() {
+    form.setFieldValue("companySlug", "");
+    form.setFieldValue("companyName", "");
+    form.setFieldValue("companyLogoUrl", null);
   }
 
   if (submitted) {
@@ -160,53 +138,13 @@ export function WriteReviewForm() {
         >
           {(field) => (
             <div className="space-y-2">
-              <div className="relative">
-                <div className="group relative">
-                  <Search
-                    size={20}
-                    className="text-on-surface-variant group-focus-within:text-primary absolute top-1/2 left-0 -translate-y-1/2 transition-colors"
-                  />
-                  <input
-                    type="text"
-                    value={searchQuery}
-                    onChange={handleSearchChange}
-                    onBlur={() => setTimeout(() => setShowDropdown(false), 150)}
-                    onFocus={() => suggestions.length > 0 && setShowDropdown(true)}
-                    placeholder="Search for a company or institution..."
-                    className={cn(
-                      inputCls,
-                      "pl-8 text-lg",
-                      field.state.meta.errors.length > 0 && "border-destructive",
-                    )}
-                  />
-                </div>
-
-                {showDropdown && suggestions.length > 0 && (
-                  <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-50 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
-                    {suggestions.map((item) => (
-                      <button
-                        key={item.slug}
-                        type="button"
-                        onMouseDown={() => handleSelectCompany(item)}
-                        className="hover:bg-surface-container-low flex w-full items-center gap-4 px-4 py-3 text-left transition-colors"
-                      >
-                        {item.logoUrl ? (
-                          <img
-                            src={item.logoUrl}
-                            alt=""
-                            className="h-8 w-8 rounded object-contain"
-                          />
-                        ) : (
-                          <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded text-xs font-black">
-                            {item.name[0]}
-                          </div>
-                        )}
-                        <span className="font-medium">{item.name}</span>
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
+              <CompanySearchInput
+                onSelect={handleSelectCompany}
+                onInputChange={handleSearchClear}
+                showAddCompany
+                hasError={field.state.meta.errors.length > 0}
+                inputSize="lg"
+              />
               {field.state.meta.errors[0] && (
                 <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
               )}

@@ -26,6 +26,7 @@ export async function GET(req: NextRequest) {
   let rows: { slug: string; name: string; logoKey: string | null }[];
 
   if (search) {
+    const offset = cursor ? parseInt(cursor, 10) : 0;
     rows = await db
       .select({
         slug: companies.slug,
@@ -35,7 +36,8 @@ export async function GET(req: NextRequest) {
       .from(companies)
       .where(ilike(companies.name, `%${search}%`))
       .orderBy(desc(sql`similarity(${companies.name}, ${search})`), companies.name)
-      .limit(limit + 1);
+      .limit(limit + 1)
+      .offset(offset);
   } else {
     rows = await db
       .select({
@@ -51,7 +53,12 @@ export async function GET(req: NextRequest) {
 
   const hasMore = rows.length > limit;
   const items = hasMore ? rows.slice(0, limit) : rows;
-  const nextCursor = hasMore ? items[items.length - 1].slug : null;
+  // search path: numeric offset cursor; browse path: slug keyset cursor
+  const nextCursor = hasMore
+    ? search
+      ? String((cursor ? parseInt(cursor, 10) : 0) + limit)
+      : items[items.length - 1].slug
+    : null;
 
   return NextResponse.json(
     {

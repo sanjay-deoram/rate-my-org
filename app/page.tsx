@@ -16,7 +16,7 @@ export default function HomePage() {
         }}
       >
         {/* Hero */}
-        <section className="relative flex flex-col items-center overflow-hidden px-8 py-24 text-center md:px-12 md:py-40">
+        <section className="relative flex flex-col items-center px-8 py-24 text-center md:px-12 md:py-40">
           {/* Pill badge */}
           <div className="bg-surface-container border-surface-container-highest mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5">
             <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.18em] uppercase">

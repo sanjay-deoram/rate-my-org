@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useRef } from "react";
-import { Search, PlusCircle } from "lucide-react";
+import { useState, useRef, useEffect } from "react";
+import { Search, PlusCircle, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCompanySearch } from "@/hooks/use-company-search";
@@ -35,12 +35,33 @@ export function CompanySearchInput({
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const sentinelRef = useRef<HTMLDivElement>(null);
 
-  const { data: searchData, isFetching } = useCompanySearch(debouncedQuery);
-  const suggestions = searchData?.items ?? [];
+  const { data, isFetching, isFetchingNextPage, hasNextPage, fetchNextPage, isError } =
+    useCompanySearch(debouncedQuery);
+
+  const suggestions = data?.pages.flatMap((p) => p.items) ?? [];
   const hasQuery = debouncedQuery.trim().length > 0;
-  const noResults = hasQuery && !isFetching && suggestions.length === 0;
+  const noResults = hasQuery && !isFetching && !isError && suggestions.length === 0;
   const showList = showDropdown && hasQuery;
+
+  // Observe sentinel relative to the scroll container, not the viewport.
+  // Without `root`, the IO fires as soon as the sentinel enters the viewport
+  // (i.e. on mount), loading every page immediately instead of on scroll.
+  useEffect(() => {
+    const el = sentinelRef.current;
+    const container = scrollContainerRef.current;
+    if (!el || !container || !hasNextPage || isFetchingNextPage) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) fetchNextPage();
+      },
+      { root: container, threshold: 0.1 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   function handleChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
@@ -92,30 +113,52 @@ export function CompanySearchInput({
       </div>
 
       {showList && (
-        <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-50 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
-          {suggestions.map((item) => (
-            <button
-              key={item.slug}
-              type="button"
-              onMouseDown={() => handleSelect(item)}
-              className="hover:bg-surface-container-low flex w-full items-center gap-4 px-4 py-3 text-left transition-colors"
-            >
-              {item.logoUrl ? (
-                <img src={item.logoUrl} alt="" className="h-8 w-8 rounded object-contain" />
-              ) : (
-                <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded text-xs font-black">
-                  {item.name[0]}
-                </div>
-              )}
-              <span className="font-medium">{item.name}</span>
-            </button>
-          ))}
+        <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-[200] mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
+          <div ref={scrollContainerRef} className="max-h-64 overflow-y-auto overscroll-contain">
+            {isFetching && suggestions.length === 0 && (
+              <div className="text-on-surface-variant flex items-center justify-center py-4">
+                <Loader2 size={16} className="animate-spin" />
+              </div>
+            )}
 
-          {noResults && (
-            <div className="text-on-surface-variant px-4 py-3 text-sm">
-              No organization found for &ldquo;{debouncedQuery}&rdquo;
-            </div>
-          )}
+            {suggestions.map((item) => (
+              <button
+                key={item.slug}
+                type="button"
+                onMouseDown={() => handleSelect(item)}
+                className="hover:bg-surface-container-low flex w-full items-center gap-4 px-4 py-3 text-left transition-colors"
+              >
+                {item.logoUrl ? (
+                  <img src={item.logoUrl} alt="" className="h-8 w-8 rounded object-contain" />
+                ) : (
+                  <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded text-xs font-black">
+                    {item.name[0]}
+                  </div>
+                )}
+                <span className="font-medium">{item.name}</span>
+              </button>
+            ))}
+
+            {isFetchingNextPage && (
+              <div className="text-on-surface-variant flex items-center justify-center py-3">
+                <Loader2 size={16} className="animate-spin" />
+              </div>
+            )}
+
+            <div ref={sentinelRef} className="h-4" />
+
+            {isError && (
+              <div className="text-destructive px-4 py-3 text-sm">
+                Failed to load results. Try again.
+              </div>
+            )}
+
+            {noResults && (
+              <div className="text-on-surface-variant px-4 py-3 text-sm">
+                No organization found for &ldquo;{debouncedQuery}&rdquo;
+              </div>
+            )}
+          </div>
 
           {showAddCompany && (
             <Link

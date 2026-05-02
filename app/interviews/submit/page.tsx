@@ -16,10 +16,7 @@ export default function SubmitInterviewPage() {
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
           <div className="space-y-12 lg:col-span-8">
             <header className="space-y-4">
-              <span className="text-on-surface-variant font-mono text-xs tracking-[0.2em] uppercase">
-                Contribution Portal
-              </span>
-              <h1 className="text-foreground text-5xl leading-tight font-bold tracking-[-0.04em]">
+              <h1 className="text-foreground mb-4 text-5xl font-extrabold tracking-tighter">
                 Document Your
                 <br />
                 Interview Experience

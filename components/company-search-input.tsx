@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-import { Search, PlusCircle, Loader2 } from "lucide-react";
+import { Search, PlusCircle } from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCompanySearch } from "@/hooks/use-company-search";
@@ -115,11 +115,14 @@ export function CompanySearchInput({
       {showList && (
         <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-[200] mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
           <div ref={scrollContainerRef} className="max-h-64 overflow-y-auto overscroll-contain">
-            {isFetching && suggestions.length === 0 && (
-              <div className="text-on-surface-variant flex items-center justify-center py-4">
-                <Loader2 size={16} className="animate-spin" />
-              </div>
-            )}
+            {isFetching &&
+              suggestions.length === 0 &&
+              Array.from({ length: 4 }).map((_, i) => (
+                <div key={i} className="flex items-center gap-4 px-4 py-3">
+                  <div className="bg-surface-container-high h-8 w-8 animate-pulse rounded" />
+                  <div className="bg-surface-container-high h-4 w-40 animate-pulse rounded" />
+                </div>
+              ))}
 
             {suggestions.map((item) => (
               <button
@@ -140,8 +143,9 @@ export function CompanySearchInput({
             ))}
 
             {isFetchingNextPage && (
-              <div className="text-on-surface-variant flex items-center justify-center py-3">
-                <Loader2 size={16} className="animate-spin" />
+              <div className="flex items-center gap-4 px-4 py-3">
+                <div className="bg-surface-container-high h-8 w-8 animate-pulse rounded" />
+                <div className="bg-surface-container-high h-4 w-32 animate-pulse rounded" />
               </div>
             )}
 

@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { z } from "zod";
-import { ShieldCheck, Lock, Globe, ChevronDown } from "lucide-react";
+import { ShieldCheck, Lock, Globe } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   EMPLOYMENT_TYPE_VALUES,
@@ -16,6 +16,13 @@ import { useSubmitReview } from "@/hooks/use-submit-review";
 import type { ReviewPostBody, CompanySuggestion } from "@/types/review";
 import { errMsg } from "@/shared/err-msg";
 import { CompanySearchInput } from "@/components/company-search-input";
+import {
+  SelectRoot,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@/components/ui/select";
 
 type StarRatingProps = {
   value: number;
@@ -238,31 +245,24 @@ export function WriteReviewForm() {
                     <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
                       Year You Left
                     </label>
-                    <div className="relative">
-                      <select
-                        value={field.state.value ?? ""}
-                        onChange={(e) =>
-                          field.handleChange(e.target.value ? Number(e.target.value) : null)
-                        }
+                    <SelectRoot
+                      value={String(field.state.value ?? "")}
+                      onValueChange={(val) => field.handleChange(val ? Number(val) : null)}
+                    >
+                      <SelectTrigger
                         onBlur={field.handleBlur}
-                        className={cn(
-                          inputCls,
-                          "cursor-pointer appearance-none pr-8",
-                          field.state.meta.errors.length > 0 && "border-destructive",
-                        )}
+                        hasError={field.state.meta.errors.length > 0}
                       >
-                        <option value="">Select year...</option>
+                        <SelectValue placeholder="Select year..." />
+                      </SelectTrigger>
+                      <SelectContent>
                         {FORMER_YEARS.map((y) => (
-                          <option key={y} value={y}>
+                          <SelectItem key={y} value={String(y)}>
                             {y}
-                          </option>
+                          </SelectItem>
                         ))}
-                      </select>
-                      <ChevronDown
-                        size={16}
-                        className="text-on-surface-variant pointer-events-none absolute top-1/2 right-0 -translate-y-1/2"
-                      />
-                    </div>
+                      </SelectContent>
+                    </SelectRoot>
                     {field.state.meta.errors[0] && (
                       <p className="text-destructive text-xs">
                         {errMsg(field.state.meta.errors[0])}
@@ -286,29 +286,24 @@ export function WriteReviewForm() {
               <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
                 Employment Type
               </label>
-              <div className="relative">
-                <select
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value as EmploymentTypeValue)}
+              <SelectRoot
+                value={field.state.value}
+                onValueChange={(val) => field.handleChange(val as EmploymentTypeValue)}
+              >
+                <SelectTrigger
                   onBlur={field.handleBlur}
-                  className={cn(
-                    inputCls,
-                    "cursor-pointer appearance-none pr-8",
-                    field.state.meta.errors.length > 0 && "border-destructive",
-                  )}
+                  hasError={field.state.meta.errors.length > 0}
                 >
-                  <option value="">Select type...</option>
+                  <SelectValue placeholder="Select type..." />
+                </SelectTrigger>
+                <SelectContent>
                   {EMPLOYMENT_TYPE_OPTIONS.map(({ value, label }) => (
-                    <option key={value} value={value}>
+                    <SelectItem key={value} value={value}>
                       {label}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-                <ChevronDown
-                  size={16}
-                  className="text-on-surface-variant pointer-events-none absolute top-1/2 right-0 -translate-y-1/2"
-                />
-              </div>
+                </SelectContent>
+              </SelectRoot>
               {field.state.meta.errors[0] && (
                 <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
               )}

@@ -113,7 +113,7 @@ export function CompanySearchInput({
       </div>
 
       {showList && (
-        <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-[200] mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
+        <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-200 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
           <div ref={scrollContainerRef} className="max-h-64 overflow-y-auto overscroll-contain">
             {isFetching &&
               suggestions.length === 0 &&

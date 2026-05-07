@@ -3,34 +3,17 @@
 import { useState } from "react";
 import { PlusCircle, MinusCircle, Check } from "lucide-react";
 import type { OrgProfile } from "@/lib/queries/orgs";
+import {
+  difficultyLabel,
+  formatEmploymentType,
+  sortItemsByCreatedAt,
+  timeAgo,
+} from "@/lib/org-display";
 
 type Review = OrgProfile["reviews"][number];
 type Interview = OrgProfile["interviews"][number];
 type Tab = "reviews" | "interviews";
 type Sort = "recent" | "oldest";
-
-function formatEmploymentType(raw: string): string {
-  return raw.replace(/_/g, " ").replace(/\b\w/g, (c) => c.toUpperCase());
-}
-
-function timeAgo(date: Date): string {
-  const seconds = Math.floor((Date.now() - date.getTime()) / 1000);
-  const rtf = new Intl.RelativeTimeFormat("en", { numeric: "auto" });
-  if (seconds < 60) return rtf.format(-seconds, "second");
-  if (seconds < 3600) return rtf.format(-Math.floor(seconds / 60), "minute");
-  if (seconds < 86400) return rtf.format(-Math.floor(seconds / 3600), "hour");
-  if (seconds < 2592000) return rtf.format(-Math.floor(seconds / 86400), "day");
-  if (seconds < 31536000) return rtf.format(-Math.floor(seconds / 2592000), "month");
-  return rtf.format(-Math.floor(seconds / 31536000), "year");
-}
-
-function difficultyLabel(n: number): string {
-  if (n <= 1) return "Easy";
-  if (n <= 2) return "Easy–Medium";
-  if (n <= 3) return "Medium";
-  if (n <= 4) return "Hard";
-  return "Very Hard";
-}
 
 function RadioRow({
   checked,
@@ -165,13 +148,10 @@ export function OrgContent({ data }: { data: OrgProfile }) {
   const [tab, setTab] = useState<Tab>("reviews");
   const [sort, setSort] = useState<Sort>("recent");
 
-  const sorted = <T extends { createdAt: Date | string }>(items: T[]): T[] =>
-    [...items].sort((a, b) => {
-      const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-      return sort === "recent" ? -diff : diff;
-    });
-
-  const activeItems = tab === "reviews" ? sorted(reviews) : sorted(interviews);
+  const activeItems =
+    tab === "reviews"
+      ? sortItemsByCreatedAt(reviews, sort)
+      : sortItemsByCreatedAt(interviews, sort);
 
   return (
     <section className="mx-auto grid max-w-7xl grid-cols-1 gap-16 px-8 md:px-12 lg:grid-cols-12">

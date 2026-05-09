@@ -9,13 +9,7 @@ export default function HomePage() {
   return (
     <>
       <Nav />
-      <main
-        className="min-h-screen pt-20"
-        style={{
-          background:
-            "radial-gradient(ellipse 100% 50% at 50% 0%, #e2e2e2 0%, #f3f2f2 40%, #fcf9f8 70%)",
-        }}
-      >
+      <main className="bg-background min-h-screen pt-20">
         {/* Hero */}
         <section className="relative flex flex-col items-center px-8 py-24 text-center md:px-12 md:py-40">
           {/* Pill badge */}

@@ -11,10 +11,10 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
   return (
     <Link
       href={`/orgs/${company.slug}`}
-      className="group relative flex items-center gap-5 overflow-hidden rounded-xl px-6 py-5"
+      className="group relative isolate flex items-center gap-5 overflow-hidden rounded-xl px-6 py-5"
     >
       {/* Primary wipe background */}
-      <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+      <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
 
       <div className="relative shrink-0">
         {company.logoUrl ? (

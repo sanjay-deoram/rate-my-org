@@ -11,7 +11,7 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
   return (
     <Link
       href={`/orgs/${company.slug}`}
-      className="bg-surface-container-lowest border-surface-container-highest hover:border-outline-variant group flex items-center gap-5 rounded-xl border p-5 transition-all duration-200"
+      className="hover:bg-surface-container-lowest/50 group flex items-center gap-5 py-5 transition-colors duration-200"
     >
       <div className="shrink-0">
         {company.logoUrl ? (
@@ -43,7 +43,7 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
 
 function LoadingSkeleton() {
   return (
-    <div className="bg-surface-container-lowest border-surface-container-highest flex items-center gap-5 rounded-xl border p-5">
+    <div className="flex items-center gap-5 py-5">
       <div className="bg-surface-container-high h-14 w-14 animate-pulse rounded-lg" />
       <div className="flex-1 space-y-2">
         <div className="bg-surface-container-high h-4 w-40 animate-pulse rounded" />
@@ -114,24 +114,34 @@ export function CompaniesDirectory() {
   return (
     <div>
       {/* Search bar */}
-      <div className="bg-surface-container-lowest border-border/20 mb-8 flex items-center gap-3 rounded-xl border px-5 py-3 shadow-sm">
-        <Search size={18} className="text-on-surface-variant shrink-0" />
-        <input
-          type="text"
-          value={query}
-          onChange={handleChange}
-          placeholder="Search companies..."
-          className="placeholder:text-on-surface-variant/40 flex-1 bg-transparent text-sm font-medium outline-none"
-        />
-        {query && (
+      <div className="bg-surface-container-lowest border-border/20 mb-8 flex items-center overflow-visible rounded-2xl border shadow-[0_20px_60px_rgba(27,27,27,0.08)]">
+        <div className="flex flex-1 items-center gap-3 px-5 py-3">
+          <Search size={18} className="text-on-surface-variant shrink-0" />
+          <input
+            type="text"
+            value={query}
+            onChange={handleChange}
+            placeholder="Search companies..."
+            className="placeholder:text-on-surface-variant/40 flex-1 bg-transparent py-2 text-sm font-medium outline-none"
+          />
+          {query && (
+            <button
+              type="button"
+              onClick={clearSearch}
+              className="text-on-surface-variant hover:text-foreground shrink-0 transition-colors"
+            >
+              <X size={16} />
+            </button>
+          )}
+        </div>
+        <div className="flex shrink-0 items-center pr-3">
           <button
             type="button"
-            onClick={clearSearch}
-            className="text-on-surface-variant hover:text-foreground shrink-0 transition-colors"
+            className="bg-foreground text-background h-10 rounded-xl px-5 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.97]"
           >
-            <X size={16} />
+            Search
           </button>
-        )}
+        </div>
       </div>
 
       {/* Result count */}
@@ -157,11 +167,11 @@ export function CompaniesDirectory() {
       )}
 
       {/* Company list */}
-      <div className="flex flex-col gap-3">
+      <div className="divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 shadow-sm">
         {isLoading && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
 
         {!isLoading && companies.length === 0 && isSearching && (
-          <div className="bg-surface-container-lowest border-surface-container-highest flex flex-col items-center justify-center rounded-xl border py-24 text-center">
+          <div className="flex flex-col items-center justify-center py-24 text-center">
             <Building2 size={40} className="text-on-surface-variant/30 mb-4" />
             <p className="text-on-surface-variant font-medium">
               No companies found for &ldquo;{debouncedQuery}&rdquo;

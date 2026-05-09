@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { PlusCircle, MinusCircle, Check } from "lucide-react";
+import { PlusCircle, MinusCircle, Check, BadgeCheck } from "lucide-react";
 import type { OrgProfile } from "@/lib/queries/orgs";
 import {
   difficultyLabel,
@@ -117,9 +117,13 @@ function InterviewCard({ interview }: { interview: Interview }) {
               {difficultyLabel(interview.difficulty)}
             </span>
           </div>
-          <span className="text-on-surface-variant font-mono text-xs">
-            Offer: {interview.offerReceived}
-          </span>
+          <span className="text-on-surface-variant font-mono text-xs"></span>
+          <div className="flex items-center gap-2 rounded-full bg-[#d1fadf] px-3 py-1 text-[#00632d]">
+            <BadgeCheck size={14} className="fill-current" />
+            <span className="text-[10px] font-bold tracking-wider uppercase">
+              Offer: {interview.offerReceived}
+            </span>
+          </div>
         </div>
       </div>
 

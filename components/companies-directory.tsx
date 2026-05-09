@@ -166,6 +166,12 @@ export function CompaniesDirectory() {
             <p className="text-on-surface-variant font-medium">
               No companies found for &ldquo;{debouncedQuery}&rdquo;
             </p>
+            <Link
+              href="/orgs/add"
+              className="bg-primary text-primary-foreground mt-5 rounded-lg px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
+            >
+              Add organization
+            </Link>
           </div>
         )}
 

@@ -17,7 +17,8 @@ export default function CompaniesPage() {
         className="min-h-screen pt-20"
         style={{
           background:
-            "radial-gradient(ellipse 100% 50% at 50% 0%, #e2e2e2 0%, #f3f2f2 40%, #fcf9f8 70%)",
+            "radial-gradient(ellipse 100vw 50vh at 50% 0%, #e2e2e2 0%, #f3f2f2 40%, #fcf9f8 70%) #fcf9f8",
+          backgroundRepeat: "no-repeat",
         }}
       >
         <section className="mx-auto max-w-3xl px-8 py-24 md:px-12">

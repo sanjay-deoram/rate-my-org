@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -12,6 +13,13 @@ const navLinks = [
 
 export function Nav() {
   const pathname = usePathname();
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const handler = () => setScrolled(window.scrollY > 20);
+    window.addEventListener("scroll", handler, { passive: true });
+    return () => window.removeEventListener("scroll", handler);
+  }, []);
 
   function isActive(match: string[]) {
     return match.some((m) => (m === "/" ? pathname === "/" : pathname.startsWith(m)));
@@ -19,13 +27,26 @@ export function Nav() {
 
   return (
     <nav className="fixed top-4 left-1/2 z-50 w-[min(1100px,calc(100vw-2rem))] -translate-x-1/2">
-      <div className="flex items-center gap-4 px-2">
+      <div
+        className={cn(
+          "flex items-center gap-4 px-2 transition-all duration-300",
+          scrolled &&
+            "border-border/20 bg-background/75 rounded-full border px-4 py-2 shadow-[0_8px_32px_rgba(27,27,27,0.10)] backdrop-blur-xl",
+        )}
+      >
         <Link href="/" className="text-foreground shrink-0 text-xl font-black tracking-tighter">
           RateMyOrg
         </Link>
 
         <div className="hidden flex-1 items-center justify-center md:flex">
-          <div className="bg-surface-container-lowest flex items-center gap-0.5 rounded-full px-1.5 py-1.5 shadow-[0_4px_20px_rgba(27,27,27,0.10)]">
+          <div
+            className={cn(
+              "flex items-center gap-0.5 rounded-full px-1.5 py-1.5 transition-all duration-300",
+              scrolled
+                ? "bg-surface-container shadow-none"
+                : "bg-surface-container-lowest shadow-[0_4px_20px_rgba(27,27,27,0.10)]",
+            )}
+          >
             {navLinks.map((link) => {
               const active = isActive(link.match);
               return (

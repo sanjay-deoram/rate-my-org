@@ -11,30 +11,35 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
   return (
     <Link
       href={`/orgs/${company.slug}`}
-      className="hover:bg-surface-container-lowest/50 group flex items-center gap-5 py-5 transition-colors duration-200"
+      className="group relative flex items-center gap-5 overflow-hidden rounded-xl px-6 py-5"
     >
-      <div className="shrink-0">
+      {/* Primary wipe background */}
+      <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+
+      <div className="relative shrink-0">
         {company.logoUrl ? (
           <img
             src={company.logoUrl}
             alt=""
-            className="bg-surface-container h-14 w-14 rounded-lg object-contain p-1"
+            className="bg-surface-container h-14 w-14 rounded-lg object-contain p-1 transition-colors duration-300 group-hover:bg-white/10"
           />
         ) : (
-          <div className="bg-surface-container text-on-surface-variant flex h-14 w-14 items-center justify-center rounded-lg text-xl font-black">
+          <div className="bg-surface-container text-on-surface-variant group-hover:text-primary-foreground flex h-14 w-14 items-center justify-center rounded-lg text-xl font-black transition-colors duration-300 group-hover:bg-white/10">
             {company.name[0]}
           </div>
         )}
       </div>
 
-      <div className="min-w-0 flex-1">
-        <h3 className="text-foreground truncate text-base font-bold">{company.name}</h3>
-        <p className="text-on-surface-variant font-mono text-[11px] tracking-wide">
+      <div className="relative min-w-0 flex-1">
+        <h3 className="text-foreground group-hover:text-primary-foreground truncate text-base font-bold transition-colors duration-300">
+          {company.name}
+        </h3>
+        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[11px] tracking-wide transition-colors duration-300">
           {company.slug}
         </p>
       </div>
 
-      <span className="text-on-surface-variant group-hover:text-foreground shrink-0 text-sm font-medium transition-colors">
+      <span className="text-on-surface-variant group-hover:text-primary-foreground relative shrink-0 text-sm font-medium transition-colors duration-300">
         View →
       </span>
     </Link>
@@ -167,7 +172,7 @@ export function CompaniesDirectory() {
       )}
 
       {/* Company list */}
-      <div className="divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 shadow-sm">
+      <div className="divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 pt-2 shadow-sm">
         {isLoading && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
 
         {!isLoading && companies.length === 0 && isSearching && (

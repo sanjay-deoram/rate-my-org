@@ -262,9 +262,6 @@ export function SubmitInterviewForm() {
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <h2 className="text-2xl font-bold tracking-tight">Interview Process</h2>
-          <span className="text-outline-variant text-[10px] font-medium tracking-wide uppercase">
-            Redact names &amp; sensitive info
-          </span>
         </div>
         <form.Field
           name="description"

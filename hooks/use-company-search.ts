@@ -1,4 +1,4 @@
-import { useInfiniteQuery } from "@tanstack/react-query";
+import { useInfiniteQuery, keepPreviousData } from "@tanstack/react-query";
 import { searchCompanies } from "@/lib/api/companies";
 
 export function useCompanySearch(query: string) {
@@ -9,5 +9,6 @@ export function useCompanySearch(query: string) {
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     enabled: query.trim().length > 0,
     staleTime: Infinity,
+    placeholderData: keepPreviousData,
   });
 }

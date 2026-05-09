@@ -44,10 +44,10 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
 function LoadingSkeleton() {
   return (
     <div className="bg-surface-container-lowest border-surface-container-highest flex items-center gap-5 rounded-xl border p-5">
-      <div className="bg-surface-container h-14 w-14 animate-pulse rounded-lg" />
+      <div className="bg-surface-container-high h-14 w-14 animate-pulse rounded-lg" />
       <div className="flex-1 space-y-2">
-        <div className="bg-surface-container h-4 w-40 animate-pulse rounded" />
-        <div className="bg-surface-container h-3 w-24 animate-pulse rounded" />
+        <div className="bg-surface-container-high h-4 w-40 animate-pulse rounded" />
+        <div className="bg-surface-container-high h-3 w-24 animate-pulse rounded" />
       </div>
     </div>
   );

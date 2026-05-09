@@ -65,7 +65,7 @@ const SelectContent = React.forwardRef<
     >
       <Select.Viewport
         className={cn(
-          "p-1",
+          "p-2",
           position === "popper" &&
             "max-h-[min(24rem,var(--radix-select-content-available-height))]",
         )}
@@ -84,19 +84,25 @@ const SelectItem = React.forwardRef<
   <Select.Item
     ref={ref}
     className={cn(
-      "focus:bg-surface-container-highest relative flex w-full cursor-pointer items-center select-none",
+      "group relative flex w-full cursor-pointer items-center overflow-hidden select-none",
       "rounded-lg py-2.5 pr-4 pl-8 text-sm font-medium outline-none",
       "disabled:pointer-events-none disabled:opacity-50",
       className,
     )}
     {...props}
   >
-    <span className="absolute left-2 flex size-3.5 items-center justify-center">
+    {/* Wipe animation background */}
+    <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-lg transition-transform duration-300 ease-out group-data-[highlighted]:scale-x-100" />
+    <span className="group-data-[highlighted]:text-primary-foreground relative left-2 flex size-3.5 items-center justify-center">
       <Select.ItemIndicator>
         <Check size={14} />
       </Select.ItemIndicator>
     </span>
-    <Select.ItemText>{children}</Select.ItemText>
+    <Select.ItemText>
+      <span className="group-data-[highlighted]:text-primary-foreground relative transition-colors duration-300">
+        {children}
+      </span>
+    </Select.ItemText>
   </Select.Item>
 ));
 SelectItem.displayName = "SelectItem";

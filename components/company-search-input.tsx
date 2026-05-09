@@ -114,7 +114,7 @@ export function CompanySearchInput({
 
       {showList && (
         <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-200 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
-          <div ref={scrollContainerRef} className="max-h-64 overflow-y-auto overscroll-contain">
+          <div ref={scrollContainerRef} className="max-h-64 overflow-y-auto overscroll-contain p-2">
             {isFetching &&
               suggestions.length === 0 &&
               Array.from({ length: 4 }).map((_, i) => (
@@ -129,16 +129,23 @@ export function CompanySearchInput({
                 key={item.slug}
                 type="button"
                 onMouseDown={() => handleSelect(item)}
-                className="hover:bg-surface-container-low flex w-full items-center gap-4 px-4 py-3 text-left transition-colors"
+                className="group relative flex w-full items-center gap-4 overflow-hidden rounded-lg px-4 py-3 text-left"
               >
+                <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-lg transition-transform duration-300 ease-out group-hover:scale-x-100" />
                 {item.logoUrl ? (
-                  <img src={item.logoUrl} alt="" className="h-8 w-8 rounded object-contain" />
+                  <img
+                    src={item.logoUrl}
+                    alt=""
+                    className="relative h-8 w-8 rounded object-contain transition-opacity duration-300 group-hover:opacity-80"
+                  />
                 ) : (
-                  <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded text-xs font-black">
+                  <div className="bg-surface-container-highest group-hover:text-primary-foreground relative flex h-8 w-8 items-center justify-center rounded text-xs font-black transition-colors duration-300 group-hover:bg-white/20">
                     {item.name[0]}
                   </div>
                 )}
-                <span className="font-medium">{item.name}</span>
+                <span className="group-hover:text-primary-foreground relative font-medium transition-colors duration-300">
+                  {item.name}
+                </span>
               </button>
             ))}
 
@@ -149,7 +156,7 @@ export function CompanySearchInput({
               </div>
             )}
 
-            <div ref={sentinelRef} className="h-4" />
+            <div ref={sentinelRef} className="h-1" />
 
             {isError && (
               <div className="text-destructive px-4 py-3 text-sm">
@@ -165,15 +172,23 @@ export function CompanySearchInput({
           </div>
 
           {showAddCompany && (
-            <Link
-              href="/orgs/add"
-              className="border-outline-variant/20 hover:bg-surface-container-low flex w-full items-center gap-4 border-t px-4 py-3 text-left transition-colors"
-            >
-              <div className="bg-surface-container-highest flex h-8 w-8 items-center justify-center rounded">
-                <PlusCircle size={16} className="text-on-surface-variant" />
-              </div>
-              <span className="text-on-surface-variant text-sm font-medium">Add company</span>
-            </Link>
+            <div className="border-outline-variant/20 border-t px-2 pt-1 pb-2">
+              <Link
+                href="/orgs/add"
+                className="group relative flex w-full items-center gap-4 overflow-hidden rounded-lg px-4 py-3 text-left"
+              >
+                <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                <div className="bg-surface-container-highest relative flex h-8 w-8 items-center justify-center rounded transition-colors duration-300 group-hover:bg-white/20">
+                  <PlusCircle
+                    size={16}
+                    className="text-on-surface-variant group-hover:text-primary-foreground transition-colors duration-300"
+                  />
+                </div>
+                <span className="text-on-surface-variant group-hover:text-primary-foreground relative text-sm font-medium transition-colors duration-300">
+                  Add company
+                </span>
+              </Link>
+            </div>
           )}
         </div>
       )}

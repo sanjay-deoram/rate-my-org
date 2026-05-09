@@ -183,6 +183,34 @@ Key shadcn mappings:
 
 ---
 
+## Interaction Patterns
+
+### List Item Hover — Primary Wipe Animation
+
+All interactive list rows (company cards, dropdown items, search results) use a left-to-right `bg-primary` wipe as their hover state instead of a flat background swap. The item itself must be `relative overflow-hidden rounded-xl` (or `rounded-lg` for compact rows). Text and icons transition to `text-primary-foreground`.
+
+**Rules:**
+
+- Every dropdown list, search result list, or navigable row **must** use this animation — no plain `hover:bg-*` replacements.
+- The container needs `overflow-hidden` so the wipe clips to its border radius.
+- Use `rounded-xl` for full-height cards, `rounded-lg` for compact dropdown rows.
+
+```tsx
+<div className="group relative flex items-center gap-4 overflow-hidden rounded-lg px-4 py-3">
+  {/* Wipe layer — always first child */}
+  <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-lg transition-transform duration-300 ease-out group-hover:scale-x-100" />
+
+  {/* All content must be relative so it sits above the wipe */}
+  <span className="group-hover:text-primary-foreground relative font-medium transition-colors duration-300">
+    Item label
+  </span>
+</div>
+```
+
+For Radix `SelectItem`, use `group-data-[highlighted]:scale-x-100` instead of `group-hover:scale-x-100` because Radix manages focus via the `data-highlighted` attribute.
+
+---
+
 ## Dark Mode
 
 Dark mode is supported via the `.dark` class on `<html>`. The dark palette uses:

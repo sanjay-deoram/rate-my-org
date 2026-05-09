@@ -145,8 +145,8 @@ export function HomeSearchBar() {
 
       {/* Inline results */}
       {isSearching && (
-        <div className="mt-3 overflow-hidden rounded-2xl bg-white px-6 shadow-sm">
-          <div className="divide-outline-variant/20 divide-y pt-2">
+        <div className="mt-3 overflow-hidden rounded-2xl bg-white p-3 shadow-sm">
+          <div className="divide-outline-variant/20 divide-y">
             {isLoading && Array.from({ length: 4 }).map((_, i) => <LoadingSkeleton key={i} />)}
 
             {!isLoading && companies.length === 0 && (

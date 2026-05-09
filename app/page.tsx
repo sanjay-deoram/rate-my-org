@@ -3,6 +3,7 @@ import { BadgeCheck, Shield } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
+import { FlipWords } from "@/components/ui/flip-words";
 
 export default function HomePage() {
   return (
@@ -25,7 +26,19 @@ export default function HomePage() {
           </div>
 
           <h1 className="text-foreground mb-8 max-w-4xl text-5xl leading-[1.1] font-bold tracking-tighter md:text-7xl">
-            Uncover the Truth About Your Next Workplace
+            Uncover the{" "}
+            <span className="border-foreground relative inline-block border-b-4">
+              <span className="invisible px-2 select-none" aria-hidden="true">
+                Reality
+              </span>
+              <span className="absolute inset-0 flex items-center justify-center">
+                <FlipWords
+                  words={["Truth", "Reality"]}
+                  className="text-foreground font-bold italic"
+                />
+              </span>
+            </span>{" "}
+            About Your Next Workplace
           </h1>
 
           <p className="text-on-surface-variant mb-12 max-w-xl text-base leading-relaxed md:text-lg">

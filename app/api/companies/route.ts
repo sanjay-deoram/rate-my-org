@@ -47,7 +47,7 @@ export async function GET(req: NextRequest) {
       })
       .from(companies)
       .where(cursor ? gt(companies.slug, cursor) : undefined)
-      .orderBy(companies.name)
+      .orderBy(companies.slug)
       .limit(limit + 1);
   }
 

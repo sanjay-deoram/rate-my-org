@@ -5,11 +5,10 @@ import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
-  { label: "Browse Orgs", href: "/", match: ["/", "/orgs"] },
+  { label: "Companies", href: "/companies", match: ["/companies", "/orgs"] },
   { label: "Reviews", href: "/reviews/write", match: ["/reviews"] },
   { label: "Interviews", href: "/interviews/submit", match: ["/interviews"] },
   { label: "Salaries", href: "/salaries", match: ["/salaries"] },
-  { label: "Search", href: "/search", match: ["/search"] },
 ];
 
 export function Nav() {

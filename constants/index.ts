@@ -1,3 +1,22 @@
+export const INDUSTRIES = [
+  "Technology",
+  "Finance & Banking",
+  "Healthcare",
+  "Retail & E-commerce",
+  "Manufacturing",
+  "Education",
+  "Media & Entertainment",
+  "Government & Public Sector",
+  "Non-profit",
+  "Consulting & Professional Services",
+  "Real Estate",
+  "Transportation & Logistics",
+  "Food & Beverage",
+  "Energy & Utilities",
+  "Telecommunications",
+  "Other",
+];
+
 export const EMPLOYMENT_TYPE_VALUES = [
   "full_time",
   "part_time",

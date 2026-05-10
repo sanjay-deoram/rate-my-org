@@ -11,7 +11,7 @@ import {
   EMPLOYMENT_STATUS_OPTIONS,
   FORMER_YEARS,
   type EmploymentTypeValue,
-} from "@/constants/employment";
+} from "@/constants";
 import { useSubmitReview } from "@/hooks/use-submit-review";
 import type { ReviewPostBody, CompanySuggestion } from "@/types/review";
 import { errMsg } from "@/shared/err-msg";

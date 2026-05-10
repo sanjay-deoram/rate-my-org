@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { EMPLOYMENT_TYPE_VALUES } from "@/constants/employment";
+import { EMPLOYMENT_TYPE_VALUES } from "@/constants";
 
 export const reviewPostBodySchema = z
   .object({

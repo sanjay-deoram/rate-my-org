@@ -15,7 +15,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-import { INDUSTRIES } from "@/constants/industries";
+import { INDUSTRIES } from "@/constants";
 
 const inputCls =
   "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-3 font-medium transition-all outline-none focus:ring-0 text-sm";

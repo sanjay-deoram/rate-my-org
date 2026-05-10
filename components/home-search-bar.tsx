@@ -111,7 +111,7 @@ export function HomeSearchBar() {
   }
 
   return (
-    <div>
+    <div className="relative">
       {/* Search bar */}
       <div className="bg-surface-container-lowest border-border/20 mb-0 flex items-center overflow-visible rounded-2xl border shadow-[0_20px_60px_rgba(27,27,27,0.08)]">
         <div className="flex flex-1 items-center gap-3 px-5 py-3">
@@ -145,7 +145,7 @@ export function HomeSearchBar() {
 
       {/* Inline results */}
       {isSearching && (
-        <div className="mt-3 overflow-hidden rounded-2xl bg-white p-3 shadow-sm">
+        <div className="absolute right-0 left-0 z-50 mt-3 overflow-hidden rounded-2xl bg-white p-3 shadow-sm">
           <div className="divide-outline-variant/20 divide-y">
             {isLoading && Array.from({ length: 4 }).map((_, i) => <LoadingSkeleton key={i} />)}
 

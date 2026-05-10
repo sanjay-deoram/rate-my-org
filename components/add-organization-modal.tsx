@@ -15,25 +15,7 @@ import {
   SelectContent,
   SelectItem,
 } from "@/components/ui/select";
-
-const INDUSTRIES = [
-  "Technology",
-  "Finance & Banking",
-  "Healthcare",
-  "Retail & E-commerce",
-  "Manufacturing",
-  "Education",
-  "Media & Entertainment",
-  "Government & Public Sector",
-  "Non-profit",
-  "Consulting & Professional Services",
-  "Real Estate",
-  "Transportation & Logistics",
-  "Food & Beverage",
-  "Energy & Utilities",
-  "Telecommunications",
-  "Other",
-];
+import { INDUSTRIES } from "@/constants/industries";
 
 const inputCls =
   "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-3 font-medium transition-all outline-none focus:ring-0 text-sm";

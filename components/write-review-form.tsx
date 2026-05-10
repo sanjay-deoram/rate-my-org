@@ -85,7 +85,6 @@ export function WriteReviewForm() {
       formerYear: null as number | null,
       employmentType: "" as EmploymentTypeValue | "",
       jobTitle: "",
-      headline: "",
       pros: "",
       cons: "",
       adviceToManagement: "",
@@ -345,31 +344,6 @@ export function WriteReviewForm() {
         <h2 className="text-2xl font-bold tracking-tight">Your Review</h2>
 
         <form.Field
-          name="headline"
-          validators={{ onSubmit: z.string().min(1, "Headline is required").max(200) }}
-        >
-          {(field) => (
-            <div className="space-y-2">
-              <input
-                type="text"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="Review Headline"
-                className={cn(
-                  inputCls,
-                  "text-xl font-bold",
-                  field.state.meta.errors.length > 0 && "border-destructive",
-                )}
-              />
-              {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-              )}
-            </div>
-          )}
-        </form.Field>
-
-        <form.Field
           name="pros"
           validators={{ onSubmit: z.string().min(1, "Pros are required").max(5000) }}
         >
@@ -410,33 +384,6 @@ export function WriteReviewForm() {
                 onChange={(e) => field.handleChange(e.target.value)}
                 onBlur={field.handleBlur}
                 placeholder="What could be improved?"
-                rows={4}
-                className={cn(
-                  textareaCls,
-                  field.state.meta.errors.length > 0 && "border-destructive",
-                )}
-              />
-              {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-              )}
-            </div>
-          )}
-        </form.Field>
-
-        <form.Field
-          name="adviceToManagement"
-          validators={{ onSubmit: z.string().min(1, "Advice is required").max(5000) }}
-        >
-          {(field) => (
-            <div className="space-y-2">
-              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-                Advice to Management
-              </label>
-              <textarea
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="What advice would you give to leadership?"
                 rows={4}
                 className={cn(
                   textareaCls,

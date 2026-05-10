@@ -38,7 +38,7 @@ function ReviewCard({ review }: { review: Review }) {
     <article className="bg-surface-container-lowest hover:bg-surface-container-low rounded-xl p-10 transition-colors duration-500">
       <div className="mb-6 flex items-start justify-between">
         <div>
-          <h3 className="mb-1 text-xl font-bold italic">&ldquo;{review.headline}&rdquo;</h3>
+          <h3 className="mb-1 text-xl font-bold">{review.jobTitle}</h3>
           <p className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
             {review.jobTitle} • {formatEmploymentType(review.employmentType)} •{" "}
             {timeAgo(new Date(review.createdAt))}
@@ -63,12 +63,6 @@ function ReviewCard({ review }: { review: Review }) {
             </h4>
             <p className="text-on-surface-variant text-sm leading-relaxed">{review.cons}</p>
           </div>
-        </div>
-
-        <div className="border-outline-variant/20 border-t pt-6">
-          <p className="text-foreground text-lg leading-relaxed italic">
-            &ldquo;{review.adviceToManagement}&rdquo;
-          </p>
         </div>
       </div>
     </article>

@@ -1,4 +1,5 @@
 import { SignJWT, jwtVerify } from "jose";
+import { cookies } from "next/headers";
 
 export const ADMIN_COOKIE = "admin_token";
 
@@ -18,4 +19,16 @@ export async function signAdminToken() {
 
 export async function verifyAdminToken(token: string) {
   return jwtVerify(token, secret());
+}
+
+export async function requireAdmin(): Promise<boolean> {
+  const store = await cookies();
+  const token = store.get(ADMIN_COOKIE)?.value;
+  if (!token) return false;
+  try {
+    await verifyAdminToken(token);
+    return true;
+  } catch {
+    return false;
+  }
 }

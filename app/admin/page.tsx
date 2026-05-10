@@ -1,40 +1,28 @@
 import type { Metadata } from "next";
-import { Flag, Building2, FileText, ShieldAlert } from "lucide-react";
+import { Flag, FileText, ShieldAlert } from "lucide-react";
 import { AdminLogoutButton } from "@/components/admin-logout-button";
+import { PendingCompaniesQueue } from "@/components/pending-companies-queue";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard — RateMyOrg",
   robots: { index: false, follow: false },
 };
 
-const sections = [
+const comingSoon = [
   {
     icon: Flag,
     label: "Moderation Queue",
     description: "Review flagged content and community reports.",
-    count: null,
-    badge: "Coming soon",
-  },
-  {
-    icon: Building2,
-    label: "Company Management",
-    description: "Edit company details, merge duplicates, manage logos.",
-    count: null,
-    badge: "Coming soon",
   },
   {
     icon: FileText,
     label: "Content Removal",
     description: "Delete individual reviews or interviews that violate guidelines.",
-    count: null,
-    badge: "Coming soon",
   },
   {
     icon: ShieldAlert,
     label: "Abuse Log",
     description: "Browse rejected submissions to identify spam patterns.",
-    count: null,
-    badge: "Coming soon",
   },
 ];
 
@@ -64,8 +52,9 @@ export default function AdminPage() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {sections.map(({ icon: Icon, label, description, badge }) => (
+        {/* Coming-soon cards */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {comingSoon.map(({ icon: Icon, label, description }) => (
             <div
               key={label}
               className="border-outline-variant/20 bg-surface-container-lowest rounded-xl border p-6"
@@ -74,16 +63,19 @@ export default function AdminPage() {
                 <div className="bg-surface-container flex h-10 w-10 items-center justify-center rounded-lg">
                   <Icon size={18} className="text-on-surface-variant" />
                 </div>
-                {badge && (
-                  <span className="bg-surface-container text-on-surface-variant rounded-full px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
-                    {badge}
-                  </span>
-                )}
+                <span className="bg-surface-container text-on-surface-variant rounded-full px-2.5 py-1 font-mono text-[10px] tracking-widest uppercase">
+                  Coming soon
+                </span>
               </div>
               <h2 className="mb-1 font-bold tracking-tight">{label}</h2>
               <p className="text-on-surface-variant text-sm leading-relaxed">{description}</p>
             </div>
           ))}
+        </div>
+
+        {/* Pending companies queue */}
+        <div className="mt-12">
+          <PendingCompaniesQueue />
         </div>
       </main>
     </div>

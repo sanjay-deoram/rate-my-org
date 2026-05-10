@@ -2,9 +2,9 @@
 
 import { useState, useRef, useEffect } from "react";
 import { Search, PlusCircle } from "lucide-react";
-import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { useCompanySearch } from "@/hooks/use-company-search";
+import { AddOrganizationModal } from "@/components/add-organization-modal";
 import type { CompanySuggestion } from "@/types/review";
 
 const inputCls =
@@ -34,6 +34,7 @@ export function CompanySearchInput({
   const [inputValue, setInputValue] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
@@ -173,8 +174,12 @@ export function CompanySearchInput({
 
           {showAddCompany && (
             <div className="border-outline-variant/20 border-t px-2 pt-1 pb-2">
-              <Link
-                href="/orgs/add"
+              <button
+                type="button"
+                onMouseDown={() => {
+                  setShowDropdown(false);
+                  setIsModalOpen(true);
+                }}
                 className="group relative flex w-full items-center gap-4 overflow-hidden rounded-lg px-4 py-3 text-left"
               >
                 <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
@@ -187,11 +192,22 @@ export function CompanySearchInput({
                 <span className="text-on-surface-variant group-hover:text-primary-foreground relative text-sm font-medium transition-colors duration-300">
                   Add company
                 </span>
-              </Link>
+              </button>
             </div>
           )}
         </div>
       )}
+
+      <AddOrganizationModal
+        open={isModalOpen}
+        onOpenChange={setIsModalOpen}
+        initialName={inputValue}
+        onCompanyCreated={(company) => {
+          setInputValue(company.name);
+          setShowDropdown(false);
+          onSelect({ slug: company.slug, name: company.name, logoUrl: null });
+        }}
+      />
     </div>
   );
 }

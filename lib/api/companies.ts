@@ -1,4 +1,27 @@
 import type { CompanySearchResponse } from "@/types/review";
+import type { Company, CreateCompanyPayload } from "@/lib/schemas/company";
+
+export type { CreateCompanyPayload };
+
+export type CreatedCompany = Pick<Company, "id" | "slug" | "name" | "headquarters">;
+
+export async function createCompany(payload: CreateCompanyPayload): Promise<CreatedCompany> {
+  const res = await fetch("/api/companies", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (res.status === 409) {
+    const data = await res.json();
+    throw Object.assign(new Error(data.error ?? "Company already exists."), {
+      status: 409,
+      slug: data.slug,
+    });
+  }
+  if (!res.ok) throw new Error("Failed to create company. Please try again.");
+  const data = await res.json();
+  return data.company;
+}
 
 export async function listCompanies({
   cursor,

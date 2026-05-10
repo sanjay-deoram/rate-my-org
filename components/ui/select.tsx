@@ -52,7 +52,7 @@ const SelectContent = React.forwardRef<
       sideOffset={4}
       className={cn(
         "bg-surface-container-lowest text-foreground",
-        "relative z-50 min-w-32 overflow-hidden rounded-xl shadow-md",
+        "relative z-[500] min-w-32 overflow-hidden rounded-xl shadow-md",
         "data-[state=open]:animate-in data-[state=closed]:animate-out",
         "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
         "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -93,7 +93,7 @@ const SelectItem = React.forwardRef<
   >
     {/* Wipe animation background */}
     <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-lg transition-transform duration-300 ease-out group-data-[highlighted]:scale-x-100" />
-    <span className="group-data-[highlighted]:text-primary-foreground relative left-2 flex size-3.5 items-center justify-center">
+    <span className="group-data-[highlighted]:text-primary-foreground absolute left-2 flex size-3.5 items-center justify-center">
       <Select.ItemIndicator>
         <Check size={14} />
       </Select.ItemIndicator>

@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { companies, reviews, interviews } from "@/drizzle/schema";
-import { eq, desc } from "drizzle-orm";
+import { eq, and, desc } from "drizzle-orm";
 
 function difficultyLabel(avg: number): "Easy" | "Medium" | "Hard" | "Very Hard" {
   if (avg <= 2) return "Easy";
@@ -10,7 +10,11 @@ function difficultyLabel(avg: number): "Easy" | "Medium" | "Hard" | "Very Hard" 
 }
 
 export async function getCompanyWithStats(slug: string) {
-  const [company] = await db.select().from(companies).where(eq(companies.slug, slug)).limit(1);
+  const [company] = await db
+    .select()
+    .from(companies)
+    .where(and(eq(companies.slug, slug), eq(companies.status, "approved")))
+    .limit(1);
 
   if (!company) return null;
 

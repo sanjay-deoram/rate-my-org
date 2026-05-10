@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
 import { db } from "@/lib/db";
 import { companies } from "@/drizzle/schema";
-import { sql, gt, ilike, desc } from "drizzle-orm";
+import { sql, gt, ilike, desc, eq, and } from "drizzle-orm";
+import { createCompanySchema } from "@/lib/schemas/company";
 
 export const runtime = "nodejs";
 
@@ -34,7 +35,7 @@ export async function GET(req: NextRequest) {
         logoKey: companies.logoKey,
       })
       .from(companies)
-      .where(ilike(companies.name, `%${search}%`))
+      .where(and(eq(companies.status, "approved"), ilike(companies.name, `%${search}%`)))
       .orderBy(desc(sql`similarity(${companies.name}, ${search})`), companies.name)
       .limit(limit + 1)
       .offset(offset);
@@ -46,7 +47,11 @@ export async function GET(req: NextRequest) {
         logoKey: companies.logoKey,
       })
       .from(companies)
-      .where(cursor ? gt(companies.slug, cursor) : undefined)
+      .where(
+        cursor
+          ? and(eq(companies.status, "approved"), gt(companies.slug, cursor))
+          : eq(companies.status, "approved"),
+      )
       .orderBy(companies.slug)
       .limit(limit + 1);
   }
@@ -75,4 +80,85 @@ export async function GET(req: NextRequest) {
       },
     },
   );
+}
+
+function toSlug(text: string): string {
+  return text
+    .toLowerCase()
+    .trim()
+    .replace(/[^\w\s-]/g, "")
+    .replace(/[\s_]+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-|-$/g, "");
+}
+
+export async function POST(req: NextRequest) {
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON" }, { status: 400 });
+  }
+
+  const parsed = createCompanySchema.safeParse(body);
+  if (!parsed.success) {
+    return NextResponse.json({ error: parsed.error.flatten() }, { status: 422 });
+  }
+
+  const { name, headquarters, industry, website } = parsed.data;
+
+  // Duplicate check: same name + headquarters (case-insensitive), any status
+  const [existing] = await db
+    .select({ slug: companies.slug, status: companies.status })
+    .from(companies)
+    .where(
+      and(
+        sql`lower(${companies.name}) = lower(${name})`,
+        sql`lower(${companies.headquarters}) = lower(${headquarters})`,
+      ),
+    )
+    .limit(1);
+
+  if (existing) {
+    return NextResponse.json(
+      { error: "A company with this name and location already exists.", slug: existing.slug },
+      { status: 409 },
+    );
+  }
+
+  // Generate a unique slug
+  const baseSlug = toSlug(name);
+  let slug = baseSlug;
+  let suffix = 1;
+
+  while (true) {
+    const [conflict] = await db
+      .select({ id: companies.id })
+      .from(companies)
+      .where(eq(companies.slug, slug))
+      .limit(1);
+
+    if (!conflict) break;
+    slug = `${baseSlug}-${toSlug(headquarters)}-${suffix}`;
+    suffix++;
+  }
+
+  const [inserted] = await db
+    .insert(companies)
+    .values({
+      name,
+      headquarters,
+      industry,
+      website: website || null,
+      slug,
+      status: "pending",
+    })
+    .returning({
+      id: companies.id,
+      slug: companies.slug,
+      name: companies.name,
+      headquarters: companies.headquarters,
+    });
+
+  return NextResponse.json({ company: inserted }, { status: 201 });
 }

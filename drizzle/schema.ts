@@ -1,6 +1,8 @@
 import { pgTable, pgEnum, uuid, text, smallint, integer, timestamp } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
 
+export const companyStatusEnum = pgEnum("company_status", ["pending", "approved"]);
+
 export const interviewExperienceEnum = pgEnum("interview_experience", [
   "Great",
   "Neutral",
@@ -25,6 +27,7 @@ export const companies = pgTable("companies", {
   founded: integer("founded"),
   description: text("description"),
   logoKey: text("logo_key"),
+  status: companyStatusEnum("status").notNull().default("approved"),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()
     .default(sql`now()`),

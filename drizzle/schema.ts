@@ -1,4 +1,14 @@
-import { pgTable, pgEnum, uuid, text, smallint, integer, timestamp } from "drizzle-orm/pg-core";
+import {
+  pgTable,
+  pgEnum,
+  uuid,
+  text,
+  smallint,
+  integer,
+  timestamp,
+  jsonb,
+} from "drizzle-orm/pg-core";
+import type { RoundType } from "@/lib/schemas/interview";
 import { sql } from "drizzle-orm";
 
 export const companyStatusEnum = pgEnum("company_status", ["pending", "approved"]);
@@ -86,7 +96,7 @@ export const interviews = pgTable("interviews", {
   department: text("department"),
   difficulty: smallint("difficulty").notNull(),
   overallExperience: interviewExperienceEnum("overall_experience").notNull(),
-  description: text("description").notNull(),
+  rounds: jsonb("rounds").$type<Array<{ type: RoundType; notes: string }>>().notNull(),
   offerReceived: interviewOfferOutcomeEnum("offer_received").notNull(),
   createdAt: timestamp("created_at", { withTimezone: true })
     .notNull()

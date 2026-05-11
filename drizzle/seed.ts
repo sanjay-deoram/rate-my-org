@@ -95,8 +95,25 @@ async function seed() {
         department: "Payments",
         difficulty: 4,
         overallExperience: "Great",
-        description:
-          "Four rounds: recruiter screen, coding challenge (LeetCode medium), systems design, and a behavioral deep-dive. Interviewers were engaged and gave real feedback at the end.",
+        rounds: [
+          {
+            type: "Phone Screen",
+            notes: "30-min recruiter call. Background and motivation questions.",
+          },
+          {
+            type: "Technical",
+            notes: "LeetCode medium — sliding window array problem. 45 minutes.",
+          },
+          {
+            type: "System Design",
+            notes:
+              "Design a payment processing pipeline. Focus on idempotency and fault tolerance.",
+          },
+          {
+            type: "Behavioral",
+            notes: "Deep-dive on past projects. Interviewers gave real-time feedback at the end.",
+          },
+        ],
         offerReceived: "Yes",
       },
       {
@@ -105,8 +122,26 @@ async function seed() {
         department: "Platform",
         difficulty: 4,
         overallExperience: "Great",
-        description:
-          "Two phone screens followed by a full-day on-site with six interviews: product sense, analytical, estimation, cross-functional leadership, and two stakeholder scenarios. Very structured.",
+        rounds: [
+          { type: "Phone Screen", notes: "Initial recruiter screen, 20 minutes." },
+          {
+            type: "Phone Screen",
+            notes: "Second screen with hiring manager. Product philosophy discussion.",
+          },
+          {
+            type: "Technical + Behavioral",
+            notes:
+              "Product sense and analytical round. Estimation question on Stripe's transaction volume.",
+          },
+          {
+            type: "Behavioral",
+            notes: "Cross-functional leadership scenario. Stakeholder conflict resolution.",
+          },
+          {
+            type: "Final / Offer",
+            notes: "Two stakeholder scenario interviews back-to-back. Very structured.",
+          },
+        ],
         offerReceived: "Yes but Declined",
       },
     ])

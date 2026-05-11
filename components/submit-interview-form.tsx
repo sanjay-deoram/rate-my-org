@@ -3,9 +3,15 @@
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { z } from "zod";
-import { Shield, ArrowRight } from "lucide-react";
+import { Shield, ArrowRight, Plus, X } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { INTERVIEW_EXPERIENCES, OFFER_OUTCOMES } from "@/lib/schemas/interview";
+import {
+  INTERVIEW_EXPERIENCES,
+  OFFER_OUTCOMES,
+  ROUND_TYPES,
+  roundSchema,
+  type RoundType,
+} from "@/lib/schemas/interview";
 import { useSubmitInterview } from "@/hooks/use-submit-interview";
 import type { CompanySuggestion } from "@/types/review";
 import type { InterviewPostBody } from "@/lib/api/interviews";
@@ -16,18 +22,6 @@ const inputCls =
   "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0";
 
 const DIFFICULTY_LABELS = ["", "Very Easy", "Easy", "Medium", "Hard", "Very Hard"] as const;
-
-const DESCRIPTION_TEMPLATE = `[Interview Process]
-
-
-[Behavioral]
-
-
-[Technical]
-
-
-[More Info]
-`;
 
 export function SubmitInterviewForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -41,7 +35,7 @@ export function SubmitInterviewForm() {
       department: "",
       difficulty: 0,
       overallExperience: "" as (typeof INTERVIEW_EXPERIENCES)[number] | "",
-      description: DESCRIPTION_TEMPLATE,
+      rounds: [{ type: "Phone Screen" as RoundType, notes: "" }],
       offerReceived: "" as (typeof OFFER_OUTCOMES)[number] | "",
     },
     onSubmit: async ({ value }) => {
@@ -254,36 +248,74 @@ export function SubmitInterviewForm() {
         </form.Field>
       </section>
 
-      {/* Step 05 — Interview Process */}
+      {/* Step 05 — Interview Rounds */}
       <section className="space-y-6" id="step-5">
         <div className="mb-2 flex items-center gap-4">
           <span className="text-outline font-mono text-xs tracking-widest uppercase">Step 05</span>
           <div className="bg-outline-variant/20 h-px flex-1" />
         </div>
-        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
-          <h2 className="text-2xl font-bold tracking-tight">Interview Process</h2>
-        </div>
+        <h2 className="text-2xl font-bold tracking-tight">Interview Rounds</h2>
         <form.Field
-          name="description"
+          name="rounds"
           validators={{
-            onSubmit: z
-              .string()
-              .min(10, "Please describe the interview process in more detail")
-              .max(5000),
+            onSubmit: z.array(roundSchema).min(1, "Add at least one round"),
           }}
         >
           {(field) => (
-            <div className="space-y-2">
-              <textarea
-                rows={10}
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                className={cn(
-                  "bg-surface-container-low focus:ring-primary placeholder:text-outline-variant w-full resize-none rounded-lg border-0 p-6 text-sm leading-relaxed outline-none focus:ring-1",
-                  field.state.meta.errors.length > 0 && "ring-destructive ring-1",
-                )}
-              />
+            <div className="space-y-3">
+              {field.state.value.map((round, idx) => (
+                <div key={idx} className="bg-surface-container-low space-y-3 rounded-xl p-5">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <span className="text-outline font-mono text-xs tracking-widest uppercase">
+                        Round {idx + 1}
+                      </span>
+                      <select
+                        value={round.type}
+                        onChange={(e) => {
+                          const updated = [...field.state.value];
+                          updated[idx] = { ...updated[idx], type: e.target.value as RoundType };
+                          field.handleChange(updated);
+                        }}
+                        className="bg-surface-container-lowest border-outline-variant/20 rounded-lg border px-3 py-1.5 font-mono text-xs font-bold outline-none"
+                      >
+                        {ROUND_TYPES.map((t) => (
+                          <option key={t} value={t}>
+                            {t}
+                          </option>
+                        ))}
+                      </select>
+                    </div>
+                    {field.state.value.length > 1 && (
+                      <button
+                        type="button"
+                        onClick={() => field.removeValue(idx)}
+                        className="text-outline-variant hover:text-destructive transition-colors"
+                      >
+                        <X size={14} />
+                      </button>
+                    )}
+                  </div>
+                  <textarea
+                    rows={3}
+                    value={round.notes}
+                    onChange={(e) => {
+                      const updated = [...field.state.value];
+                      updated[idx] = { ...updated[idx], notes: e.target.value };
+                      field.handleChange(updated);
+                    }}
+                    placeholder="Describe what happened in this round..."
+                    className="bg-surface-container-lowest placeholder:text-outline-variant focus:ring-primary w-full resize-none rounded-lg border-0 p-3 text-sm leading-relaxed outline-none focus:ring-1"
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                onClick={() => field.pushValue({ type: "Technical" as RoundType, notes: "" })}
+                className="border-outline-variant/30 text-on-surface-variant hover:border-primary hover:text-foreground flex w-full items-center justify-center gap-2 rounded-xl border border-dashed px-5 py-3 text-sm font-medium transition-all"
+              >
+                <Plus size={16} /> Add Round
+              </button>
               {field.state.meta.errors[0] && (
                 <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
               )}

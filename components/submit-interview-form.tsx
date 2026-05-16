@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { z } from "zod";
-import { Shield, ArrowRight, Plus, X } from "lucide-react";
+import { Shield, ArrowRight, Plus, X, ChevronDown } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   INTERVIEW_EXPERIENCES,
@@ -17,6 +17,13 @@ import type { CompanySuggestion } from "@/types/review";
 import type { InterviewPostBody } from "@/lib/api/interviews";
 import { errMsg } from "@/shared/err-msg";
 import { CompanySearchInput } from "@/components/company-search-input";
+import {
+  DropdownRoot,
+  DropdownTrigger,
+  DropdownClose,
+  DropdownContent,
+  DropdownItem,
+} from "@/components/ui/dropdown";
 
 const inputCls =
   "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0";
@@ -270,21 +277,28 @@ export function SubmitInterviewForm() {
                       <span className="text-outline font-mono text-xs tracking-widest uppercase">
                         Round {idx + 1}
                       </span>
-                      <select
-                        value={round.type}
-                        onChange={(e) => {
-                          const updated = [...field.state.value];
-                          updated[idx] = { ...updated[idx], type: e.target.value as RoundType };
-                          field.handleChange(updated);
-                        }}
-                        className="bg-surface-container-lowest border-outline-variant/20 rounded-lg border px-3 py-1.5 font-mono text-xs font-bold outline-none"
-                      >
-                        {ROUND_TYPES.map((t) => (
-                          <option key={t} value={t}>
-                            {t}
-                          </option>
-                        ))}
-                      </select>
+                      <DropdownRoot>
+                        <DropdownTrigger className="bg-surface-container-lowest border-outline-variant/20 flex items-center gap-1.5 rounded-lg border px-3 py-1.5 font-mono text-xs font-bold outline-none">
+                          {round.type}
+                          <ChevronDown size={11} className="text-outline-variant" />
+                        </DropdownTrigger>
+                        <DropdownContent align="start">
+                          {ROUND_TYPES.map((t) => (
+                            <DropdownClose key={t} asChild>
+                              <DropdownItem
+                                active={round.type === t}
+                                onClick={() => {
+                                  const updated = [...field.state.value];
+                                  updated[idx] = { ...updated[idx], type: t };
+                                  field.handleChange(updated);
+                                }}
+                              >
+                                {t}
+                              </DropdownItem>
+                            </DropdownClose>
+                          ))}
+                        </DropdownContent>
+                      </DropdownRoot>
                     </div>
                     {field.state.value.length > 1 && (
                       <button

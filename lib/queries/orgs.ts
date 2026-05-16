@@ -1,13 +1,8 @@
 import { db } from "@/lib/db";
 import { companies, reviews, interviews } from "@/drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
-
-function difficultyLabel(avg: number): "Easy" | "Medium" | "Hard" | "Very Hard" {
-  if (avg <= 2) return "Easy";
-  if (avg <= 3) return "Medium";
-  if (avg <= 4) return "Hard";
-  return "Very Hard";
-}
+import { difficultyLabel } from "@/lib/org-display";
+import { roundToOneDecimal } from "@/lib/utils";
 
 export async function getCompanyWithStats(slug: string) {
   const [company] = await db
@@ -34,8 +29,7 @@ export async function getCompanyWithStats(slug: string) {
   const reviewCount = companyReviews.length;
   const avgRating =
     reviewCount > 0
-      ? Math.round((companyReviews.reduce((s, r) => s + r.overallRating, 0) / reviewCount) * 10) /
-        10
+      ? roundToOneDecimal(companyReviews.reduce((s, r) => s + r.overallRating, 0) / reviewCount)
       : 0;
   const recommendPct =
     reviewCount > 0

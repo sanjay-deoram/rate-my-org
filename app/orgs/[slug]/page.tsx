@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
-import { BadgeCheck, TrendingUp, BookOpen, MessageSquare } from "lucide-react";
+import { BadgeCheck, TrendingUp, BookOpen, MessageSquare, ArrowLeft } from "lucide-react";
+import Link from "next/link";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { getCompanyWithStats } from "@/lib/queries/orgs";
@@ -33,6 +34,17 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
     <>
       <Nav />
       <main className="pt-28 pb-24">
+        {/* Back button */}
+        <div className="mx-auto mb-8 max-w-7xl px-8 md:px-12">
+          <Link
+            href="/companies"
+            className="text-on-surface-variant hover:text-foreground inline-flex items-center gap-2 text-sm font-medium transition-colors"
+          >
+            <ArrowLeft size={16} />
+            Back
+          </Link>
+        </div>
+
         {/* Brand header */}
         <section className="mx-auto mb-16 max-w-7xl px-8 md:px-12">
           <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">

@@ -2,10 +2,38 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, X, Building2 } from "lucide-react";
+import { Search, X, Building2, Star, MessageSquare, Users } from "lucide-react";
 import { useCompanySearch } from "@/hooks/use-company-search";
 import { useCompanyBrowse } from "@/hooks/use-company-browse";
 import type { CompanySuggestion } from "@/types/review";
+
+const STAT_PILL_VARIANT = {
+  amber: "bg-amber-50 text-amber-700",
+  neutral: "bg-surface-container text-on-surface-variant",
+} as const;
+
+function StatPill({
+  label,
+  variant,
+  children,
+}: {
+  label: string;
+  variant: keyof typeof STAT_PILL_VARIANT;
+  children: React.ReactNode;
+}) {
+  return (
+    <div className="group/pill relative">
+      <span
+        className={`flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] transition-colors duration-300 group-hover:bg-white/10 group-hover:text-white ${STAT_PILL_VARIANT[variant]}`}
+      >
+        {children}
+      </span>
+      <div className="bg-foreground pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 rounded px-2 py-1 font-mono text-[10px] font-medium whitespace-nowrap text-white opacity-0 transition-opacity duration-150 group-hover/pill:opacity-100">
+        {label}
+      </div>
+    </div>
+  );
+}
 
 function CompanyCard({ company }: { company: CompanySuggestion }) {
   return (
@@ -13,7 +41,6 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
       href={`/orgs/${company.slug}`}
       className="group relative isolate flex items-center gap-5 overflow-hidden rounded-xl px-6 py-5"
     >
-      {/* Primary wipe background */}
       <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
 
       <div className="relative shrink-0">
@@ -37,6 +64,20 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
         <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[11px] tracking-wide transition-colors duration-300">
           {company.slug}
         </p>
+        <div className="mt-2 flex items-center gap-1.5">
+          <StatPill label="Rating" variant="amber">
+            <Star size={9} className="fill-current" />
+            {company.avgRating ?? "—"}
+          </StatPill>
+          <StatPill label="Reviews" variant="neutral">
+            <MessageSquare size={9} />
+            {company.reviewCount}
+          </StatPill>
+          <StatPill label="Interviews" variant="neutral">
+            <Users size={9} />
+            {company.interviewCount}
+          </StatPill>
+        </div>
       </div>
 
       <span className="text-on-surface-variant group-hover:text-primary-foreground relative shrink-0 text-sm font-medium transition-colors duration-300">
@@ -80,10 +121,7 @@ export function CompaniesDirectory() {
 
   const active = isSearching ? search : browse;
   const companies = dedupeBySlug(active.data?.pages.flatMap((p) => p.items) ?? []);
-
-  const fetchNextPage = active.fetchNextPage;
-  const hasNextPage = active.hasNextPage;
-  const isFetchingNextPage = active.isFetchingNextPage;
+  const { fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = active;
 
   const handleSentinel = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -114,11 +152,8 @@ export function CompaniesDirectory() {
     setDebouncedQuery("");
   }
 
-  const isLoading = active.isLoading;
-
   return (
     <div>
-      {/* Search bar */}
       <div className="bg-surface-container-lowest border-border/20 mb-8 flex items-center overflow-visible rounded-2xl border shadow-[0_20px_60px_rgba(27,27,27,0.08)]">
         <div className="flex flex-1 items-center gap-3 px-5 py-3">
           <Search size={18} className="text-on-surface-variant shrink-0" />
@@ -149,7 +184,6 @@ export function CompaniesDirectory() {
         </div>
       </div>
 
-      {/* Result count */}
       {!isLoading && (
         <div className="mb-6">
           <p className="text-on-surface-variant text-sm">
@@ -171,7 +205,6 @@ export function CompaniesDirectory() {
         </div>
       )}
 
-      {/* Company list */}
       <div className="divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 pt-2 shadow-sm">
         {isLoading && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
 

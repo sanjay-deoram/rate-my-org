@@ -14,7 +14,7 @@ export default function CompaniesPage() {
     <>
       <Nav />
       <main className="min-h-screen pt-20">
-        <section className="mx-auto max-w-3xl px-8 py-24 md:px-12">
+        <section className="mx-auto max-w-5xl px-8 py-24 md:px-12">
           {/* Header */}
           <div className="mb-12">
             <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.2em] uppercase">

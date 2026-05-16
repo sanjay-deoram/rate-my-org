@@ -4,6 +4,9 @@ export type CompanySuggestion = {
   slug: string;
   name: string;
   logoUrl: string | null;
+  reviewCount: number;
+  interviewCount: number;
+  avgRating: number | null;
 };
 
 export type CompanySearchResponse = {

@@ -4,6 +4,7 @@ import { db } from "@/lib/db";
 import { companies } from "@/drizzle/schema";
 import { sql, gt, ilike, desc, eq, and } from "drizzle-orm";
 import { createCompanySchema } from "@/lib/schemas/company";
+import { roundToOneDecimal } from "@/lib/utils";
 
 export const runtime = "nodejs";
 
@@ -15,6 +16,17 @@ const querySchema = z.object({
 
 const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
 
+const statsFields = {
+  slug: companies.slug,
+  name: companies.name,
+  logoKey: companies.logoKey,
+  reviewCount: sql<number>`(SELECT COUNT(*) FROM reviews WHERE reviews.company_id = companies.id)`,
+  interviewCount: sql<number>`(SELECT COUNT(*) FROM interviews WHERE interviews.company_id = companies.id)`,
+  avgRating: sql<
+    string | null
+  >`(SELECT AVG(overall_rating) FROM reviews WHERE reviews.company_id = companies.id)`,
+};
+
 export async function GET(req: NextRequest) {
   const parsed = querySchema.safeParse(Object.fromEntries(req.nextUrl.searchParams));
 
@@ -24,37 +36,24 @@ export async function GET(req: NextRequest) {
 
   const { search, limit, cursor } = parsed.data;
 
-  let rows: { slug: string; name: string; logoKey: string | null }[];
-
-  if (search) {
-    const offset = cursor ? parseInt(cursor, 10) : 0;
-    rows = await db
-      .select({
-        slug: companies.slug,
-        name: companies.name,
-        logoKey: companies.logoKey,
-      })
-      .from(companies)
-      .where(and(eq(companies.status, "approved"), ilike(companies.name, `%${search}%`)))
-      .orderBy(desc(sql`similarity(${companies.name}, ${search})`), companies.name)
-      .limit(limit + 1)
-      .offset(offset);
-  } else {
-    rows = await db
-      .select({
-        slug: companies.slug,
-        name: companies.name,
-        logoKey: companies.logoKey,
-      })
-      .from(companies)
-      .where(
-        cursor
-          ? and(eq(companies.status, "approved"), gt(companies.slug, cursor))
-          : eq(companies.status, "approved"),
-      )
-      .orderBy(companies.slug)
-      .limit(limit + 1);
-  }
+  const rows = await (search
+    ? db
+        .select(statsFields)
+        .from(companies)
+        .where(and(eq(companies.status, "approved"), ilike(companies.name, `%${search}%`)))
+        .orderBy(desc(sql`similarity(${companies.name}, ${search})`), companies.name)
+        .limit(limit + 1)
+        .offset(cursor ? parseInt(cursor, 10) : 0)
+    : db
+        .select(statsFields)
+        .from(companies)
+        .where(
+          cursor
+            ? and(eq(companies.status, "approved"), gt(companies.slug, cursor))
+            : eq(companies.status, "approved"),
+        )
+        .orderBy(companies.slug)
+        .limit(limit + 1));
 
   const hasMore = rows.length > limit;
   const items = hasMore ? rows.slice(0, limit) : rows;
@@ -71,6 +70,9 @@ export async function GET(req: NextRequest) {
         slug: r.slug,
         name: r.name,
         logoUrl: r.logoKey ? `${CDN}/${r.logoKey}` : null,
+        reviewCount: Number(r.reviewCount),
+        interviewCount: Number(r.interviewCount),
+        avgRating: r.avgRating != null ? roundToOneDecimal(parseFloat(r.avgRating)) : null,
       })),
       nextCursor,
     },

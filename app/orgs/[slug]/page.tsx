@@ -89,7 +89,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         </section>
 
         {/* KPI grid */}
-        <section className="mx-auto mb-20 max-w-7xl px-8 md:px-12">
+        <section className="mx-auto mb-8 max-w-7xl px-8 md:px-12">
           <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
             <div className="bg-surface-container-low hover:bg-surface-container-highest flex h-48 flex-col justify-between rounded-xl p-8 transition-all duration-300">
               <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
@@ -119,7 +119,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
 
             <div className="bg-primary text-primary-foreground flex h-48 flex-col justify-between rounded-xl p-8">
               <span className="text-on-primary-container font-mono text-xs tracking-widest uppercase">
-                Interview Reports
+                Interviews
               </span>
               <div className="flex items-end justify-between">
                 <span className="text-5xl font-bold tracking-tighter">{stats.interviewCount}</span>

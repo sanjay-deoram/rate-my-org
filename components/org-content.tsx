@@ -117,7 +117,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
   const tabHeadings: Record<Tab, string> = {
     reviews: "Anonymous Feedback",
-    interviews: "Interview Reports",
+    interviews: "Interviews",
     both: "All Activity",
   };
 
@@ -180,35 +180,35 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         )}
       </div>
 
-      <div className="border-outline-variant/15 mb-5 border-b">
-        <div className="flex gap-7">
-          {[
-            { value: "reviews" as Tab, label: "Reviews", count: reviews.length },
-            { value: "both" as Tab, label: "Both", count: reviews.length + interviews.length },
-            { value: "interviews" as Tab, label: "Interviews", count: interviews.length },
-          ].map(({ value, label, count }) => (
-            <button
-              key={value}
-              onClick={() => handleSetTab(value)}
-              className={`-mb-px flex items-center gap-2 border-b-2 pb-3 text-sm font-semibold tracking-tight transition-all ${
-                tab === value
-                  ? "border-foreground text-foreground"
-                  : "text-on-surface-variant hover:text-foreground border-transparent"
+      <div className="border-outline-variant/15 mb-8 flex gap-10 border-b">
+        {[
+          { value: "reviews" as Tab, label: "Reviews", count: reviews.length },
+          { value: "both" as Tab, label: "Both", count: reviews.length + interviews.length },
+          { value: "interviews" as Tab, label: "Interviews", count: interviews.length },
+        ].map(({ value, label, count }) => (
+          <button
+            key={value}
+            onClick={() => handleSetTab(value)}
+            className={`-mb-px flex flex-col items-start border-b-2 pb-4 transition-all ${
+              tab === value ? "border-foreground" : "border-transparent"
+            }`}
+          >
+            <span
+              className={`font-mono text-2xl leading-none font-bold tabular-nums transition-colors ${
+                tab === value ? "text-foreground" : "text-outline-variant/40"
+              }`}
+            >
+              {count}
+            </span>
+            <span
+              className={`mt-1 text-[11px] font-semibold tracking-widest uppercase transition-colors ${
+                tab === value ? "text-foreground" : "text-on-surface-variant"
               }`}
             >
               {label}
-              <span
-                className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
-                  tab === value
-                    ? "bg-foreground text-background"
-                    : "bg-surface-container text-on-surface-variant"
-                }`}
-              >
-                {count}
-              </span>
-            </button>
-          ))}
-        </div>
+            </span>
+          </button>
+        ))}
       </div>
 
       <OrgFilterBar

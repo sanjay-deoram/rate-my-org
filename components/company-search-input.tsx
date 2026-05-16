@@ -205,7 +205,14 @@ export function CompanySearchInput({
         onCompanyCreated={(company) => {
           setInputValue(company.name);
           setShowDropdown(false);
-          onSelect({ slug: company.slug, name: company.name, logoUrl: null });
+          onSelect({
+            slug: company.slug,
+            name: company.name,
+            logoUrl: null,
+            reviewCount: 0,
+            interviewCount: 0,
+            avgRating: null,
+          });
         }}
       />
     </div>

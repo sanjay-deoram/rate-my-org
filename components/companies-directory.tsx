@@ -120,8 +120,18 @@ export function CompaniesDirectory() {
   const search = useCompanySearch(debouncedQuery);
 
   const active = isSearching ? search : browse;
-  const companies = dedupeBySlug(active.data?.pages.flatMap((p) => p.items) ?? []);
-  const { fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } = active;
+
+  // While search is in-flight (no data yet), keep browse cards visible so there's
+  // no abrupt blank → skeleton → results flash.
+  const isSearchTransitioning = isSearching && search.isLoading && !search.data;
+  const isInitialLoad = browse.isLoading && !browse.data;
+
+  const companies = dedupeBySlug(
+    isSearchTransitioning
+      ? (browse.data?.pages.flatMap((p) => p.items) ?? [])
+      : (active.data?.pages.flatMap((p) => p.items) ?? []),
+  );
+  const { fetchNextPage, hasNextPage, isFetchingNextPage } = active;
 
   const handleSentinel = useCallback(
     (entries: IntersectionObserverEntry[]) => {
@@ -184,31 +194,12 @@ export function CompaniesDirectory() {
         </div>
       </div>
 
-      {!isLoading && (
-        <div className="mb-6">
-          <p className="text-on-surface-variant text-sm">
-            {isSearching ? (
-              <>
-                Showing <span className="text-foreground font-semibold">{companies.length}</span>{" "}
-                results for{" "}
-                <span className="text-foreground font-semibold">
-                  &ldquo;{debouncedQuery}&rdquo;
-                </span>
-              </>
-            ) : (
-              <>
-                <span className="text-foreground font-semibold">{companies.length}</span>{" "}
-                organizations loaded
-              </>
-            )}
-          </p>
-        </div>
-      )}
+      <div
+        className={`divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 pt-2 shadow-sm transition-opacity duration-200 ${isSearchTransitioning ? "opacity-40" : "opacity-100"}`}
+      >
+        {isInitialLoad && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
 
-      <div className="divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 pt-2 shadow-sm">
-        {isLoading && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
-
-        {!isLoading && companies.length === 0 && isSearching && (
+        {!isInitialLoad && !isSearchTransitioning && companies.length === 0 && isSearching && (
           <div className="flex flex-col items-center justify-center py-24 text-center">
             <Building2 size={40} className="text-on-surface-variant/30 mb-4" />
             <p className="text-on-surface-variant font-medium">
@@ -229,7 +220,7 @@ export function CompaniesDirectory() {
 
         <div ref={sentinelRef} className="h-4" />
 
-        {isFetchingNextPage && <LoadingSkeleton />}
+        {!isSearchTransitioning && isFetchingNextPage && <LoadingSkeleton />}
       </div>
     </div>
   );

@@ -119,6 +119,10 @@ Keep components thin — they should only contain props, state, and JSX. Extract
 - `form.handleSubmit()` is called from `onSubmit` on the `<form>` element (not `form.handleSubmit` directly as a prop).
 - Subscribe to submit state: `<form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting]}>` for the submit button.
 
+## Code Style Rules
+
+- **No nested ternaries.** A single-level ternary (`a ? b : c`) is fine. Never nest one inside another. Use lookup objects (`{ reviews: x, interviews: y, both: z }[tab]`), `if`/`else` chains, or a named render function instead.
+
 ## File Conventions
 
 - Shared components: `components/` (server by default)

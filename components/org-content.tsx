@@ -83,22 +83,25 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     });
   }, [filteredReviews, filteredInterviews, sort]);
 
-  const resultCount =
-    tab === "reviews"
-      ? filteredReviews.length
-      : tab === "interviews"
-        ? filteredInterviews.length
-        : bothItems.length;
+  const resultCount = (
+    {
+      reviews: filteredReviews.length,
+      interviews: filteredInterviews.length,
+      both: bothItems.length,
+    } satisfies Record<Tab, number>
+  )[tab];
 
-  const totalCount =
-    tab === "reviews"
-      ? reviews.length
-      : tab === "interviews"
-        ? interviews.length
-        : reviews.length + interviews.length;
+  const totalCount = (
+    {
+      reviews: reviews.length,
+      interviews: interviews.length,
+      both: reviews.length + interviews.length,
+    } satisfies Record<Tab, number>
+  )[tab];
 
+  const minRatingCount = minRating > 0 ? 1 : 0;
   const activeFilterCount =
-    (tab === "reviews" ? (minRating > 0 ? 1 : 0) + empTypes.length : 0) +
+    (tab === "reviews" ? minRatingCount + empTypes.length : 0) +
     (tab === "interviews" ? experience.length + offerFilter.length : 0);
 
   const currentSortLabel = SORT_OPTIONS[tab].find((o) => o.value === sort)?.label ?? "Sort";
@@ -110,16 +113,51 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     setOfferFilter([]);
   };
 
-  const feedTitle =
-    tab === "reviews"
-      ? "Anonymous Feedback"
-      : tab === "interviews"
-        ? "Interview Reports"
-        : "All Activity";
+  const feedTitle = (
+    {
+      reviews: "Anonymous Feedback",
+      interviews: "Interview Reports",
+      both: "All Activity",
+    } satisfies Record<Tab, string>
+  )[tab];
+
+  function renderFeed() {
+    if (tab === "reviews") {
+      if (filteredReviews.length === 0) return <EmptyState query={query} />;
+      return (
+        <div className="space-y-12">
+          {filteredReviews.map((r) => (
+            <ReviewCard key={r.id} review={r} />
+          ))}
+        </div>
+      );
+    }
+    if (tab === "interviews") {
+      if (filteredInterviews.length === 0) return <EmptyState query={query} />;
+      return (
+        <div className="space-y-12">
+          {filteredInterviews.map((i) => (
+            <InterviewCard key={i.id} interview={i} />
+          ))}
+        </div>
+      );
+    }
+    if (bothItems.length === 0) return <EmptyState query={query} />;
+    return (
+      <div className="space-y-12">
+        {bothItems.map((item) =>
+          item._kind === "review" ? (
+            <ReviewCard key={`r-${item.id}`} review={item} showKind />
+          ) : (
+            <InterviewCard key={`i-${item.id}`} interview={item} showKind />
+          ),
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-8 md:px-12">
-      {/* Search */}
       <div className="relative mb-6">
         <Search
           size={16}
@@ -142,9 +180,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         )}
       </div>
 
-      {/* Controls row */}
       <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-        {/* Tab pills */}
         <div className="flex flex-wrap gap-2">
           {(
             [
@@ -173,7 +209,6 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         </div>
 
         <div className="flex items-center gap-2 sm:ml-auto">
-          {/* Sort dropdown */}
           <div className="relative" ref={sortRef}>
             <button
               onClick={() => {
@@ -211,7 +246,6 @@ export function OrgContent({ data }: { data: OrgProfile }) {
             )}
           </div>
 
-          {/* Filter dropdown */}
           <div className="relative" ref={filterRef}>
             <button
               onClick={() => {
@@ -358,50 +392,14 @@ export function OrgContent({ data }: { data: OrgProfile }) {
             )}
           </div>
 
-          {/* Result count */}
           <span className="text-on-surface-variant font-mono text-xs">
             {resultCount === totalCount ? `${totalCount} total` : `${resultCount} of ${totalCount}`}
           </span>
         </div>
       </div>
 
-      {/* Feed header */}
       <h2 className="mb-8 text-2xl font-bold tracking-tight">{feedTitle}</h2>
-
-      {/* Feed */}
-      {tab === "reviews" ? (
-        filteredReviews.length === 0 ? (
-          <EmptyState query={query} />
-        ) : (
-          <div className="space-y-12">
-            {filteredReviews.map((r) => (
-              <ReviewCard key={r.id} review={r} />
-            ))}
-          </div>
-        )
-      ) : tab === "interviews" ? (
-        filteredInterviews.length === 0 ? (
-          <EmptyState query={query} />
-        ) : (
-          <div className="space-y-12">
-            {filteredInterviews.map((i) => (
-              <InterviewCard key={i.id} interview={i} />
-            ))}
-          </div>
-        )
-      ) : bothItems.length === 0 ? (
-        <EmptyState query={query} />
-      ) : (
-        <div className="space-y-12">
-          {bothItems.map((item) =>
-            item._kind === "review" ? (
-              <ReviewCard key={`r-${item.id}`} review={item} showKind />
-            ) : (
-              <InterviewCard key={`i-${item.id}`} interview={item} showKind />
-            ),
-          )}
-        </div>
-      )}
+      {renderFeed()}
     </div>
   );
 }

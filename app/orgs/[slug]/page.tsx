@@ -117,7 +117,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
           </div>
         </section>
 
-        {/* Main content — client component owns sidebar filters + feed */}
+        {/* Main content — variant switcher for A/B/C/D comparison */}
         <OrgContent data={data} />
       </main>
       <Footer />

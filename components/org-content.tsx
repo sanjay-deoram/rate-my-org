@@ -1,320 +1,407 @@
 "use client";
 
-import { useState } from "react";
-import { PlusCircle, MinusCircle, Check, BadgeCheck } from "lucide-react";
+import { useState, useMemo } from "react";
+import { Search, X, ChevronDown, SlidersHorizontal } from "lucide-react";
 import type { OrgProfile } from "@/lib/queries/orgs";
-import {
-  difficultyLabel,
-  formatEmploymentType,
-  sortItemsByCreatedAt,
-  timeAgo,
-} from "@/lib/org-display";
-
-type Review = OrgProfile["reviews"][number];
-type Interview = OrgProfile["interviews"][number];
-type Tab = "reviews" | "interviews";
-type Sort = "recent" | "oldest";
-
-function RadioRow({
-  checked,
-  label,
-  count,
-  onClick,
-}: {
-  checked: boolean;
-  label: string;
-  count?: number;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      className="flex w-full items-center justify-between gap-3 py-2 text-left"
-    >
-      <div className="flex items-center gap-3">
-        <div
-          className={`flex h-4 w-4 shrink-0 items-center justify-center rounded-sm border transition-colors ${
-            checked
-              ? "bg-primary border-primary"
-              : "border-outline-variant/40 bg-surface-container-low"
-          }`}
-        >
-          {checked && <Check size={10} strokeWidth={3} className="text-primary-foreground" />}
-        </div>
-        <span
-          className={`text-sm font-medium ${checked ? "text-foreground" : "text-on-surface-variant"}`}
-        >
-          {label}
-        </span>
-      </div>
-      {count !== undefined && (
-        <span className="text-on-surface-variant font-mono text-xs">{count}</span>
-      )}
-    </button>
-  );
-}
-
-function ReviewCard({ review }: { review: Review }) {
-  return (
-    <article className="bg-surface-container-lowest hover:bg-surface-container-low rounded-xl p-10 transition-colors duration-500">
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <h3 className="mb-1 text-xl font-bold">{review.jobTitle}</h3>
-          <p className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-            {formatEmploymentType(review.employmentType)} • {timeAgo(new Date(review.createdAt))}
-          </p>
-        </div>
-        <div className="bg-primary text-primary-foreground ml-4 flex shrink-0 items-center gap-1 rounded px-3 py-1">
-          <span className="text-sm font-bold">{review.overallRating.toFixed(1)}</span>
-        </div>
-      </div>
-
-      <div className="space-y-6">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
-          <div>
-            <h4 className="mb-3 flex items-center gap-2 text-xs font-black tracking-widest uppercase">
-              <PlusCircle size={16} className="text-tertiary-fixed-dim" /> Pros
-            </h4>
-            <p className="text-on-surface-variant text-sm leading-relaxed whitespace-pre-wrap">
-              {review.pros}
-            </p>
-          </div>
-          <div>
-            <h4 className="text-on-surface-variant mb-3 flex items-center gap-2 text-xs font-black tracking-widest uppercase">
-              <MinusCircle size={16} /> Cons
-            </h4>
-            <p className="text-on-surface-variant text-sm leading-relaxed whitespace-pre-wrap">
-              {review.cons}
-            </p>
-          </div>
-        </div>
-      </div>
-    </article>
-  );
-}
-
-const EXPERIENCE_BADGE: Record<string, string> = {
-  Great: "bg-tertiary-fixed-dim text-on-tertiary-fixed",
-  Neutral: "bg-surface-container-high text-on-surface-variant",
-  Negative: "bg-destructive text-white",
-};
-
-function InterviewCard({ interview }: { interview: Interview }) {
-  return (
-    <article className="bg-surface-container-lowest hover:bg-surface-container-low rounded-xl p-10 transition-colors duration-500">
-      <div className="mb-6 flex items-start justify-between">
-        <div>
-          <h3 className="mb-1 text-xl font-bold">{interview.roleTitle}</h3>
-          <div className="mt-1 flex flex-wrap items-center gap-1.5">
-            {interview.department && (
-              <>
-                <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                  {interview.department}
-                </span>
-                <span className="text-outline-variant font-mono text-sm">·</span>
-              </>
-            )}
-            <span
-              className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${EXPERIENCE_BADGE[interview.overallExperience] ?? "bg-surface-container-high text-on-surface-variant"}`}
-            >
-              {interview.overallExperience}
-            </span>
-            <span className="text-outline-variant font-mono text-sm">·</span>
-            <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-              {timeAgo(new Date(interview.createdAt))}
-            </span>
-          </div>
-        </div>
-        <div className="ml-4 flex shrink-0 flex-col items-end gap-1">
-          <div className="bg-surface-container-high rounded px-3 py-1">
-            <span className="font-mono text-xs font-bold tracking-widest uppercase">
-              {difficultyLabel(interview.difficulty)}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 rounded-full bg-[#d1fadf] px-3 py-1 text-[#00632d]">
-            <BadgeCheck size={14} className="fill-current" />
-            <span className="text-[10px] font-bold tracking-wider uppercase">
-              Offer: {interview.offerReceived}
-            </span>
-          </div>
-        </div>
-      </div>
-
-      <div className="mb-5 flex gap-1">
-        {[1, 2, 3, 4, 5].map((i) => (
-          <div
-            key={i}
-            className={`h-1.5 w-8 rounded-full ${i <= interview.difficulty ? "bg-primary" : "bg-surface-container-highest"}`}
-          />
-        ))}
-      </div>
-
-      <div className="space-y-3">
-        {interview.rounds.map((round, idx) => (
-          <div key={idx} className="flex gap-4">
-            <div className="flex flex-col items-center pt-0.5">
-              <div className="bg-primary text-primary-foreground flex h-5 w-5 shrink-0 items-center justify-center rounded-full font-mono text-[10px] font-bold">
-                {idx + 1}
-              </div>
-              {idx < interview.rounds.length - 1 && (
-                <div className="bg-outline-variant/20 my-1 w-px flex-1" style={{ minHeight: 16 }} />
-              )}
-            </div>
-            <div className="flex-1 pb-3">
-              <span className="border-foreground/20 text-foreground mb-1.5 inline-block rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase">
-                {round.type}
-              </span>
-              <p className="text-on-surface-variant text-sm leading-relaxed">{round.notes}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </article>
-  );
-}
+import type { Tab, Sort, Experience, OfferOutcome, BothItem } from "@/types/org-content";
+import { SORT_OPTIONS } from "@/constants/org-content";
+import { sortReviews, sortInterviews, toggle } from "@/lib/org-sort";
+import { useDropdown } from "@/hooks/use-dropdown";
+import { ReviewCard } from "@/components/review-card";
+import { InterviewCard } from "@/components/interview-card";
+import { EmptyState } from "@/components/empty-state";
+import { formatEmploymentType } from "@/lib/org-display";
 
 export function OrgContent({ data }: { data: OrgProfile }) {
-  const { company, stats, reviews, interviews } = data;
+  const { reviews, interviews } = data;
 
   const [tab, setTab] = useState<Tab>("reviews");
   const [sort, setSort] = useState<Sort>("recent");
+  const [query, setQuery] = useState("");
+  const [minRating, setMinRating] = useState(0);
+  const [empTypes, setEmpTypes] = useState<string[]>([]);
+  const [experience, setExperience] = useState<Experience[]>([]);
+  const [offerFilter, setOfferFilter] = useState<OfferOutcome[]>([]);
 
-  const activeItems =
+  const { open: sortOpen, setOpen: setSortOpen, ref: sortRef } = useDropdown();
+  const { open: filterOpen, setOpen: setFilterOpen, ref: filterRef } = useDropdown();
+
+  const availableEmpTypes = useMemo(
+    () => [...new Set(reviews.map((r) => r.employmentType))].sort(),
+    [reviews],
+  );
+
+  const handleSetTab = (newTab: Tab) => {
+    let newSort = sort;
+    if (newTab === "reviews" && (sort === "hardest" || sort === "easiest")) newSort = "recent";
+    else if (newTab === "interviews" && (sort === "highest" || sort === "lowest"))
+      newSort = "recent";
+    else if (newTab === "both" && !["recent", "oldest"].includes(sort)) newSort = "recent";
+    if (newTab === "both") {
+      setMinRating(0);
+      setEmpTypes([]);
+      setExperience([]);
+      setOfferFilter([]);
+    }
+    setTab(newTab);
+    if (newSort !== sort) setSort(newSort);
+  };
+
+  const q = query.trim().toLowerCase();
+
+  const filteredReviews = useMemo(() => {
+    let items = reviews;
+    if (q) items = items.filter((r) => r.jobTitle.toLowerCase().includes(q));
+    if (minRating > 0) items = items.filter((r) => r.overallRating >= minRating);
+    if (empTypes.length > 0) items = items.filter((r) => empTypes.includes(r.employmentType));
+    return sortReviews(items, sort);
+  }, [reviews, q, minRating, empTypes, sort]);
+
+  const filteredInterviews = useMemo(() => {
+    let items = interviews;
+    if (q)
+      items = items.filter(
+        (i) =>
+          i.roleTitle.toLowerCase().includes(q) ||
+          (i.department?.toLowerCase().includes(q) ?? false),
+      );
+    if (experience.length > 0)
+      items = items.filter((i) => experience.includes(i.overallExperience as Experience));
+    if (offerFilter.length > 0)
+      items = items.filter((i) => offerFilter.includes(i.offerReceived as OfferOutcome));
+    return sortInterviews(items, sort);
+  }, [interviews, q, experience, offerFilter, sort]);
+
+  const bothItems = useMemo<BothItem[]>(() => {
+    const combined: BothItem[] = [
+      ...filteredReviews.map((r) => ({ ...r, _kind: "review" as const })),
+      ...filteredInterviews.map((i) => ({ ...i, _kind: "interview" as const })),
+    ];
+    return combined.sort((a, b) => {
+      const diff = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      return sort === "oldest" ? diff : -diff;
+    });
+  }, [filteredReviews, filteredInterviews, sort]);
+
+  const resultCount =
     tab === "reviews"
-      ? sortItemsByCreatedAt(reviews, sort)
-      : sortItemsByCreatedAt(interviews, sort);
+      ? filteredReviews.length
+      : tab === "interviews"
+        ? filteredInterviews.length
+        : bothItems.length;
+
+  const totalCount =
+    tab === "reviews"
+      ? reviews.length
+      : tab === "interviews"
+        ? interviews.length
+        : reviews.length + interviews.length;
+
+  const activeFilterCount =
+    (tab === "reviews" ? (minRating > 0 ? 1 : 0) + empTypes.length : 0) +
+    (tab === "interviews" ? experience.length + offerFilter.length : 0);
+
+  const currentSortLabel = SORT_OPTIONS[tab].find((o) => o.value === sort)?.label ?? "Sort";
+
+  const clearFilters = () => {
+    setMinRating(0);
+    setEmpTypes([]);
+    setExperience([]);
+    setOfferFilter([]);
+  };
+
+  const feedTitle =
+    tab === "reviews"
+      ? "Anonymous Feedback"
+      : tab === "interviews"
+        ? "Interview Reports"
+        : "All Activity";
 
   return (
-    <section className="mx-auto grid max-w-7xl grid-cols-1 gap-16 px-8 md:px-12 lg:grid-cols-12">
-      {/* Left sidebar */}
-      <div className="space-y-6 lg:col-span-4">
-        {/* Interview Difficulty */}
-        <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-8 shadow-sm">
-          <h3 className="mb-4 font-bold">Interview Difficulty</h3>
-          {stats.interviewCount > 0 ? (
-            <>
-              <div className="flex items-center gap-4">
-                <span className="font-mono text-4xl font-black">{stats.avgDifficultyLabel}</span>
-                <div className="flex gap-1">
-                  {[1, 2, 3, 4, 5].map((i) => (
-                    <div
-                      key={i}
-                      className={`h-2 w-8 rounded-full ${
-                        i <= stats.avgDifficultyLevel
-                          ? "bg-primary"
-                          : "bg-surface-container-highest"
-                      }`}
-                    />
-                  ))}
-                </div>
-              </div>
-              <p className="text-on-surface-variant mt-4 text-sm leading-relaxed">
-                Based on {stats.interviewCount} interview
-                {stats.interviewCount !== 1 ? "s" : ""} submitted by candidates.
-              </p>
-            </>
-          ) : (
-            <p className="text-on-surface-variant text-sm">No interview reports yet.</p>
-          )}
-        </div>
-
-        {/* Filter controls */}
-        <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-8 shadow-sm">
-          <h3 className="mb-5 font-bold">Filter</h3>
-
-          <div className="space-y-1">
-            <p className="text-on-surface-variant mb-2 font-mono text-xs tracking-widest uppercase">
-              Content
-            </p>
-            <RadioRow
-              checked={tab === "reviews"}
-              label="Reviews"
-              count={reviews.length}
-              onClick={() => setTab("reviews")}
-            />
-            <RadioRow
-              checked={tab === "interviews"}
-              label="Interviews"
-              count={interviews.length}
-              onClick={() => setTab("interviews")}
-            />
-          </div>
-
-          <div className="border-outline-variant/20 mt-6 space-y-1 border-t pt-6">
-            <p className="text-on-surface-variant mb-2 font-mono text-xs tracking-widest uppercase">
-              Sort By
-            </p>
-            <RadioRow
-              checked={sort === "recent"}
-              label="Most Recent"
-              onClick={() => setSort("recent")}
-            />
-            <RadioRow
-              checked={sort === "oldest"}
-              label="Oldest First"
-              onClick={() => setSort("oldest")}
-            />
-          </div>
-        </div>
-
-        {/* About */}
-        {(company.headquarters || company.size || company.founded || company.industry) && (
-          <div className="bg-surface-container-lowest border-outline-variant/10 rounded-xl border p-8 shadow-sm">
-            <h3 className="mb-4 font-bold">About</h3>
-            <dl className="space-y-3 text-sm">
-              {company.headquarters && (
-                <div>
-                  <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                    HQ
-                  </dt>
-                  <dd className="mt-1">{company.headquarters}</dd>
-                </div>
-              )}
-              {company.size && (
-                <div>
-                  <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                    Size
-                  </dt>
-                  <dd className="mt-1">{company.size} employees</dd>
-                </div>
-              )}
-              {company.founded && (
-                <div>
-                  <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                    Founded
-                  </dt>
-                  <dd className="mt-1">{company.founded}</dd>
-                </div>
-              )}
-              {company.industry && (
-                <div>
-                  <dt className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                    Industry
-                  </dt>
-                  <dd className="mt-1">{company.industry}</dd>
-                </div>
-              )}
-            </dl>
-          </div>
+    <div className="mx-auto max-w-7xl px-8 md:px-12">
+      {/* Search */}
+      <div className="relative mb-6">
+        <Search
+          size={16}
+          className="text-on-surface-variant pointer-events-none absolute top-1/2 left-4 -translate-y-1/2"
+        />
+        <input
+          type="text"
+          value={query}
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder="Search by job title, role, or department…"
+          className="border-outline-variant/30 bg-surface-container-lowest placeholder:text-on-surface-variant/50 focus:border-primary w-full rounded-xl border py-3.5 pr-10 pl-11 text-sm transition-all outline-none"
+        />
+        {query && (
+          <button
+            onClick={() => setQuery("")}
+            className="text-on-surface-variant hover:text-foreground absolute top-1/2 right-3.5 -translate-y-1/2 transition-colors"
+          >
+            <X size={15} />
+          </button>
         )}
       </div>
 
-      {/* Right: feed */}
-      <div className="lg:col-span-8">
-        <h2 className="mb-10 text-2xl font-bold tracking-tight">
-          {tab === "reviews" ? "Anonymous Feedback" : "Interview Reports"}
-        </h2>
+      {/* Controls row */}
+      <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+        {/* Tab pills */}
+        <div className="flex flex-wrap gap-2">
+          {(
+            [
+              { value: "reviews", label: "Reviews", count: reviews.length },
+              { value: "both", label: "Both", count: reviews.length + interviews.length },
+              { value: "interviews", label: "Interviews", count: interviews.length },
+            ] as const
+          ).map(({ value, label, count }) => (
+            <button
+              key={value}
+              onClick={() => handleSetTab(value)}
+              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+                tab === value
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-foreground"
+              }`}
+            >
+              {label}
+              <span
+                className={`font-mono text-xs ${tab === value ? "text-primary-foreground/70" : "text-on-surface-variant"}`}
+              >
+                {count}
+              </span>
+            </button>
+          ))}
+        </div>
 
-        {activeItems.length === 0 ? (
-          <p className="text-on-surface-variant text-sm">No {tab} yet. Be the first to share!</p>
+        <div className="flex items-center gap-2 sm:ml-auto">
+          {/* Sort dropdown */}
+          <div className="relative" ref={sortRef}>
+            <button
+              onClick={() => {
+                setSortOpen(!sortOpen);
+                setFilterOpen(false);
+              }}
+              className="border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors"
+            >
+              {currentSortLabel}
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${sortOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+            {sortOpen && (
+              <div className="border-outline-variant/20 bg-surface-container-lowest absolute top-full right-0 z-20 mt-1.5 min-w-[160px] rounded-xl border py-1 shadow-lg">
+                {SORT_OPTIONS[tab].map(({ value, label }) => (
+                  <button
+                    key={value}
+                    onClick={() => {
+                      setSort(value);
+                      setSortOpen(false);
+                    }}
+                    className={`hover:bg-surface-container-low flex w-full items-center px-4 py-2.5 text-sm transition-colors ${
+                      sort === value ? "text-foreground font-medium" : "text-on-surface-variant"
+                    }`}
+                  >
+                    {label}
+                    {sort === value && (
+                      <span className="bg-primary ml-auto h-1.5 w-1.5 rounded-full" />
+                    )}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+
+          {/* Filter dropdown */}
+          <div className="relative" ref={filterRef}>
+            <button
+              onClick={() => {
+                setFilterOpen(!filterOpen);
+                setSortOpen(false);
+              }}
+              className={`flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors ${
+                activeFilterCount > 0
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"
+              }`}
+            >
+              <SlidersHorizontal size={14} />
+              Filter
+              {activeFilterCount > 0 && (
+                <span className="bg-primary-foreground text-primary flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold">
+                  {activeFilterCount}
+                </span>
+              )}
+              <ChevronDown
+                size={14}
+                className={`transition-transform ${filterOpen ? "rotate-180" : ""}`}
+              />
+            </button>
+
+            {filterOpen && (
+              <div className="border-outline-variant/20 bg-surface-container-lowest absolute top-full left-0 z-20 mt-1.5 w-72 rounded-xl border p-5 shadow-lg sm:right-0 sm:left-auto">
+                {activeFilterCount > 0 && (
+                  <div className="mb-5 flex items-center justify-between">
+                    <span className="text-on-surface-variant font-mono text-[10px] tracking-widest uppercase">
+                      {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} active
+                    </span>
+                    <button
+                      onClick={clearFilters}
+                      className="bg-surface-container text-on-surface-variant hover:bg-destructive flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[10px] font-medium tracking-widest uppercase transition-colors hover:text-white"
+                    >
+                      <X size={10} />
+                      Clear
+                    </button>
+                  </div>
+                )}
+
+                {tab === "reviews" && (
+                  <>
+                    <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                      Min Rating
+                    </p>
+                    <div className="mb-4 flex gap-1.5">
+                      {(
+                        [
+                          { value: 0, label: "Any" },
+                          { value: 4, label: "4+" },
+                          { value: 3, label: "3+" },
+                          { value: 2, label: "2+" },
+                        ] as const
+                      ).map(({ value, label }) => (
+                        <button
+                          key={value}
+                          onClick={() => setMinRating(value)}
+                          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                            minRating === value
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                          }`}
+                        >
+                          {label}
+                        </button>
+                      ))}
+                    </div>
+
+                    {availableEmpTypes.length > 0 && (
+                      <>
+                        <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                          Employment Type
+                        </p>
+                        <div className="flex flex-wrap gap-1.5">
+                          {availableEmpTypes.map((type) => (
+                            <button
+                              key={type}
+                              onClick={() => setEmpTypes((prev) => toggle(prev, type))}
+                              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                                empTypes.includes(type)
+                                  ? "bg-primary text-primary-foreground"
+                                  : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                              }`}
+                            >
+                              {formatEmploymentType(type)}
+                            </button>
+                          ))}
+                        </div>
+                      </>
+                    )}
+                  </>
+                )}
+
+                {tab === "interviews" && (
+                  <>
+                    <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                      Experience
+                    </p>
+                    <div className="mb-4 flex gap-1.5">
+                      {(["Great", "Neutral", "Negative"] as Experience[]).map((exp) => (
+                        <button
+                          key={exp}
+                          onClick={() => setExperience((prev) => toggle(prev, exp))}
+                          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                            experience.includes(exp)
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                          }`}
+                        >
+                          {exp}
+                        </button>
+                      ))}
+                    </div>
+
+                    <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                      Offer Received
+                    </p>
+                    <div className="flex flex-wrap gap-1.5">
+                      {(["Yes", "No", "Yes but Declined"] as OfferOutcome[]).map((offer) => (
+                        <button
+                          key={offer}
+                          onClick={() => setOfferFilter((prev) => toggle(prev, offer))}
+                          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                            offerFilter.includes(offer)
+                              ? "bg-primary text-primary-foreground"
+                              : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                          }`}
+                        >
+                          {offer}
+                        </button>
+                      ))}
+                    </div>
+                  </>
+                )}
+
+                {tab === "both" && (
+                  <p className="text-on-surface-variant text-sm">
+                    Switch to Reviews or Interviews to apply filters.
+                  </p>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Result count */}
+          <span className="text-on-surface-variant font-mono text-xs">
+            {resultCount === totalCount ? `${totalCount} total` : `${resultCount} of ${totalCount}`}
+          </span>
+        </div>
+      </div>
+
+      {/* Feed header */}
+      <h2 className="mb-8 text-2xl font-bold tracking-tight">{feedTitle}</h2>
+
+      {/* Feed */}
+      {tab === "reviews" ? (
+        filteredReviews.length === 0 ? (
+          <EmptyState query={query} />
         ) : (
           <div className="space-y-12">
-            {tab === "reviews"
-              ? (activeItems as Review[]).map((r) => <ReviewCard key={r.id} review={r} />)
-              : (activeItems as Interview[]).map((i) => <InterviewCard key={i.id} interview={i} />)}
+            {filteredReviews.map((r) => (
+              <ReviewCard key={r.id} review={r} />
+            ))}
           </div>
-        )}
-      </div>
-    </section>
+        )
+      ) : tab === "interviews" ? (
+        filteredInterviews.length === 0 ? (
+          <EmptyState query={query} />
+        ) : (
+          <div className="space-y-12">
+            {filteredInterviews.map((i) => (
+              <InterviewCard key={i.id} interview={i} />
+            ))}
+          </div>
+        )
+      ) : bothItems.length === 0 ? (
+        <EmptyState query={query} />
+      ) : (
+        <div className="space-y-12">
+          {bothItems.map((item) =>
+            item._kind === "review" ? (
+              <ReviewCard key={`r-${item.id}`} review={item} showKind />
+            ) : (
+              <InterviewCard key={`i-${item.id}`} interview={item} showKind />
+            ),
+          )}
+        </div>
+      )}
+    </div>
   );
 }

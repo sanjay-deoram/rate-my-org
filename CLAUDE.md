@@ -78,19 +78,32 @@ Add to the `orgs` record in `app/orgs/[slug]/page.tsx` and add the slug to `gene
 - `drizzle/schema.ts` — DB schema (source of truth for table + enum definitions)
 - `lib/schemas/` — Zod validation schemas (`review.ts`, `company.ts`, `interview.ts`)
 - `lib/api/` — Pure async fetch functions, no React (`reviews.ts`, `interviews.ts`, `companies.ts`)
-- `constants/` — Shared constant arrays used in both schemas and UI (`employment.ts`)
-- `types/` — Hand-authored TS types inferred from schemas. Do NOT put auto-generated Next.js types here.
+- `lib/org-sort.ts` — Pure sort/filter/toggle utility functions for org content
+- `constants/index.ts` — Shared app-wide constants (employment types, industries, etc.)
+- `constants/org-content.ts` — UI-only constants scoped to org content (SORT_OPTIONS, EXPERIENCE_BADGE)
+- `types/` — Hand-authored TS types inferred from schemas or derived from query results. Do NOT put auto-generated Next.js types here.
 
 ### ViewModel
-- `hooks/` — TanStack Query wrappers over `lib/api/` functions. `onSuccess`/`onError` live here, not in components.
+- `hooks/` — Custom hooks. TanStack Query wrappers over `lib/api/` functions. `onSuccess`/`onError` live here, not in components. UI-only hooks (e.g. `use-dropdown.ts`) also live here.
 
 ### View
-- `components/` — React components (thin — call hooks, render state)
+- `components/` — React components (thin — props + JSX only, no inline constants, types, or utility functions)
 - `components/providers.tsx` — `QueryClientProvider` (wraps root layout body)
 - `app/**/page.tsx` — Server Component page wrappers
 
 ### Controller
 - `app/api/**/route.ts` — API route handlers (validate → DB → JSON)
+
+## Component Extraction Rules
+
+Keep components thin — they should only contain props, state, and JSX. Extract everything else:
+
+- **Types** → `types/<feature>.ts` (e.g. `types/org-content.ts`)
+- **UI-scoped constants** (sort options, badge maps) → `constants/<feature>.ts`
+- **App-wide constants** (employment types, industries) → `constants/index.ts`
+- **Pure functions** (sort, filter, transform) → `lib/<feature>.ts`
+- **Custom hooks** (dropdowns, toggles, subscriptions) → `hooks/use-<name>.ts` with `"use client"` if they use browser APIs
+- **Reusable sub-components** (cards, empty states) → their own `components/<name>.tsx` file
 
 ## TanStack Query Rules
 

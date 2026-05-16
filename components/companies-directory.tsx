@@ -8,7 +8,7 @@ import { useCompanyBrowse } from "@/hooks/use-company-browse";
 import type { CompanySuggestion } from "@/types/review";
 
 const STAT_PILL_VARIANT = {
-  amber: "bg-amber-50 text-amber-700",
+  amber: "bg-[#3be366]/10 text-[#3be366]",
   neutral: "bg-surface-container text-on-surface-variant",
 } as const;
 

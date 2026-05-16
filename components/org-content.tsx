@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, X, ChevronDown, SlidersHorizontal } from "lucide-react";
+import { Search, X, ChevronDown } from "lucide-react";
 import type { OrgProfile } from "@/lib/queries/orgs";
 import type { Tab, Sort, Experience, OfferOutcome, BothItem } from "@/types/org-content";
 import { SORT_OPTIONS } from "@/constants/org-content";
@@ -18,6 +18,60 @@ import {
   DropdownItem,
 } from "@/components/ui/dropdown";
 
+// ─── Filter tag dropdown ────────────────────────────────────────────────────
+
+function FilterTag({
+  label,
+  active,
+  onClear,
+  singleSelect = false,
+  children,
+}: {
+  label: string;
+  active?: boolean;
+  onClear?: () => void;
+  singleSelect?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <DropdownRoot>
+      <DropdownTrigger asChild>
+        <button
+          className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all ${
+            active
+              ? "border-primary bg-primary text-primary-foreground"
+              : "border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"
+          }`}
+        >
+          {label}
+          {active && onClear ? (
+            <span
+              role="button"
+              onClick={(e) => {
+                e.stopPropagation();
+                onClear();
+              }}
+              className="hover:bg-primary-foreground/20 -mr-0.5 rounded-full p-0.5 transition-colors"
+            >
+              <X size={10} />
+            </span>
+          ) : (
+            <ChevronDown
+              size={11}
+              className="transition-transform group-data-[state=open]:rotate-180"
+            />
+          )}
+        </button>
+      </DropdownTrigger>
+      <DropdownContent align="start" className="min-w-[180px] py-1">
+        {singleSelect ? children : <div className="max-h-52 overflow-y-auto py-0">{children}</div>}
+      </DropdownContent>
+    </DropdownRoot>
+  );
+}
+
+// ─── Main component ─────────────────────────────────────────────────────────
+
 export function OrgContent({ data }: { data: OrgProfile }) {
   const { reviews, interviews } = data;
 
@@ -28,6 +82,22 @@ export function OrgContent({ data }: { data: OrgProfile }) {
   const [empTypes, setEmpTypes] = useState<string[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [offerFilter, setOfferFilter] = useState<OfferOutcome[]>([]);
+  const [jobTitles, setJobTitles] = useState<string[]>([]);
+
+  // Unique job titles per source, sorted alphabetically
+  const reviewTitles = useMemo(
+    () => [...new Set(reviews.map((r) => r.jobTitle))].sort(),
+    [reviews],
+  );
+  const interviewTitles = useMemo(
+    () => [...new Set(interviews.map((i) => i.roleTitle))].sort(),
+    [interviews],
+  );
+  const availableJobTitles = useMemo(() => {
+    if (tab === "reviews") return reviewTitles;
+    if (tab === "interviews") return interviewTitles;
+    return [...new Set([...reviewTitles, ...interviewTitles])].sort();
+  }, [tab, reviewTitles, interviewTitles]);
 
   const availableEmpTypes = useMemo(
     () => [...new Set(reviews.map((r) => r.employmentType))].sort(),
@@ -46,8 +116,18 @@ export function OrgContent({ data }: { data: OrgProfile }) {
       setExperience([]);
       setOfferFilter([]);
     }
+    // Clear job titles that don't exist in the new tab's data
+    if (newTab !== "both") setJobTitles([]);
     setTab(newTab);
     if (newSort !== sort) setSort(newSort);
+  };
+
+  const clearFilters = () => {
+    setMinRating(0);
+    setEmpTypes([]);
+    setExperience([]);
+    setOfferFilter([]);
+    setJobTitles([]);
   };
 
   const q = query.trim().toLowerCase();
@@ -57,8 +137,9 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     if (q) items = items.filter((r) => r.jobTitle.toLowerCase().includes(q));
     if (minRating > 0) items = items.filter((r) => r.overallRating >= minRating);
     if (empTypes.length > 0) items = items.filter((r) => empTypes.includes(r.employmentType));
+    if (jobTitles.length > 0) items = items.filter((r) => jobTitles.includes(r.jobTitle));
     return sortReviews(items, sort);
-  }, [reviews, q, minRating, empTypes, sort]);
+  }, [reviews, q, minRating, empTypes, jobTitles, sort]);
 
   const filteredInterviews = useMemo(() => {
     let items = interviews;
@@ -72,8 +153,9 @@ export function OrgContent({ data }: { data: OrgProfile }) {
       items = items.filter((i) => experience.includes(i.overallExperience as Experience));
     if (offerFilter.length > 0)
       items = items.filter((i) => offerFilter.includes(i.offerReceived as OfferOutcome));
+    if (jobTitles.length > 0) items = items.filter((i) => jobTitles.includes(i.roleTitle));
     return sortInterviews(items, sort);
-  }, [interviews, q, experience, offerFilter, sort]);
+  }, [interviews, q, experience, offerFilter, jobTitles, sort]);
 
   const bothItems = useMemo<BothItem[]>(() => {
     const combined: BothItem[] = [
@@ -102,27 +184,20 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     } satisfies Record<Tab, number>
   )[tab];
 
-  const minRatingCount = minRating > 0 ? 1 : 0;
   const activeFilterCount =
-    (tab === "reviews" ? minRatingCount + empTypes.length : 0) +
-    (tab === "interviews" ? experience.length + offerFilter.length : 0);
+    (tab !== "interviews" ? (minRating > 0 ? 1 : 0) + empTypes.length : 0) +
+    (tab !== "reviews" ? experience.length + offerFilter.length : 0) +
+    jobTitles.length;
 
   const currentSortLabel = SORT_OPTIONS[tab].find((o) => o.value === sort)?.label ?? "Sort";
 
-  const clearFilters = () => {
-    setMinRating(0);
-    setEmpTypes([]);
-    setExperience([]);
-    setOfferFilter([]);
-  };
-
-  const feedTitle = (
-    {
-      reviews: "Anonymous Feedback",
-      interviews: "Interview Reports",
-      both: "All Activity",
-    } satisfies Record<Tab, string>
-  )[tab];
+  // Job title tag label
+  const jobTitleLabel =
+    jobTitles.length === 0
+      ? "Job Title"
+      : jobTitles.length === 1
+        ? jobTitles[0]
+        : `${jobTitles.length} titles`;
 
   function renderFeed() {
     if (tab === "reviews") {
@@ -161,6 +236,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
   return (
     <div className="mx-auto max-w-7xl px-8 md:px-12">
+      {/* Search */}
       <div className="relative mb-6">
         <Search
           size={16}
@@ -183,204 +259,203 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         )}
       </div>
 
-      <div className="mb-10 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-        <div className="flex flex-wrap gap-2">
-          {(
-            [
-              { value: "reviews", label: "Reviews", count: reviews.length },
-              { value: "both", label: "Both", count: reviews.length + interviews.length },
-              { value: "interviews", label: "Interviews", count: interviews.length },
-            ] as const
-          ).map(({ value, label, count }) => (
+      {/* Underline tabs */}
+      <div className="border-outline-variant/15 mb-5 border-b">
+        <div className="flex gap-7">
+          {[
+            { value: "reviews" as Tab, label: "Reviews", count: reviews.length },
+            { value: "both" as Tab, label: "Both", count: reviews.length + interviews.length },
+            { value: "interviews" as Tab, label: "Interviews", count: interviews.length },
+          ].map(({ value, label, count }) => (
             <button
               key={value}
               onClick={() => handleSetTab(value)}
-              className={`flex items-center gap-1.5 rounded-full px-4 py-1.5 text-sm font-medium transition-all ${
+              className={`-mb-px flex items-center gap-2 border-b-2 pb-3 text-sm font-semibold tracking-tight transition-all ${
                 tab === value
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high hover:text-foreground"
+                  ? "border-foreground text-foreground"
+                  : "text-on-surface-variant hover:text-foreground border-transparent"
               }`}
             >
               {label}
               <span
-                className={`font-mono text-xs ${tab === value ? "text-primary-foreground/70" : "text-on-surface-variant"}`}
+                className={`rounded-full px-1.5 py-0.5 font-mono text-[10px] transition-colors ${
+                  tab === value
+                    ? "bg-foreground text-background"
+                    : "bg-surface-container text-on-surface-variant"
+                }`}
               >
                 {count}
               </span>
             </button>
           ))}
         </div>
-
-        <div className="flex items-center gap-2 sm:ml-auto">
-          <DropdownRoot>
-            <DropdownTrigger asChild>
-              <button className="group border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors">
-                {currentSortLabel}
-                <ChevronDown
-                  size={14}
-                  className="transition-transform group-data-[state=open]:rotate-180"
-                />
-              </button>
-            </DropdownTrigger>
-            <DropdownContent className="min-w-[160px] py-1">
-              {SORT_OPTIONS[tab].map(({ value, label }) => (
-                <DropdownClose key={value} asChild>
-                  <DropdownItem active={sort === value} onClick={() => setSort(value)}>
-                    {label}
-                  </DropdownItem>
-                </DropdownClose>
-              ))}
-            </DropdownContent>
-          </DropdownRoot>
-
-          <DropdownRoot>
-            <DropdownTrigger asChild>
-              <button
-                className={`group flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors ${
-                  activeFilterCount > 0
-                    ? "border-primary bg-primary text-primary-foreground"
-                    : "border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"
-                }`}
-              >
-                <SlidersHorizontal size={14} />
-                Filter
-                {activeFilterCount > 0 && (
-                  <span className="bg-primary-foreground text-primary flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold">
-                    {activeFilterCount}
-                  </span>
-                )}
-                <ChevronDown
-                  size={14}
-                  className="transition-transform group-data-[state=open]:rotate-180"
-                />
-              </button>
-            </DropdownTrigger>
-            <DropdownContent className="w-72 p-5">
-              {activeFilterCount > 0 && (
-                <div className="mb-5 flex items-center justify-between">
-                  <span className="text-on-surface-variant font-mono text-[10px] tracking-widest uppercase">
-                    {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} active
-                  </span>
-                  <button
-                    onClick={clearFilters}
-                    className="bg-surface-container text-on-surface-variant hover:bg-destructive flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[10px] font-medium tracking-widest uppercase transition-colors hover:text-white"
-                  >
-                    <X size={10} />
-                    Clear
-                  </button>
-                </div>
-              )}
-
-              {tab === "reviews" && (
-                <>
-                  <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                    Min Rating
-                  </p>
-                  <div className="mb-4 flex gap-1.5">
-                    {(
-                      [
-                        { value: 0, label: "Any" },
-                        { value: 4, label: "4+" },
-                        { value: 3, label: "3+" },
-                        { value: 2, label: "2+" },
-                      ] as const
-                    ).map(({ value, label }) => (
-                      <button
-                        key={value}
-                        onClick={() => setMinRating(value)}
-                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                          minRating === value
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                        }`}
-                      >
-                        {label}
-                      </button>
-                    ))}
-                  </div>
-
-                  {availableEmpTypes.length > 0 && (
-                    <>
-                      <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                        Employment Type
-                      </p>
-                      <div className="flex flex-wrap gap-1.5">
-                        {availableEmpTypes.map((type) => (
-                          <button
-                            key={type}
-                            onClick={() => setEmpTypes((prev) => toggle(prev, type))}
-                            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                              empTypes.includes(type)
-                                ? "bg-primary text-primary-foreground"
-                                : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                            }`}
-                          >
-                            {formatEmploymentType(type)}
-                          </button>
-                        ))}
-                      </div>
-                    </>
-                  )}
-                </>
-              )}
-
-              {tab === "interviews" && (
-                <>
-                  <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                    Experience
-                  </p>
-                  <div className="mb-4 flex gap-1.5">
-                    {(["Great", "Neutral", "Negative"] as Experience[]).map((exp) => (
-                      <button
-                        key={exp}
-                        onClick={() => setExperience((prev) => toggle(prev, exp))}
-                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                          experience.includes(exp)
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                        }`}
-                      >
-                        {exp}
-                      </button>
-                    ))}
-                  </div>
-
-                  <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                    Offer Received
-                  </p>
-                  <div className="flex flex-wrap gap-1.5">
-                    {(["Yes", "No", "Yes but Declined"] as OfferOutcome[]).map((offer) => (
-                      <button
-                        key={offer}
-                        onClick={() => setOfferFilter((prev) => toggle(prev, offer))}
-                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                          offerFilter.includes(offer)
-                            ? "bg-primary text-primary-foreground"
-                            : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                        }`}
-                      >
-                        {offer}
-                      </button>
-                    ))}
-                  </div>
-                </>
-              )}
-
-              {tab === "both" && (
-                <p className="text-on-surface-variant text-sm">
-                  Switch to Reviews or Interviews to apply filters.
-                </p>
-              )}
-            </DropdownContent>
-          </DropdownRoot>
-
-          <span className="text-on-surface-variant font-mono text-xs">
-            {resultCount === totalCount ? `${totalCount} total` : `${resultCount} of ${totalCount}`}
-          </span>
-        </div>
       </div>
 
-      <h2 className="mb-8 text-2xl font-bold tracking-tight">{feedTitle}</h2>
+      {/* Filter tag bar */}
+      <div className="mb-10 flex flex-wrap items-center gap-2">
+        {/* Sort — single-select, closes on pick */}
+        <FilterTag label={currentSortLabel} singleSelect>
+          {SORT_OPTIONS[tab].map(({ value, label }) => (
+            <DropdownClose key={value} asChild>
+              <DropdownItem
+                className="text-xs"
+                active={sort === value}
+                onClick={() => setSort(value)}
+              >
+                {label}
+              </DropdownItem>
+            </DropdownClose>
+          ))}
+        </FilterTag>
+
+        {/* Job Title — multi-select, stays open */}
+        {availableJobTitles.length > 0 && (
+          <FilterTag
+            label={jobTitleLabel}
+            active={jobTitles.length > 0}
+            onClear={() => setJobTitles([])}
+          >
+            {availableJobTitles.map((title) => (
+              <DropdownItem
+                key={title}
+                className="text-xs"
+                active={jobTitles.includes(title)}
+                onClick={() => setJobTitles((prev) => toggle(prev, title))}
+              >
+                {title}
+              </DropdownItem>
+            ))}
+          </FilterTag>
+        )}
+
+        {/* Min Rating — single-select, closes on pick */}
+        {tab !== "interviews" && (
+          <FilterTag
+            label={minRating > 0 ? `${minRating}+ stars` : "Min Rating"}
+            active={minRating > 0}
+            onClear={() => setMinRating(0)}
+            singleSelect
+          >
+            {[
+              { value: 0, label: "Any rating" },
+              { value: 4, label: "4+ stars" },
+              { value: 3, label: "3+ stars" },
+              { value: 2, label: "2+ stars" },
+            ].map(({ value, label }) => (
+              <DropdownClose key={value} asChild>
+                <DropdownItem
+                  className="text-xs"
+                  active={minRating === value}
+                  onClick={() => setMinRating(value)}
+                >
+                  {label}
+                </DropdownItem>
+              </DropdownClose>
+            ))}
+          </FilterTag>
+        )}
+
+        {/* Emp Type — multi-select, stays open */}
+        {tab !== "interviews" && availableEmpTypes.length > 0 && (
+          <FilterTag
+            label={
+              empTypes.length === 0
+                ? "Emp. Type"
+                : empTypes.length === 1
+                  ? formatEmploymentType(empTypes[0])
+                  : `${empTypes.length} types`
+            }
+            active={empTypes.length > 0}
+            onClear={() => setEmpTypes([])}
+          >
+            {availableEmpTypes.map((type) => (
+              <DropdownItem
+                key={type}
+                className="text-xs"
+                active={empTypes.includes(type)}
+                onClick={() => setEmpTypes((prev) => toggle(prev, type))}
+              >
+                {formatEmploymentType(type)}
+              </DropdownItem>
+            ))}
+          </FilterTag>
+        )}
+
+        {/* Experience — multi-select, stays open */}
+        {tab !== "reviews" && (
+          <FilterTag
+            label={
+              experience.length === 0
+                ? "Experience"
+                : experience.length === 1
+                  ? experience[0]
+                  : `${experience.length} selected`
+            }
+            active={experience.length > 0}
+            onClear={() => setExperience([])}
+          >
+            {(["Great", "Neutral", "Negative"] as Experience[]).map((exp) => (
+              <DropdownItem
+                key={exp}
+                className="text-xs"
+                active={experience.includes(exp)}
+                onClick={() => setExperience((prev) => toggle(prev, exp))}
+              >
+                {exp}
+              </DropdownItem>
+            ))}
+          </FilterTag>
+        )}
+
+        {/* Offer — multi-select, stays open */}
+        {tab !== "reviews" && (
+          <FilterTag
+            label={
+              offerFilter.length === 0
+                ? "Offer"
+                : offerFilter.length === 1
+                  ? `Offer: ${offerFilter[0]}`
+                  : `${offerFilter.length} selected`
+            }
+            active={offerFilter.length > 0}
+            onClear={() => setOfferFilter([])}
+          >
+            {(["Yes", "No", "Yes but Declined"] as OfferOutcome[]).map((offer) => (
+              <DropdownItem
+                key={offer}
+                className="text-xs"
+                active={offerFilter.includes(offer)}
+                onClick={() => setOfferFilter((prev) => toggle(prev, offer))}
+              >
+                {offer}
+              </DropdownItem>
+            ))}
+          </FilterTag>
+        )}
+
+        {/* Clear all — only when filters active */}
+        {activeFilterCount > 0 && (
+          <button
+            onClick={clearFilters}
+            className="text-on-surface-variant hover:text-foreground hover:bg-surface-container flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
+          >
+            <X size={11} />
+            Clear all
+          </button>
+        )}
+
+        <span className="text-on-surface-variant ml-auto font-mono text-xs">
+          {resultCount === totalCount ? `${totalCount} total` : `${resultCount} of ${totalCount}`}
+        </span>
+      </div>
+
+      <h2 className="mb-8 text-2xl font-bold tracking-tight">
+        {tab === "reviews"
+          ? "Anonymous Feedback"
+          : tab === "interviews"
+            ? "Interview Reports"
+            : "All Activity"}
+      </h2>
       {renderFeed()}
     </div>
   );

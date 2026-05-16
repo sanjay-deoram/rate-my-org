@@ -1,76 +1,14 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, X, ChevronDown } from "lucide-react";
+import { Search, X } from "lucide-react";
 import type { OrgProfile } from "@/lib/queries/orgs";
 import type { Tab, Sort, Experience, OfferOutcome, BothItem } from "@/types/org-content";
-import { SORT_OPTIONS } from "@/constants/org-content";
-import { sortReviews, sortInterviews, toggle } from "@/lib/org-sort";
+import { sortReviews, sortInterviews } from "@/lib/org-sort";
 import { ReviewCard } from "@/components/review-card";
 import { InterviewCard } from "@/components/interview-card";
 import { EmptyState } from "@/components/empty-state";
-import { formatEmploymentType } from "@/lib/org-display";
-import {
-  DropdownRoot,
-  DropdownTrigger,
-  DropdownClose,
-  DropdownContent,
-  DropdownItem,
-} from "@/components/ui/dropdown";
-
-// ─── Filter tag dropdown ────────────────────────────────────────────────────
-
-function FilterTag({
-  label,
-  active,
-  onClear,
-  singleSelect = false,
-  children,
-}: {
-  label: string;
-  active?: boolean;
-  onClear?: () => void;
-  singleSelect?: boolean;
-  children: React.ReactNode;
-}) {
-  return (
-    <DropdownRoot>
-      <DropdownTrigger asChild>
-        <button
-          className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs font-medium transition-all ${
-            active
-              ? "border-primary bg-primary text-primary-foreground"
-              : "border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"
-          }`}
-        >
-          {label}
-          {active && onClear ? (
-            <span
-              role="button"
-              onClick={(e) => {
-                e.stopPropagation();
-                onClear();
-              }}
-              className="hover:bg-primary-foreground/20 -mr-0.5 rounded-full p-0.5 transition-colors"
-            >
-              <X size={10} />
-            </span>
-          ) : (
-            <ChevronDown
-              size={11}
-              className="transition-transform group-data-[state=open]:rotate-180"
-            />
-          )}
-        </button>
-      </DropdownTrigger>
-      <DropdownContent align="start" className="min-w-[180px] py-1">
-        {singleSelect ? children : <div className="max-h-52 overflow-y-auto py-0">{children}</div>}
-      </DropdownContent>
-    </DropdownRoot>
-  );
-}
-
-// ─── Main component ─────────────────────────────────────────────────────────
+import { OrgFilterBar } from "@/components/org-filter-bar";
 
 export function OrgContent({ data }: { data: OrgProfile }) {
   const { reviews, interviews } = data;
@@ -84,7 +22,6 @@ export function OrgContent({ data }: { data: OrgProfile }) {
   const [offerFilter, setOfferFilter] = useState<OfferOutcome[]>([]);
   const [jobTitles, setJobTitles] = useState<string[]>([]);
 
-  // Unique job titles per source, sorted alphabetically
   const reviewTitles = useMemo(
     () => [...new Set(reviews.map((r) => r.jobTitle))].sort(),
     [reviews],
@@ -116,7 +53,6 @@ export function OrgContent({ data }: { data: OrgProfile }) {
       setExperience([]);
       setOfferFilter([]);
     }
-    // Clear job titles that don't exist in the new tab's data
     if (newTab !== "both") setJobTitles([]);
     setTab(newTab);
     if (newSort !== sort) setSort(newSort);
@@ -168,36 +104,22 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     });
   }, [filteredReviews, filteredInterviews, sort]);
 
-  const resultCount = (
-    {
-      reviews: filteredReviews.length,
-      interviews: filteredInterviews.length,
-      both: bothItems.length,
-    } satisfies Record<Tab, number>
-  )[tab];
-
-  const totalCount = (
-    {
-      reviews: reviews.length,
-      interviews: interviews.length,
-      both: reviews.length + interviews.length,
-    } satisfies Record<Tab, number>
-  )[tab];
+  const counts = {
+    reviews: { result: filteredReviews.length, total: reviews.length },
+    interviews: { result: filteredInterviews.length, total: interviews.length },
+    both: { result: bothItems.length, total: reviews.length + interviews.length },
+  } satisfies Record<Tab, { result: number; total: number }>;
 
   const activeFilterCount =
     (tab !== "interviews" ? (minRating > 0 ? 1 : 0) + empTypes.length : 0) +
     (tab !== "reviews" ? experience.length + offerFilter.length : 0) +
     jobTitles.length;
 
-  const currentSortLabel = SORT_OPTIONS[tab].find((o) => o.value === sort)?.label ?? "Sort";
-
-  // Job title tag label
-  const jobTitleLabel =
-    jobTitles.length === 0
-      ? "Job Title"
-      : jobTitles.length === 1
-        ? jobTitles[0]
-        : `${jobTitles.length} titles`;
+  const tabHeadings: Record<Tab, string> = {
+    reviews: "Anonymous Feedback",
+    interviews: "Interview Reports",
+    both: "All Activity",
+  };
 
   function renderFeed() {
     if (tab === "reviews") {
@@ -236,7 +158,6 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
   return (
     <div className="mx-auto max-w-7xl px-8 md:px-12">
-      {/* Search */}
       <div className="relative mb-6">
         <Search
           size={16}
@@ -259,7 +180,6 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         )}
       </div>
 
-      {/* Underline tabs */}
       <div className="border-outline-variant/15 mb-5 border-b">
         <div className="flex gap-7">
           {[
@@ -291,171 +211,29 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         </div>
       </div>
 
-      {/* Filter tag bar */}
-      <div className="mb-10 flex flex-wrap items-center gap-2">
-        {/* Sort — single-select, closes on pick */}
-        <FilterTag label={currentSortLabel} singleSelect>
-          {SORT_OPTIONS[tab].map(({ value, label }) => (
-            <DropdownClose key={value} asChild>
-              <DropdownItem
-                className="text-xs"
-                active={sort === value}
-                onClick={() => setSort(value)}
-              >
-                {label}
-              </DropdownItem>
-            </DropdownClose>
-          ))}
-        </FilterTag>
+      <OrgFilterBar
+        tab={tab}
+        sort={sort}
+        setSort={setSort}
+        minRating={minRating}
+        setMinRating={setMinRating}
+        empTypes={empTypes}
+        setEmpTypes={setEmpTypes}
+        experience={experience}
+        setExperience={setExperience}
+        offerFilter={offerFilter}
+        setOfferFilter={setOfferFilter}
+        jobTitles={jobTitles}
+        setJobTitles={setJobTitles}
+        availableJobTitles={availableJobTitles}
+        availableEmpTypes={availableEmpTypes}
+        activeFilterCount={activeFilterCount}
+        resultCount={counts[tab].result}
+        totalCount={counts[tab].total}
+        clearFilters={clearFilters}
+      />
 
-        {/* Job Title — multi-select, stays open */}
-        {availableJobTitles.length > 0 && (
-          <FilterTag
-            label={jobTitleLabel}
-            active={jobTitles.length > 0}
-            onClear={() => setJobTitles([])}
-          >
-            {availableJobTitles.map((title) => (
-              <DropdownItem
-                key={title}
-                className="text-xs"
-                active={jobTitles.includes(title)}
-                onClick={() => setJobTitles((prev) => toggle(prev, title))}
-              >
-                {title}
-              </DropdownItem>
-            ))}
-          </FilterTag>
-        )}
-
-        {/* Min Rating — single-select, closes on pick */}
-        {tab !== "interviews" && (
-          <FilterTag
-            label={minRating > 0 ? `${minRating}+ stars` : "Min Rating"}
-            active={minRating > 0}
-            onClear={() => setMinRating(0)}
-            singleSelect
-          >
-            {[
-              { value: 0, label: "Any rating" },
-              { value: 4, label: "4+ stars" },
-              { value: 3, label: "3+ stars" },
-              { value: 2, label: "2+ stars" },
-            ].map(({ value, label }) => (
-              <DropdownClose key={value} asChild>
-                <DropdownItem
-                  className="text-xs"
-                  active={minRating === value}
-                  onClick={() => setMinRating(value)}
-                >
-                  {label}
-                </DropdownItem>
-              </DropdownClose>
-            ))}
-          </FilterTag>
-        )}
-
-        {/* Emp Type — multi-select, stays open */}
-        {tab !== "interviews" && availableEmpTypes.length > 0 && (
-          <FilterTag
-            label={
-              empTypes.length === 0
-                ? "Emp. Type"
-                : empTypes.length === 1
-                  ? formatEmploymentType(empTypes[0])
-                  : `${empTypes.length} types`
-            }
-            active={empTypes.length > 0}
-            onClear={() => setEmpTypes([])}
-          >
-            {availableEmpTypes.map((type) => (
-              <DropdownItem
-                key={type}
-                className="text-xs"
-                active={empTypes.includes(type)}
-                onClick={() => setEmpTypes((prev) => toggle(prev, type))}
-              >
-                {formatEmploymentType(type)}
-              </DropdownItem>
-            ))}
-          </FilterTag>
-        )}
-
-        {/* Experience — multi-select, stays open */}
-        {tab !== "reviews" && (
-          <FilterTag
-            label={
-              experience.length === 0
-                ? "Experience"
-                : experience.length === 1
-                  ? experience[0]
-                  : `${experience.length} selected`
-            }
-            active={experience.length > 0}
-            onClear={() => setExperience([])}
-          >
-            {(["Great", "Neutral", "Negative"] as Experience[]).map((exp) => (
-              <DropdownItem
-                key={exp}
-                className="text-xs"
-                active={experience.includes(exp)}
-                onClick={() => setExperience((prev) => toggle(prev, exp))}
-              >
-                {exp}
-              </DropdownItem>
-            ))}
-          </FilterTag>
-        )}
-
-        {/* Offer — multi-select, stays open */}
-        {tab !== "reviews" && (
-          <FilterTag
-            label={
-              offerFilter.length === 0
-                ? "Offer"
-                : offerFilter.length === 1
-                  ? `Offer: ${offerFilter[0]}`
-                  : `${offerFilter.length} selected`
-            }
-            active={offerFilter.length > 0}
-            onClear={() => setOfferFilter([])}
-          >
-            {(["Yes", "No", "Yes but Declined"] as OfferOutcome[]).map((offer) => (
-              <DropdownItem
-                key={offer}
-                className="text-xs"
-                active={offerFilter.includes(offer)}
-                onClick={() => setOfferFilter((prev) => toggle(prev, offer))}
-              >
-                {offer}
-              </DropdownItem>
-            ))}
-          </FilterTag>
-        )}
-
-        {/* Clear all — only when filters active */}
-        {activeFilterCount > 0 && (
-          <button
-            onClick={clearFilters}
-            className="text-on-surface-variant hover:text-foreground hover:bg-surface-container flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-colors"
-          >
-            <X size={11} />
-            Clear all
-          </button>
-        )}
-
-        <span className="text-on-surface-variant ml-auto font-mono text-xs">
-          {resultCount === totalCount ? `${totalCount} total` : `${resultCount} of ${totalCount}`}
-        </span>
-      </div>
-
-      <h2 className="mb-8 text-2xl font-bold tracking-tight">
-        {tab === "reviews"
-          ? "Anonymous Feedback"
-          : tab === "interviews"
-            ? "Interview Reports"
-            : "All Activity"}
-      </h2>
+      <h2 className="mb-8 text-2xl font-bold tracking-tight">{tabHeadings[tab]}</h2>
       {renderFeed()}
     </div>
   );

@@ -6,11 +6,17 @@ import type { OrgProfile } from "@/lib/queries/orgs";
 import type { Tab, Sort, Experience, OfferOutcome, BothItem } from "@/types/org-content";
 import { SORT_OPTIONS } from "@/constants/org-content";
 import { sortReviews, sortInterviews, toggle } from "@/lib/org-sort";
-import { useDropdown } from "@/hooks/use-dropdown";
 import { ReviewCard } from "@/components/review-card";
 import { InterviewCard } from "@/components/interview-card";
 import { EmptyState } from "@/components/empty-state";
 import { formatEmploymentType } from "@/lib/org-display";
+import {
+  DropdownRoot,
+  DropdownTrigger,
+  DropdownClose,
+  DropdownContent,
+  DropdownItem,
+} from "@/components/ui/dropdown";
 
 export function OrgContent({ data }: { data: OrgProfile }) {
   const { reviews, interviews } = data;
@@ -22,9 +28,6 @@ export function OrgContent({ data }: { data: OrgProfile }) {
   const [empTypes, setEmpTypes] = useState<string[]>([]);
   const [experience, setExperience] = useState<Experience[]>([]);
   const [offerFilter, setOfferFilter] = useState<OfferOutcome[]>([]);
-
-  const { open: sortOpen, setOpen: setSortOpen, ref: sortRef } = useDropdown();
-  const { open: filterOpen, setOpen: setFilterOpen, ref: filterRef } = useDropdown();
 
   const availableEmpTypes = useMemo(
     () => [...new Set(reviews.map((r) => r.employmentType))].sort(),
@@ -125,7 +128,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     if (tab === "reviews") {
       if (filteredReviews.length === 0) return <EmptyState query={query} />;
       return (
-        <div className="space-y-12">
+        <div className="space-y-4">
           {filteredReviews.map((r) => (
             <ReviewCard key={r.id} review={r} />
           ))}
@@ -135,7 +138,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     if (tab === "interviews") {
       if (filteredInterviews.length === 0) return <EmptyState query={query} />;
       return (
-        <div className="space-y-12">
+        <div className="space-y-4">
           {filteredInterviews.map((i) => (
             <InterviewCard key={i.id} interview={i} />
           ))}
@@ -144,7 +147,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     }
     if (bothItems.length === 0) return <EmptyState query={query} />;
     return (
-      <div className="space-y-12">
+      <div className="space-y-4">
         {bothItems.map((item) =>
           item._kind === "review" ? (
             <ReviewCard key={`r-${item.id}`} review={item} showKind />
@@ -209,188 +212,167 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         </div>
 
         <div className="flex items-center gap-2 sm:ml-auto">
-          <div className="relative" ref={sortRef}>
-            <button
-              onClick={() => {
-                setSortOpen(!sortOpen);
-                setFilterOpen(false);
-              }}
-              className="border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors"
-            >
-              {currentSortLabel}
-              <ChevronDown
-                size={14}
-                className={`transition-transform ${sortOpen ? "rotate-180" : ""}`}
-              />
-            </button>
-            {sortOpen && (
-              <div className="border-outline-variant/20 bg-surface-container-lowest absolute top-full right-0 z-20 mt-1.5 min-w-[160px] rounded-xl border py-1 shadow-lg">
-                {SORT_OPTIONS[tab].map(({ value, label }) => (
-                  <button
-                    key={value}
-                    onClick={() => {
-                      setSort(value);
-                      setSortOpen(false);
-                    }}
-                    className={`hover:bg-surface-container-low flex w-full items-center px-4 py-2.5 text-sm transition-colors ${
-                      sort === value ? "text-foreground font-medium" : "text-on-surface-variant"
-                    }`}
-                  >
+          <DropdownRoot>
+            <DropdownTrigger asChild>
+              <button className="group border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors">
+                {currentSortLabel}
+                <ChevronDown
+                  size={14}
+                  className="transition-transform group-data-[state=open]:rotate-180"
+                />
+              </button>
+            </DropdownTrigger>
+            <DropdownContent className="min-w-[160px] py-1">
+              {SORT_OPTIONS[tab].map(({ value, label }) => (
+                <DropdownClose key={value} asChild>
+                  <DropdownItem active={sort === value} onClick={() => setSort(value)}>
                     {label}
-                    {sort === value && (
-                      <span className="bg-primary ml-auto h-1.5 w-1.5 rounded-full" />
-                    )}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
+                  </DropdownItem>
+                </DropdownClose>
+              ))}
+            </DropdownContent>
+          </DropdownRoot>
 
-          <div className="relative" ref={filterRef}>
-            <button
-              onClick={() => {
-                setFilterOpen(!filterOpen);
-                setSortOpen(false);
-              }}
-              className={`flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors ${
-                activeFilterCount > 0
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"
-              }`}
-            >
-              <SlidersHorizontal size={14} />
-              Filter
-              {activeFilterCount > 0 && (
-                <span className="bg-primary-foreground text-primary flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold">
-                  {activeFilterCount}
-                </span>
-              )}
-              <ChevronDown
-                size={14}
-                className={`transition-transform ${filterOpen ? "rotate-180" : ""}`}
-              />
-            </button>
-
-            {filterOpen && (
-              <div className="border-outline-variant/20 bg-surface-container-lowest absolute top-full left-0 z-20 mt-1.5 w-72 rounded-xl border p-5 shadow-lg sm:right-0 sm:left-auto">
+          <DropdownRoot>
+            <DropdownTrigger asChild>
+              <button
+                className={`group flex items-center gap-2 rounded-lg border px-3.5 py-2 text-sm transition-colors ${
+                  activeFilterCount > 0
+                    ? "border-primary bg-primary text-primary-foreground"
+                    : "border-outline-variant/30 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"
+                }`}
+              >
+                <SlidersHorizontal size={14} />
+                Filter
                 {activeFilterCount > 0 && (
-                  <div className="mb-5 flex items-center justify-between">
-                    <span className="text-on-surface-variant font-mono text-[10px] tracking-widest uppercase">
-                      {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} active
-                    </span>
-                    <button
-                      onClick={clearFilters}
-                      className="bg-surface-container text-on-surface-variant hover:bg-destructive flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[10px] font-medium tracking-widest uppercase transition-colors hover:text-white"
-                    >
-                      <X size={10} />
-                      Clear
-                    </button>
-                  </div>
+                  <span className="bg-primary-foreground text-primary flex h-4 w-4 items-center justify-center rounded-full text-[10px] font-bold">
+                    {activeFilterCount}
+                  </span>
                 )}
+                <ChevronDown
+                  size={14}
+                  className="transition-transform group-data-[state=open]:rotate-180"
+                />
+              </button>
+            </DropdownTrigger>
+            <DropdownContent className="w-72 p-5">
+              {activeFilterCount > 0 && (
+                <div className="mb-5 flex items-center justify-between">
+                  <span className="text-on-surface-variant font-mono text-[10px] tracking-widest uppercase">
+                    {activeFilterCount} filter{activeFilterCount > 1 ? "s" : ""} active
+                  </span>
+                  <button
+                    onClick={clearFilters}
+                    className="bg-surface-container text-on-surface-variant hover:bg-destructive flex items-center gap-1.5 rounded-full px-3 py-1 font-mono text-[10px] font-medium tracking-widest uppercase transition-colors hover:text-white"
+                  >
+                    <X size={10} />
+                    Clear
+                  </button>
+                </div>
+              )}
 
-                {tab === "reviews" && (
-                  <>
-                    <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                      Min Rating
-                    </p>
-                    <div className="mb-4 flex gap-1.5">
-                      {(
-                        [
-                          { value: 0, label: "Any" },
-                          { value: 4, label: "4+" },
-                          { value: 3, label: "3+" },
-                          { value: 2, label: "2+" },
-                        ] as const
-                      ).map(({ value, label }) => (
-                        <button
-                          key={value}
-                          onClick={() => setMinRating(value)}
-                          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                            minRating === value
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                          }`}
-                        >
-                          {label}
-                        </button>
-                      ))}
-                    </div>
-
-                    {availableEmpTypes.length > 0 && (
-                      <>
-                        <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                          Employment Type
-                        </p>
-                        <div className="flex flex-wrap gap-1.5">
-                          {availableEmpTypes.map((type) => (
-                            <button
-                              key={type}
-                              onClick={() => setEmpTypes((prev) => toggle(prev, type))}
-                              className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                                empTypes.includes(type)
-                                  ? "bg-primary text-primary-foreground"
-                                  : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                              }`}
-                            >
-                              {formatEmploymentType(type)}
-                            </button>
-                          ))}
-                        </div>
-                      </>
-                    )}
-                  </>
-                )}
-
-                {tab === "interviews" && (
-                  <>
-                    <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                      Experience
-                    </p>
-                    <div className="mb-4 flex gap-1.5">
-                      {(["Great", "Neutral", "Negative"] as Experience[]).map((exp) => (
-                        <button
-                          key={exp}
-                          onClick={() => setExperience((prev) => toggle(prev, exp))}
-                          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                            experience.includes(exp)
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                          }`}
-                        >
-                          {exp}
-                        </button>
-                      ))}
-                    </div>
-
-                    <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
-                      Offer Received
-                    </p>
-                    <div className="flex flex-wrap gap-1.5">
-                      {(["Yes", "No", "Yes but Declined"] as OfferOutcome[]).map((offer) => (
-                        <button
-                          key={offer}
-                          onClick={() => setOfferFilter((prev) => toggle(prev, offer))}
-                          className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
-                            offerFilter.includes(offer)
-                              ? "bg-primary text-primary-foreground"
-                              : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
-                          }`}
-                        >
-                          {offer}
-                        </button>
-                      ))}
-                    </div>
-                  </>
-                )}
-
-                {tab === "both" && (
-                  <p className="text-on-surface-variant text-sm">
-                    Switch to Reviews or Interviews to apply filters.
+              {tab === "reviews" && (
+                <>
+                  <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                    Min Rating
                   </p>
-                )}
-              </div>
-            )}
-          </div>
+                  <div className="mb-4 flex gap-1.5">
+                    {(
+                      [
+                        { value: 0, label: "Any" },
+                        { value: 4, label: "4+" },
+                        { value: 3, label: "3+" },
+                        { value: 2, label: "2+" },
+                      ] as const
+                    ).map(({ value, label }) => (
+                      <button
+                        key={value}
+                        onClick={() => setMinRating(value)}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                          minRating === value
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                        }`}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
+
+                  {availableEmpTypes.length > 0 && (
+                    <>
+                      <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                        Employment Type
+                      </p>
+                      <div className="flex flex-wrap gap-1.5">
+                        {availableEmpTypes.map((type) => (
+                          <button
+                            key={type}
+                            onClick={() => setEmpTypes((prev) => toggle(prev, type))}
+                            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                              empTypes.includes(type)
+                                ? "bg-primary text-primary-foreground"
+                                : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                            }`}
+                          >
+                            {formatEmploymentType(type)}
+                          </button>
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </>
+              )}
+
+              {tab === "interviews" && (
+                <>
+                  <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                    Experience
+                  </p>
+                  <div className="mb-4 flex gap-1.5">
+                    {(["Great", "Neutral", "Negative"] as Experience[]).map((exp) => (
+                      <button
+                        key={exp}
+                        onClick={() => setExperience((prev) => toggle(prev, exp))}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                          experience.includes(exp)
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                        }`}
+                      >
+                        {exp}
+                      </button>
+                    ))}
+                  </div>
+
+                  <p className="text-on-surface-variant mb-2 font-mono text-[10px] tracking-widest uppercase">
+                    Offer Received
+                  </p>
+                  <div className="flex flex-wrap gap-1.5">
+                    {(["Yes", "No", "Yes but Declined"] as OfferOutcome[]).map((offer) => (
+                      <button
+                        key={offer}
+                        onClick={() => setOfferFilter((prev) => toggle(prev, offer))}
+                        className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
+                          offerFilter.includes(offer)
+                            ? "bg-primary text-primary-foreground"
+                            : "bg-surface-container text-on-surface-variant hover:bg-surface-container-high"
+                        }`}
+                      >
+                        {offer}
+                      </button>
+                    ))}
+                  </div>
+                </>
+              )}
+
+              {tab === "both" && (
+                <p className="text-on-surface-variant text-sm">
+                  Switch to Reviews or Interviews to apply filters.
+                </p>
+              )}
+            </DropdownContent>
+          </DropdownRoot>
 
           <span className="text-on-surface-variant font-mono text-xs">
             {resultCount === totalCount ? `${totalCount} total` : `${resultCount} of ${totalCount}`}

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Search, X } from "lucide-react";
+import { Search, X, MessageSquare, BookOpen } from "lucide-react";
+import Link from "next/link";
 import type { OrgProfile } from "@/lib/queries/orgs";
 import type { Tab, Sort, Experience, OfferOutcome, BothItem } from "@/types/org-content";
 import { sortReviews, sortInterviews } from "@/lib/org-sort";
@@ -9,6 +10,27 @@ import { ReviewCard } from "@/components/review-card";
 import { InterviewCard } from "@/components/interview-card";
 import { EmptyState } from "@/components/empty-state";
 import { OrgFilterBar } from "@/components/org-filter-bar";
+
+function ShareFab({ company }: { company: OrgProfile["company"] }) {
+  return (
+    <div className="fixed right-8 bottom-8 z-50 flex flex-col-reverse items-end gap-2.5">
+      <Link
+        href={`/reviews/write?company=${company.slug}`}
+        className="bg-primary text-primary-foreground flex items-center gap-2.5 rounded-full px-5 py-3.5 text-sm font-semibold shadow-xl transition-all duration-200 hover:scale-105 hover:shadow-2xl"
+      >
+        <MessageSquare size={15} />
+        Write a Review
+      </Link>
+      <Link
+        href={`/interviews/submit?company=${company.slug}`}
+        className="bg-background text-foreground border-border/40 hover:bg-surface-container-low flex items-center gap-2.5 rounded-full border py-2.5 pr-5 pl-4 text-sm font-semibold shadow-lg transition-all hover:shadow-xl"
+      >
+        <BookOpen size={15} />
+        Submit Interview
+      </Link>
+    </div>
+  );
+}
 
 export function OrgContent({ data }: { data: OrgProfile }) {
   const { reviews, interviews } = data;
@@ -235,6 +257,8 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
       <h2 className="mb-8 text-2xl font-bold tracking-tight">{tabHeadings[tab]}</h2>
       {renderFeed()}
+
+      <ShareFab company={data.company} />
     </div>
   );
 }

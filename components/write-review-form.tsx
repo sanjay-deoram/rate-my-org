@@ -399,22 +399,22 @@ export function WriteReviewForm() {
       </div>
 
       {/* Submit */}
-      <div className="border-outline-variant/10 flex flex-col items-center justify-between gap-8 border-t pt-10 md:flex-row">
+      <div className="border-outline-variant/10 flex justify-end border-t pt-10">
         <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting] as const}>
           {([canSubmit, isSubmitting]) => (
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitReview.isPending}
-              className="from-primary to-primary-container text-primary-foreground w-full rounded-md bg-linear-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 md:w-auto"
+              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
             >
               {submitReview.isPending ? "Submitting..." : "Submit Review"}
             </button>
           )}
         </form.Subscribe>
-        {submitReview.isError && (
-          <p className="text-destructive text-sm">{submitReview.error.message}</p>
-        )}
       </div>
+      {submitReview.isError && (
+        <p className="text-destructive text-center text-sm">{submitReview.error.message}</p>
+      )}
     </form>
   );
 }

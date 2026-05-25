@@ -378,13 +378,13 @@ export function SubmitInterviewForm() {
       </section>
 
       {/* Submit row */}
-      <section className="border-outline-variant/10 flex justify-end border-t pt-8">
+      <section className="border-outline-variant/10 flex justify-end border-t pt-10">
         <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting] as const}>
           {([canSubmit, isSubmitting]) => (
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitInterview.isPending}
-              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-12 py-5 text-lg font-bold tracking-tight transition-transform hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
+              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
             >
               {submitInterview.isPending ? "Submitting..." : "Submit Interview"}
             </button>

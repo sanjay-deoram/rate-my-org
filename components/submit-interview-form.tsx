@@ -24,11 +24,10 @@ import {
   DropdownContent,
   DropdownItem,
 } from "@/components/ui/dropdown";
+import { DIFFICULTY_LABELS } from "@/lib/org-display";
 
 const inputCls =
   "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0";
-
-const DIFFICULTY_LABELS = ["", "Very Easy", "Easy", "Medium", "Hard", "Very Hard"] as const;
 
 export function SubmitInterviewForm() {
   const [submitted, setSubmitted] = useState(false);

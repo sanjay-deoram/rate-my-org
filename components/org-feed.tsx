@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { PlusCircle, MinusCircle } from "lucide-react";
 import type { OrgProfile } from "@/lib/queries/orgs";
+import { difficultyLabel } from "@/lib/org-display";
 
 type Review = OrgProfile["reviews"][number];
 type Interview = OrgProfile["interviews"][number];
@@ -23,14 +24,6 @@ function timeAgo(date: Date): string {
   if (seconds < 2592000) return rtf.format(-Math.floor(seconds / 86400), "day");
   if (seconds < 31536000) return rtf.format(-Math.floor(seconds / 2592000), "month");
   return rtf.format(-Math.floor(seconds / 31536000), "year");
-}
-
-function difficultyLabel(n: number): string {
-  if (n <= 1) return "Easy";
-  if (n <= 2) return "Easy–Medium";
-  if (n <= 3) return "Medium";
-  if (n <= 4) return "Hard";
-  return "Very Hard";
 }
 
 function ReviewCard({ review }: { review: Review }) {

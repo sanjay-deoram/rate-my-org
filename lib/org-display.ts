@@ -15,11 +15,12 @@ export function timeAgo(date: Date): string {
 
 export function difficultyLabel(n: number): string {
   if (n <= 1) return "Easy";
-  if (n <= 2) return "Easy–Medium";
-  if (n <= 3) return "Medium";
-  if (n <= 4) return "Hard";
+  if (n <= 2) return "Medium";
+  if (n <= 3) return "Hard";
   return "Very Hard";
 }
+
+export const DIFFICULTY_LABELS = ["Easy", "Medium", "Hard", "Very Hard"] as const;
 
 export function sortItemsByCreatedAt<T extends { createdAt: Date | string }>(
   items: T[],

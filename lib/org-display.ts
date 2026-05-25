@@ -13,14 +13,16 @@ export function timeAgo(date: Date): string {
   return rtf.format(-Math.floor(seconds / 31536000), "year");
 }
 
-export function difficultyLabel(n: number): string {
+export const DIFFICULTY_LABELS = ["Easy", "Medium", "Hard", "Very Hard"] as const;
+
+export type DifficultyLabel = (typeof DIFFICULTY_LABELS)[number];
+
+export function difficultyLabel(n: number): DifficultyLabel {
   if (n <= 1) return "Easy";
   if (n <= 2) return "Medium";
   if (n <= 3) return "Hard";
   return "Very Hard";
 }
-
-export const DIFFICULTY_LABELS = ["Easy", "Medium", "Hard", "Very Hard"] as const;
 
 export function sortItemsByCreatedAt<T extends { createdAt: Date | string }>(
   items: T[],

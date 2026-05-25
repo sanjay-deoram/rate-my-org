@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Rate My Org
 
-## Getting Started
+> Anonymous company reviews and interview experiences — no sign-in required.
 
-First, run the development server:
+Rate My Org is an open, anonymous platform where employees and former employees can rate and review organizations, share interview experiences, and browse community feedback — entirely without creating an account. Think Glassdoor, but with zero friction: no login, no profile, just honest reviews.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+***
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Features
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Anonymous reviews** — Submit company reviews with 5-star ratings across six categories (work-life balance, compensation, management, culture, growth, and overall)
+- **Interview experiences** — Share interview process details, difficulty, questions, and outcome anonymously
+- **No authentication** — Browse and submit everything without signing in or creating an account
+- **Community feedback** — Mark reviews as helpful or flag misleading content
+- **Company discovery** — Search companies by name and location with fuzzy autocomplete
+- **Add missing companies** — If a company doesn't exist in the database yet, anyone can add it
+- **Anti-bot protection** — Cloudflare Turnstile (invisible CAPTCHA) on all submission forms to keep reviews genuine
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+***
 
-## Learn More
+## Rate My Org vs. Glassdoor
 
-To learn more about Next.js, take a look at the following resources:
+|                        | Rate My Org                                                                                                                                        | Glassdoor                                                                                                                                         |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Sign-in to view**    | Never — browse everything freely                                                                                                                   | Required to read most reviews                                                                                                                     |
+| **Sign-in to submit**  | Never — fully anonymous, no account                                                                                                                | Required to post a review                                                                                                                         |
+| **Review takedowns**   | Reviews and interviews are never taken down                                                                                                        | Employers can flag and request removal; third-party services exist specifically to get reviews deleted                                            |
+| **Pay-to-play**        | No — we will never accept money to suppress or remove content                                                                                      | An underground economy exists where companies pay to get negative reviews removed; legal pressure can also compel removal                         |
+| **Anonymity**          | Guaranteed — no account, no name, no trace                                                                                                         | Glassdoor has previously added real names to profiles without consent, causing a mass user exodus                                                 |
+| **Employer influence** | None                                                                                                                                               | Employers with paid plans can respond, promote, and effectively suppress negative sentiment                                                       |
+| **Content**            | Reviews + interview experiences                                                                                                                    | Reviews, salaries, job listings, interview experiences                                                                                            |
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+The core difference comes down to trust and access. Glassdoor requires you to give something — your identity, your own review — just to read what others wrote. Rate My Org puts no wall between you and the information. You don't sign in to browse, you don't sign in to submit, and no company can pay or pressure us to make a bad review disappear.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+***
 
-## Deploy on Vercel
+## Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+| Layer          | Technology                    |
+| -------------- | ----------------------------- |
+| Framework      | Next.js 16 (App Router)       |
+| Language       | TypeScript (strict mode)      |
+| Database       | Neon (Postgres, serverless)   |
+| ORM            | Drizzle ORM                   |
+| Styling        | Tailwind CSS v4 + shadcn/ui   |
+| Forms          | TanStack Form + Zod           |
+| Data Fetching  | TanStack Query                |
+| Hosting        | Vercel (free tier)            |
+| Anti-Bot       | Cloudflare Turnstile          |
+| Logo Storage   | Cloudflare R2 + CDN           |
+| Search         | Postgres `pg_trgm` full-text  |
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+***
+
+## Design
+
+Rate My Org uses a minimal, editorial aesthetic — near-monochromatic palette (near-black, warm whites, subtle grays) with a vivid green accent for positive signals. Full design system documentation is in [`design.md`](./design.md).
+
+***
+
+## Contributing
+
+Pull requests are welcome. For major changes, please open an issue first to discuss what you'd like to change.
+
+***
+
+## License
+
+This project is currently unlicensed.

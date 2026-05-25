@@ -407,7 +407,7 @@ export function WriteReviewForm() {
               disabled={!canSubmit || isSubmitting || submitReview.isPending}
               className="from-primary to-primary-container text-primary-foreground w-full rounded-md bg-linear-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-[0.98] disabled:opacity-50 md:w-auto"
             >
-              {submitReview.isPending ? "Publishing..." : "Publish Review"}
+              {submitReview.isPending ? "Submitting..." : "Submit Review"}
             </button>
           )}
         </form.Subscribe>

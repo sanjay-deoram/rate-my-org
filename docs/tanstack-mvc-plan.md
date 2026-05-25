@@ -496,7 +496,7 @@ export function WriteReviewForm() {
   <form.Subscribe selector={(s) => [s.canSubmit, s.isSubmitting]}>
     {([canSubmit, isSubmitting]) => (
       <button type="submit" disabled={!canSubmit || isSubmitting || submitReview.isPending}>
-        {submitReview.isPending ? "Publishing..." : "Publish Review"}
+        {submitReview.isPending ? "Submitting..." : "Submit Review"}
       </button>
     )}
   </form.Subscribe>

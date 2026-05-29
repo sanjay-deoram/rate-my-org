@@ -19,6 +19,8 @@
 
 # production
 /build
+/.worker-next
+/.open-next
 
 # misc
 .DS_Store

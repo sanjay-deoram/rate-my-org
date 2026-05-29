@@ -1,0 +1,16 @@
+name = "rate-my-org"
+compatibility_date = "2025-05-29"
+compatibility_flags = ["nodejs_compat"]
+main = ".worker-next/index.mjs"
+
+[assets]
+directory = ".worker-next/assets"
+binding = "ASSETS"
+
+[[r2_buckets]]
+binding = "R2"
+bucket_name = "companies-logo"
+
+# Non-secret vars (secrets are set via: wrangler secret put SECRET_NAME)
+# [vars]
+# NEXT_PUBLIC_SOMETHING = "value"

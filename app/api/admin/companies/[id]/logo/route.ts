@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
 import { eq, sql } from "drizzle-orm";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import sharp from "sharp";
+import { PhotonImage, SamplingFilter, resize, crop } from "@cf-wasm/photon/edge-light";
+
+export const runtime = "edge";
 import { db } from "@/lib/db";
 import { companies } from "@/drizzle/schema";
 import { requireAdmin } from "@/lib/admin-auth";
@@ -59,12 +61,25 @@ export async function POST(req: Request, { params }: { params: Promise<{ id: str
     return NextResponse.json({ error: "File must be under 5 MB" }, { status: 422 });
   }
 
-  let webp: Buffer;
+  let webp: Uint8Array;
   try {
-    const buffer = Buffer.from(await file.arrayBuffer());
-    webp = await sharp(buffer).resize(200, 200, { fit: "cover" }).webp({ quality: 85 }).toBuffer();
+    const bytes = new Uint8Array(await file.arrayBuffer());
+    const input = PhotonImage.new_from_byteslice(bytes);
+    const w = input.get_width();
+    const h = input.get_height();
+    const scale = Math.max(200 / w, 200 / h);
+    const scaledW = Math.round(w * scale);
+    const scaledH = Math.round(h * scale);
+    const scaled = resize(input, scaledW, scaledH, SamplingFilter.Lanczos3);
+    input.free();
+    const x1 = Math.floor((scaledW - 200) / 2);
+    const y1 = Math.floor((scaledH - 200) / 2);
+    const cropped = crop(scaled, x1, y1, x1 + 200, y1 + 200);
+    scaled.free();
+    webp = cropped.get_bytes_webp();
+    cropped.free();
   } catch (err) {
-    console.error("[logo] sharp error:", err);
+    console.error("[logo] photon error:", err);
     return NextResponse.json({ error: "Failed to process image" }, { status: 422 });
   }
 

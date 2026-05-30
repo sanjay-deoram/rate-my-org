@@ -12,7 +12,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "RateMyOrg — Uncover the Truth About Your Next Workplace",
+    default: "RateMyOrg",
     template: "%s | RateMyOrg",
   },
   description:

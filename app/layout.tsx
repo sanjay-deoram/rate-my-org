@@ -17,13 +17,7 @@ export const metadata: Metadata = {
   },
   description:
     "Anonymously rate organizations, read real reviews, and discover honest interview experiences. No login required.",
-  keywords: [
-    "company reviews",
-    "anonymous reviews",
-    "interview questions",
-    "workplace culture",
-    "salary data",
-  ],
+  keywords: ["company reviews", "anonymous reviews", "interview questions", "workplace culture"],
   openGraph: {
     siteName: "RateMyOrg",
     type: "website",

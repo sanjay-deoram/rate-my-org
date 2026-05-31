@@ -27,6 +27,47 @@ import type { PendingCompany } from "@/lib/api/admin";
 
 const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
 
+function resizeToWebP(file: File): Promise<File> {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    const url = URL.createObjectURL(file);
+    img.onload = () => {
+      URL.revokeObjectURL(url);
+      const { naturalWidth: w, naturalHeight: h } = img;
+      const scale = Math.max(200 / w, 200 / h);
+      const scaledW = Math.round(w * scale);
+      const scaledH = Math.round(h * scale);
+      const canvas = document.createElement("canvas");
+      canvas.width = 200;
+      canvas.height = 200;
+      const ctx = canvas.getContext("2d")!;
+      ctx.drawImage(
+        img,
+        -Math.floor((scaledW - 200) / 2),
+        -Math.floor((scaledH - 200) / 2),
+        scaledW,
+        scaledH,
+      );
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            reject(new Error("Canvas export failed"));
+            return;
+          }
+          resolve(new File([blob], "logo.webp", { type: "image/webp" }));
+        },
+        "image/webp",
+        0.9,
+      );
+    };
+    img.onerror = () => {
+      URL.revokeObjectURL(url);
+      reject(new Error("Failed to load image"));
+    };
+    img.src = url;
+  });
+}
+
 function logoUrl(key: string) {
   return `${CDN}/${key}`;
 }
@@ -55,11 +96,12 @@ export function CompanyCard({ company, isExpanded, onToggleExpand }: CompanyCard
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [rejectOpen, setRejectOpen] = useState(false);
 
-  function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
+  async function handleLogoChange(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
-    uploadLogo.mutate({ id: company.id, file });
     e.target.value = "";
+    const webp = await resizeToWebP(file);
+    uploadLogo.mutate({ id: company.id, file: webp });
   }
 
   const actionError =

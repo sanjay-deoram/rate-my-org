@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { eq, sql } from "drizzle-orm";
 import { S3Client, PutObjectCommand } from "@aws-sdk/client-s3";
-import { PhotonImage, SamplingFilter, resize, crop } from "@cf-wasm/photon/edge-light";
+import { PhotonImage, SamplingFilter, resize, crop } from "@cf-wasm/photon/workerd";
 
 export const runtime = "edge";
 import { db } from "@/lib/db";

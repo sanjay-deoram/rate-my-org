@@ -39,6 +39,12 @@ function ReviewCard({ review }: { review: RecentReviewEntry }) {
   );
 }
 
+// One copy of a column must be taller than the viewport, otherwise the
+// scroll runs out of content before the -50% loop point and the next cards
+// appear to "pop" instead of rising from the bottom. Tile the cards until a
+// single copy has enough of them to overflow the viewport at any card height.
+const MIN_CARDS_PER_COPY = 6;
+
 function ReviewsColumn({
   reviews,
   duration = 15,
@@ -48,6 +54,13 @@ function ReviewsColumn({
   duration?: number;
   className?: string;
 }) {
+  if (reviews.length === 0) return null;
+
+  const filled =
+    reviews.length >= MIN_CARDS_PER_COPY
+      ? reviews
+      : Array.from({ length: MIN_CARDS_PER_COPY }, (_, i) => reviews[i % reviews.length]);
+
   return (
     <div className={className}>
       <motion.div
@@ -58,12 +71,12 @@ function ReviewsColumn({
           ease: "linear",
           repeatType: "loop",
         }}
-        className="bg-background flex flex-col gap-6 pb-6"
+        className="flex flex-col gap-6 pb-6"
       >
         {[0, 1].map((key) => (
           <React.Fragment key={key}>
-            {reviews.map((review) => (
-              <ReviewCard key={`${key}-${review.id}`} review={review} />
+            {filled.map((review, i) => (
+              <ReviewCard key={`${key}-${i}-${review.id}`} review={review} />
             ))}
           </React.Fragment>
         ))}
@@ -107,7 +120,15 @@ export function HomeReviews({ reviews }: { reviews: RecentReviewEntry[] }) {
           </p>
         </motion.div>
 
-        <div className="mt-10 flex max-h-[740px] justify-center gap-6 overflow-hidden [mask-image:linear-gradient(to_bottom,transparent,black_25%,black_75%,transparent)]">
+        <div
+          className="mt-10 flex h-[740px] justify-center gap-6 overflow-hidden"
+          style={{
+            maskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+            WebkitMaskImage:
+              "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",
+          }}
+        >
           <ReviewsColumn reviews={col1} duration={18} />
           <ReviewsColumn reviews={col2} duration={22} className="hidden md:block" />
           <ReviewsColumn reviews={col3} duration={20} className="hidden lg:block" />

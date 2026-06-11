@@ -1,245 +1,249 @@
 import Link from "next/link";
-import { BadgeCheck, Shield } from "lucide-react";
+import { BadgeCheck } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
-import { FlipWords } from "@/components/ui/flip-words";
+import { HomeCarousel } from "@/components/home-carousel";
+import { getHomepageStats, getTopRatedCompanies } from "@/lib/queries/homepage";
 
-export default function HomePage() {
+const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
+
+function formatCount(n: number): string {
+  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(0)}M`;
+  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
+  return String(n);
+}
+
+function fmtRating(raw: string | null): string | null {
+  if (!raw) return null;
+  const n = parseFloat(raw);
+  if (isNaN(n)) return null;
+  return (Math.round(n * 10) / 10).toFixed(1);
+}
+
+export default async function HomePage() {
+  const [stats, topRated] = await Promise.all([getHomepageStats(), getTopRatedCompanies(6)]);
+
+  const leaderboard = topRated.slice(0, 4);
+
   return (
     <>
       <Nav />
       <main className="bg-background min-h-screen pt-20">
-        {/* Hero */}
-        <section className="relative flex flex-col items-center px-8 py-24 text-center md:px-12 md:py-40">
-          {/* Pill badge */}
-          <div className="bg-surface-container border-surface-container-highest mb-8 inline-flex items-center gap-2 rounded-full border px-4 py-1.5">
-            <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.18em] uppercase">
-              Transparency First
-            </span>
-          </div>
+        {/* Hero — two-column on desktop, stacked on mobile */}
+        <section className="mx-auto max-w-7xl px-8 py-20 md:px-12 md:py-28">
+          <div className="flex flex-col gap-12 md:flex-row md:items-start md:gap-16">
+            {/* Left: copy + search + stats */}
+            <div className="flex-1">
+              {/* Badge */}
+              <div className="mb-6 inline-flex items-center gap-2">
+                <span className="relative flex h-2 w-2">
+                  <span className="bg-tertiary-fixed-dim absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
+                  <span className="bg-tertiary-fixed-dim relative inline-flex h-2 w-2 rounded-full" />
+                </span>
+                <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                  The Workplace Index · Live
+                </span>
+              </div>
 
-          <h1 className="text-foreground mb-8 max-w-4xl text-5xl leading-[1.1] font-bold tracking-tighter md:text-7xl">
-            Uncover the{" "}
-            <span className="border-foreground relative inline-block border-b-4">
-              <span className="invisible px-2 select-none" aria-hidden="true">
-                Reality
-              </span>
-              <span className="absolute inset-0 flex items-center justify-center">
-                <FlipWords
-                  words={["Truth", "Reality"]}
-                  className="text-foreground font-bold italic"
-                />
-              </span>
-            </span>{" "}
-            About Your Next Workplace
-          </h1>
+              <h1 className="text-foreground mb-6 text-5xl leading-[1.05] font-black tracking-tighter md:text-6xl lg:text-7xl">
+                Every company.
+                <br />
+                On the record.
+              </h1>
 
-          <p className="text-on-surface-variant mb-12 max-w-xl text-base leading-relaxed md:text-lg">
-            Anonymous, verified insights from the people who actually work there. No PR fluff, just
-            honest experiences.
-          </p>
+              <p className="text-on-surface-variant mb-10 max-w-md text-base leading-relaxed md:text-lg">
+                A permanent, anonymous index of what it&apos;s really like to work — and interview —
+                anywhere. No login. No takedowns.
+              </p>
 
-          {/* Search bar */}
-          <div className="w-full max-w-2xl">
-            <HomeSearchBar />
+              <div className="mb-8 w-full max-w-lg">
+                <HomeSearchBar />
+              </div>
+
+              {/* Stats */}
+              <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-foreground text-xl font-black tabular-nums">
+                    {formatCount(stats.totalReviews)}
+                  </span>
+                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Reviews
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-foreground text-xl font-black tabular-nums">
+                    {formatCount(stats.totalCompanies)}
+                  </span>
+                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Companies
+                  </span>
+                </div>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-foreground text-xl font-black tabular-nums">
+                    {formatCount(stats.totalInterviews)}
+                  </span>
+                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Interviews
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Top Rated card — desktop only shows here; on mobile it renders below */}
+            <div className="w-full shrink-0 md:w-[400px]">
+              <TopRatedCard leaderboard={leaderboard} />
+            </div>
           </div>
         </section>
 
-        {/* Trending section */}
-        <section className="bg-surface-container-low py-32">
-          <div className="mx-auto max-w-7xl px-8 md:px-12">
-            <div className="mb-16 flex flex-col justify-between gap-4 md:flex-row md:items-end">
-              <div>
-                <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.2em] uppercase">
-                  Trending Data
+        {/* Divider */}
+        <div className="border-surface-container-highest mx-8 border-t md:mx-12" />
+
+        {/* Trending carousel section */}
+        <section className="mx-auto max-w-7xl px-8 py-20 md:px-12">
+          <div className="mb-8 flex items-end justify-between">
+            <div>
+              <div className="mb-3 flex items-center gap-2">
+                <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 rounded-full" />
+                <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                  Trending This Week
                 </span>
-                <h2 className="text-4xl font-bold tracking-tight">Most Searched This Week</h2>
               </div>
-              <Link
-                href="/orgs"
-                className="border-foreground border-b pb-1 text-sm font-bold transition-opacity hover:opacity-70"
-              >
-                View Full Index
-              </Link>
-            </div>
-
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-12">
-              {/* Featured org card */}
-              <div className="bg-surface-container-lowest group hover:border-surface-container-highest flex cursor-pointer flex-col justify-between rounded-xl border border-transparent p-10 transition-all duration-300 md:col-span-8">
-                <div>
-                  <div className="mb-8 flex items-center justify-between">
-                    <div className="bg-surface-container flex h-16 w-16 items-center justify-center rounded-lg text-3xl font-black">
-                      S
-                    </div>
-                    <div className="flex items-center gap-2 rounded-full bg-[#d1fadf] px-3 py-1 text-[#00632d]">
-                      <BadgeCheck size={14} className="fill-current" />
-                      <span className="text-[10px] font-bold tracking-wider uppercase">
-                        Top Rated
-                      </span>
-                    </div>
-                  </div>
-                  <h3 className="mb-3 text-3xl font-bold">Stripe</h3>
-                  <p className="text-on-surface-variant max-w-md text-lg leading-relaxed">
-                    Infrastructure for the internet economy. Known for rigorous engineering culture
-                    and high-impact work.
-                  </p>
-                </div>
-                <div className="mt-12 flex items-center gap-12">
-                  <div>
-                    <span className="text-on-surface-variant mb-1 block font-mono text-[10px] tracking-widest uppercase">
-                      Culture Rating
-                    </span>
-                    <span className="text-3xl font-black">4.8/5.0</span>
-                  </div>
-                  <div>
-                    <span className="text-on-surface-variant mb-1 block font-mono text-[10px] tracking-widest uppercase">
-                      Growth Opportunity
-                    </span>
-                    <div className="bg-surface-container-highest mt-3 h-2 w-40 rounded-full">
-                      <div className="bg-primary h-full rounded-full" style={{ width: "92%" }} />
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Anonymity CTA card */}
-              <div className="bg-primary text-primary-foreground group relative flex flex-col justify-between overflow-hidden rounded-xl p-10 md:col-span-4">
-                <div className="z-10">
-                  <span className="text-on-primary-container mb-6 block font-mono text-[10px] tracking-widest uppercase">
-                    Anonymity Guaranteed
-                  </span>
-                  <h3 className="mb-4 text-2xl leading-snug font-bold">
-                    The safe space for workplace transparency.
-                  </h3>
-                  <p className="text-on-primary-container text-sm leading-relaxed opacity-80">
-                    Join 40k+ professionals sharing honest insights without the fear of
-                    identification.
-                  </p>
-                </div>
-                <Link
-                  href="/reviews/write"
-                  className="text-primary z-10 mt-12 block w-full rounded bg-white py-4 text-center text-sm font-bold transition-all hover:shadow-xl active:scale-[0.98]"
-                >
-                  Start Sharing
-                </Link>
-                <div className="absolute -right-8 -bottom-8 opacity-10 transition-transform duration-500 group-hover:scale-110">
-                  <Shield size={140} />
-                </div>
-              </div>
-
-              {/* Recent interview */}
-              <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
-                <div className="grow">
-                  <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
-                    Recent Interview
-                  </span>
-                  <h4 className="text-primary mb-4 text-xl leading-tight font-black">
-                    Senior Product Designer
-                  </h4>
-                  <p className="text-on-surface-variant border-surface-container-highest mb-6 border-l-2 pl-4 text-sm leading-relaxed italic">
-                    &quot;The process was heavily focused on systems thinking rather than just
-                    visual execution...&quot;
-                  </p>
-                </div>
-                <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
-                  <span className="text-primary text-xs font-bold tracking-wider uppercase">
-                    Figma
-                  </span>
-                  <span className="text-on-surface-variant font-mono text-[10px]">2 DAYS AGO</span>
-                </div>
-              </div>
-
-              {/* Recent review */}
-              <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
-                <div className="grow">
-                  <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
-                    Recent Review
-                  </span>
-                  <h4 className="text-primary mb-4 text-xl leading-tight font-black">
-                    Great work-life balance
-                  </h4>
-                  <p className="text-on-surface-variant border-surface-container-highest mb-6 border-l-2 pl-4 text-sm leading-relaxed italic">
-                    &quot;Transparent leadership and a strong emphasis on mental well-being across
-                    the entire org...&quot;
-                  </p>
-                </div>
-                <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
-                  <span className="text-primary text-xs font-bold tracking-wider uppercase">
-                    Linear
-                  </span>
-                  <span className="text-on-surface-variant font-mono text-[10px]">5 DAYS AGO</span>
-                </div>
-              </div>
-
-              {/* Salary insight */}
-              <div className="bg-surface-container-lowest border-surface-container-highest hover:border-primary flex flex-col rounded-xl border p-8 transition-all duration-300 md:col-span-4">
-                <div className="grow">
-                  <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.15em] uppercase">
-                    Salary Insight
-                  </span>
-                  <h4 className="text-on-surface-variant mb-1 text-sm font-medium">
-                    Software Engineer L5
-                  </h4>
-                  <div className="mb-4 flex items-baseline gap-2">
-                    <span className="text-primary text-4xl font-black">$245k</span>
-                    <span className="text-on-surface-variant text-[10px] font-bold tracking-tighter uppercase">
-                      Total Comp
-                    </span>
-                  </div>
-                  <p className="text-on-surface-variant text-[11px] leading-tight">
-                    Based on 14 recent entries verified by community members.
-                  </p>
-                </div>
-                <div className="border-surface-container-highest flex items-center justify-between border-t pt-6">
-                  <span className="text-primary text-xs font-bold tracking-wider uppercase">
-                    Vercel
-                  </span>
-                  <div className="flex items-center gap-1">
-                    <BadgeCheck size={14} className="text-tertiary-fixed-dim fill-current" />
-                    <span className="text-tertiary-fixed-dim text-[10px] font-bold tracking-wider uppercase">
-                      Verified
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+                Where people are looking now
+              </h2>
             </div>
           </div>
+          <HomeCarousel companies={topRated} />
         </section>
 
         {/* Editorial section */}
-        <section className="mx-auto flex max-w-7xl flex-col items-center gap-20 px-8 py-32 md:flex-row md:px-12">
-          <div className="flex-1">
-            <div className="bg-surface-container group relative aspect-square w-full overflow-hidden rounded-xl shadow-2xl">
-              <div className="from-surface-container-high to-surface-dim absolute inset-0 bg-linear-to-br" />
-              <div className="absolute inset-0 flex items-center justify-center">
-                <div className="text-on-surface-variant/10 text-[120px] leading-none font-black tracking-tighter select-none">
-                  R
+        <section className="border-surface-container-highest border-t">
+          <div className="mx-auto flex max-w-7xl flex-col items-center gap-20 px-8 py-32 md:flex-row md:px-12">
+            <div className="flex-1">
+              <div className="bg-surface-container group relative aspect-square w-full overflow-hidden rounded-xl shadow-2xl">
+                <div className="from-surface-container-high to-surface-dim absolute inset-0 bg-linear-to-br" />
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="text-on-surface-variant/10 text-[120px] leading-none font-black tracking-tighter select-none">
+                    R
+                  </div>
                 </div>
+                <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(27,27,27,0.02)_10px,rgba(27,27,27,0.02)_20px)]" />
               </div>
-              <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(27,27,27,0.02)_10px,rgba(27,27,27,0.02)_20px)]" />
             </div>
-          </div>
 
-          <div className="flex-1 space-y-8">
-            <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-              The Digital Curator
-            </span>
-            <blockquote className="text-primary text-4xl leading-tight font-medium tracking-tight md:text-5xl">
-              &quot;We believe that the most valuable data isn&apos;t in a brochure, but in the
-              collective experiences of the people who do the work every day.&quot;
-            </blockquote>
-            <div className="pt-4">
-              <p className="text-on-surface-variant max-w-md text-lg leading-relaxed">
-                RateMyOrg isn&apos;t just another review site. We treat organizational data as
-                high-end editorial content, ensuring every insight is presented with the weight and
-                clarity it deserves.
-              </p>
+            <div className="flex-1 space-y-8">
+              <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
+                The Digital Curator
+              </span>
+              <blockquote className="text-primary text-4xl leading-tight font-medium tracking-tight md:text-5xl">
+                &quot;We believe that the most valuable data isn&apos;t in a brochure, but in the
+                collective experiences of the people who do the work every day.&quot;
+              </blockquote>
+              <div className="pt-4">
+                <p className="text-on-surface-variant max-w-md text-lg leading-relaxed">
+                  RateMyOrg isn&apos;t just another review site. We treat organizational data as
+                  high-end editorial content, ensuring every insight is presented with the weight
+                  and clarity it deserves.
+                </p>
+              </div>
             </div>
           </div>
         </section>
       </main>
       <Footer />
     </>
+  );
+}
+
+type LeaderboardEntry = {
+  slug: string;
+  name: string;
+  industry: string | null;
+  logoKey: string | null;
+  avgRating: string | null;
+};
+
+function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
+  return (
+    <div className="bg-surface-container-lowest border-surface-container-highest overflow-hidden rounded-2xl border">
+      {/* Card header */}
+      <div className="border-surface-container-highest flex items-center justify-between border-b px-6 py-4">
+        <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Top Rated</span>
+        <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+          Score
+        </span>
+      </div>
+
+      {/* Rows */}
+      {leaderboard.length === 0 ? (
+        <p className="text-on-surface-variant px-6 py-8 text-sm">No rated companies yet.</p>
+      ) : (
+        <div>
+          {leaderboard.map((company, i) => {
+            const logoSrc = company.logoKey && CDN ? `${CDN}/${company.logoKey}` : null;
+            const rating = fmtRating(company.avgRating);
+            return (
+              <Link
+                key={company.slug}
+                href={`/orgs/${company.slug}`}
+                className="border-surface-container-highest group relative isolate flex items-center gap-4 overflow-hidden border-b px-6 py-4 last:border-b-0"
+              >
+                {/* Slide-in fill */}
+                <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
+
+                <span className="text-on-surface-variant relative w-6 shrink-0 font-mono text-xs transition-colors duration-300 group-hover:text-white/50">
+                  {String(i + 1).padStart(2, "0")}
+                </span>
+
+                <div className="bg-surface-container relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg transition-colors duration-300 group-hover:bg-white/10">
+                  {logoSrc ? (
+                    <img
+                      src={logoSrc}
+                      alt={`${company.name} logo`}
+                      className="h-full w-full object-contain"
+                    />
+                  ) : (
+                    <span className="text-primary relative text-base leading-none font-black transition-colors duration-300 group-hover:text-white">
+                      {company.name.charAt(0).toUpperCase()}
+                    </span>
+                  )}
+                </div>
+
+                <div className="relative min-w-0 flex-1">
+                  <p className="truncate text-sm leading-tight font-bold transition-colors duration-300 group-hover:text-white">
+                    {company.name}
+                  </p>
+                  {company.industry && (
+                    <p className="text-on-surface-variant truncate text-xs transition-colors duration-300 group-hover:text-white/50">
+                      {company.industry}
+                    </p>
+                  )}
+                </div>
+
+                <div className="relative flex shrink-0 items-center gap-1">
+                  {rating ? (
+                    <>
+                      <BadgeCheck
+                        size={12}
+                        className="text-tertiary-fixed-dim fill-current transition-colors duration-300 group-hover:text-white"
+                      />
+                      <span className="text-sm font-black tabular-nums transition-colors duration-300 group-hover:text-white">
+                        {rating}
+                      </span>
+                    </>
+                  ) : (
+                    <span className="text-on-surface-variant text-xs transition-colors duration-300 group-hover:text-white/50">
+                      —
+                    </span>
+                  )}
+                </div>
+              </Link>
+            );
+          })}
+        </div>
+      )}
+    </div>
   );
 }

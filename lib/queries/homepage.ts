@@ -1,7 +1,38 @@
 import { db } from "@/lib/db";
 import { companies, reviews, interviews } from "@/drizzle/schema";
-import { eq, desc, sql, count } from "drizzle-orm";
+import { eq, desc, sql, count, and, ne } from "drizzle-orm";
 import type { TopRatedCompany } from "@/types/homepage";
+
+export type RecentReviewEntry = {
+  id: string;
+  headline: string;
+  overallRating: number;
+  jobTitle: string;
+  employmentStatus: string;
+  companyName: string;
+  companySlug: string;
+  companyLogoKey: string | null;
+};
+
+export async function getRecentReviews(limit = 8): Promise<RecentReviewEntry[]> {
+  const rows = await db
+    .select({
+      id: reviews.id,
+      headline: reviews.headline,
+      overallRating: reviews.overallRating,
+      jobTitle: reviews.jobTitle,
+      employmentStatus: reviews.employmentStatus,
+      companyName: companies.name,
+      companySlug: companies.slug,
+      companyLogoKey: companies.logoKey,
+    })
+    .from(reviews)
+    .innerJoin(companies, eq(reviews.companyId, companies.id))
+    .where(and(eq(companies.status, "approved"), ne(reviews.headline, "")))
+    .orderBy(desc(reviews.createdAt))
+    .limit(limit);
+  return rows;
+}
 
 export async function getHomepageStats() {
   const [reviewRows, companyRows, interviewRows] = await Promise.all([

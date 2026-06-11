@@ -4,7 +4,8 @@ import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
 import { HomeCarousel } from "@/components/home-carousel";
-import { getHomepageStats, getTopRatedCompanies } from "@/lib/queries/homepage";
+import { HomeReviews } from "@/components/home-reviews";
+import { getHomepageStats, getTopRatedCompanies, getRecentReviews } from "@/lib/queries/homepage";
 
 const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
 
@@ -22,7 +23,11 @@ function fmtRating(raw: string | null): string | null {
 }
 
 export default async function HomePage() {
-  const [stats, topRated] = await Promise.all([getHomepageStats(), getTopRatedCompanies(6)]);
+  const [stats, topRated, recentReviews] = await Promise.all([
+    getHomepageStats(),
+    getTopRatedCompanies(6),
+    getRecentReviews(12),
+  ]);
 
   const leaderboard = topRated.slice(0, 4);
 
@@ -117,6 +122,12 @@ export default async function HomePage() {
           </div>
           <HomeCarousel companies={topRated} />
         </section>
+
+        {/* Divider */}
+        <div className="border-surface-container-highest mx-8 border-t md:mx-12" />
+
+        {/* Recent reviews */}
+        <HomeReviews reviews={recentReviews} />
 
         {/* Editorial section */}
         <section className="border-surface-container-highest border-t">

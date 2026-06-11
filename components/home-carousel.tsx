@@ -11,9 +11,11 @@ interface HomeCarouselProps {
 export function HomeCarousel({ companies }: HomeCarouselProps) {
   const stripRef = useRef<HTMLDivElement>(null);
 
-  if (companies.length === 0) return null;
+  const filtered = companies.filter((c) => c.latestHeadline?.trim());
 
-  const items = [...companies, ...companies];
+  if (filtered.length === 0) return null;
+
+  const items = [...filtered, ...filtered];
 
   function handleMouseEnter() {
     if (stripRef.current) {
@@ -77,7 +79,7 @@ function CarouselCard({ company }: { company: TopRatedCompany }) {
         {avgRating && (
           <div className="ml-auto flex shrink-0 items-center gap-1 rounded-full bg-[#3be366]/15 px-2 py-0.5 text-xs font-semibold text-[#1a8a3d]">
             <span>★</span>
-            <span>{avgRating}</span>
+            <span>{parseFloat(avgRating).toFixed(1)}</span>
           </div>
         )}
       </div>

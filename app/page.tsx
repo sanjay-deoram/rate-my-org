@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, Ghost } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
@@ -52,14 +52,22 @@ export default async function HomePage() {
               </div>
 
               <h1 className="text-foreground mb-6 text-5xl leading-[1.05] font-black tracking-tighter md:text-6xl lg:text-7xl">
-                Every company.
+                Rate your org.
                 <br />
-                <span className="italic">On the record.</span>
+                <span className="inline-flex items-center gap-3">
+                  <span className="from-foreground to-outline bg-gradient-to-r bg-clip-text text-transparent italic">
+                    Anonymously.
+                  </span>
+                  <Ghost
+                    className="animate-float text-foreground/25 shrink-0"
+                    strokeWidth={1.2}
+                    style={{ width: "0.65em", height: "0.65em" }}
+                  />
+                </span>
               </h1>
 
               <p className="text-on-surface-variant mb-10 max-w-md text-base leading-relaxed md:text-lg">
-                A permanent, anonymous index of what it&apos;s really like to work — and interview —
-                anywhere. No login. No takedowns.
+                The place employees share what Glassdoor won&apos;t.
               </p>
 
               <div className="mb-8 w-full max-w-lg">

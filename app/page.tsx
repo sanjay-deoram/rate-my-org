@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { BadgeCheck, Ghost } from "lucide-react";
+import { Ghost, TrendingUp, TrendingDown } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
 import { HomeCarousel } from "@/components/home-carousel";
 import { HomeReviews } from "@/components/home-reviews";
 import { getHomepageStats, getTopRatedCompanies, getRecentReviews } from "@/lib/queries/homepage";
+import { RatingTrend } from "@/types/homepage";
 
 const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
 
@@ -36,10 +37,10 @@ export default async function HomePage() {
       <Nav />
       <main className="bg-background min-h-screen pt-20">
         {/* Hero — two-column on desktop, stacked on mobile */}
-        <section className="mx-auto max-w-7xl px-8 py-20 md:px-12 md:py-28">
-          <div className="flex flex-col gap-12 md:flex-row md:items-start md:gap-16">
+        <section className="mx-auto max-w-7xl px-8 py-14 md:px-12 md:py-20 lg:py-28">
+          <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
             {/* Left: copy + search + stats */}
-            <div className="flex-1">
+            <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
               {/* Badge */}
               <div className="mb-6 inline-flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
@@ -54,14 +55,13 @@ export default async function HomePage() {
               <h1 className="text-foreground mb-6 text-5xl leading-[1.05] font-black tracking-tighter md:text-6xl lg:text-7xl">
                 Rate your org.
                 <br />
-                <span className="inline-flex items-center gap-3">
+                <span className="inline-flex items-center gap-1.5 md:gap-3">
                   <span className="from-foreground to-outline bg-gradient-to-r bg-clip-text text-transparent italic">
                     Anonymously.
                   </span>
                   <Ghost
-                    className="animate-float text-foreground/25 shrink-0"
+                    className="animate-float text-foreground/25 h-[0.5em] w-[0.5em] shrink-0 md:h-[0.65em] md:w-[0.65em]"
                     strokeWidth={1.2}
-                    style={{ width: "0.65em", height: "0.65em" }}
                   />
                 </span>
               </h1>
@@ -75,7 +75,7 @@ export default async function HomePage() {
               </div>
 
               {/* Stats */}
-              <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+              <div className="flex items-center justify-center gap-x-5 md:gap-x-8 lg:justify-start">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-foreground text-xl font-black tabular-nums">
                     {formatCount(stats.totalReviews)}
@@ -104,7 +104,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Top Rated card — desktop only shows here; on mobile it renders below */}
-            <div className="w-full shrink-0 md:w-[420px]">
+            <div className="w-full shrink-0 lg:w-[420px]">
               <TopRatedCard leaderboard={leaderboard} />
             </div>
           </div>
@@ -121,7 +121,7 @@ export default async function HomePage() {
                     Trending This Week
                   </span>
                 </div>
-                <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+                <h2 className="text-xl font-black tracking-tight sm:text-2xl md:text-3xl lg:text-4xl">
                   Where people are looking now
                 </h2>
               </div>
@@ -208,7 +208,19 @@ type LeaderboardEntry = {
   industry: string | null;
   logoKey: string | null;
   avgRating: string | null;
+  ratingTrend: RatingTrend;
 };
+
+function ratingColor(avgRating: string | null): string {
+  if (!avgRating) return "";
+  return parseFloat(avgRating) >= 2.5 ? "text-tertiary-fixed-dim" : "text-destructive";
+}
+
+function TrendIcon({ trend, className }: { trend: RatingTrend; className?: string }) {
+  if (trend === "up") return <TrendingUp size={12} className={className} />;
+  if (trend === "down") return <TrendingDown size={12} className={className} />;
+  return null;
+}
 
 function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
   return (
@@ -267,11 +279,13 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
                 <div className="relative flex shrink-0 items-center gap-1">
                   {rating ? (
                     <>
-                      <BadgeCheck
-                        size={14}
-                        className="text-tertiary-fixed-dim fill-current transition-colors duration-300 group-hover:text-white"
+                      <TrendIcon
+                        trend={company.ratingTrend}
+                        className={`transition-colors duration-300 group-hover:text-white ${ratingColor(company.avgRating)}`}
                       />
-                      <span className="text-base font-black tabular-nums transition-colors duration-300 group-hover:text-white">
+                      <span
+                        className={`text-base font-black tabular-nums transition-colors duration-300 group-hover:text-white ${ratingColor(company.avgRating)}`}
+                      >
                         {rating}
                       </span>
                     </>

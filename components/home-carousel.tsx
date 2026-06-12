@@ -52,7 +52,10 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
       <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
         <CarouselContent>
           {items.map((company) => (
-            <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4" key={company._key}>
+            <CarouselItem
+              className="basis-[82%] sm:basis-[55%] md:basis-1/3 lg:basis-1/4"
+              key={company._key}
+            >
               <CarouselCard company={company} />
             </CarouselItem>
           ))}
@@ -60,6 +63,13 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
       </Carousel>
     </div>
   );
+}
+
+function ratingColor(avg: string | null) {
+  if (!avg) return "text-tertiary-fixed-dim bg-tertiary-fixed-dim/15";
+  return parseFloat(avg) >= 2.5
+    ? "text-tertiary-fixed-dim bg-tertiary-fixed-dim/15"
+    : "text-destructive bg-destructive/10";
 }
 
 function CarouselCard({ company }: { company: TopRatedCompany }) {
@@ -84,8 +94,9 @@ function CarouselCard({ company }: { company: TopRatedCompany }) {
           {industry && <p className="text-on-surface-variant truncate text-xs">{industry}</p>}
         </div>
         {avgRating && (
-          <div className="ml-auto flex shrink-0 items-center gap-1 rounded-full bg-[#3be366]/15 px-2 py-0.5 text-xs font-semibold text-[#1a8a3d]">
-            <span>★</span>
+          <div
+            className={`ml-auto flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${ratingColor(avgRating)}`}
+          >
             <span>{parseFloat(avgRating).toFixed(1)}</span>
           </div>
         )}

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, X, Building2, Star, MessageSquare, Users } from "lucide-react";
+import { Search, X, Building2, Star, MessageSquare, Users, ArrowRight } from "lucide-react";
 import { useCompanySearch } from "@/hooks/use-company-search";
 import { useCompanyBrowse } from "@/hooks/use-company-browse";
 import type { CompanySuggestion } from "@/types/review";
@@ -39,7 +39,7 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
   return (
     <Link
       href={`/orgs/${company.slug}`}
-      className="group relative isolate flex items-center gap-5 overflow-hidden rounded-xl px-6 py-5"
+      className="group relative isolate flex items-center gap-3 overflow-hidden rounded-xl px-4 py-4 md:gap-5 md:px-6 md:py-5"
     >
       <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
 
@@ -48,23 +48,23 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
           <img
             src={company.logoUrl}
             alt=""
-            className="bg-surface-container h-14 w-14 rounded-lg object-contain p-1 transition-colors duration-300 group-hover:bg-white/10"
+            className="bg-surface-container h-10 w-10 rounded-lg object-contain p-1 transition-colors duration-300 group-hover:bg-white/10 md:h-14 md:w-14"
           />
         ) : (
-          <div className="bg-surface-container text-on-surface-variant group-hover:text-primary-foreground flex h-14 w-14 items-center justify-center rounded-lg text-xl font-black transition-colors duration-300 group-hover:bg-white/10">
+          <div className="bg-surface-container text-on-surface-variant group-hover:text-primary-foreground flex h-10 w-10 items-center justify-center rounded-lg text-base font-black transition-colors duration-300 group-hover:bg-white/10 md:h-14 md:w-14 md:text-xl">
             {company.name[0]}
           </div>
         )}
       </div>
 
       <div className="relative min-w-0 flex-1">
-        <h3 className="text-foreground group-hover:text-primary-foreground truncate text-base font-bold transition-colors duration-300">
+        <h3 className="text-foreground group-hover:text-primary-foreground truncate text-sm font-bold transition-colors duration-300 md:text-base">
           {company.name}
         </h3>
-        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[11px] tracking-wide transition-colors duration-300">
+        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[10px] tracking-wide transition-colors duration-300 md:text-[11px]">
           {company.slug}
         </p>
-        <div className="mt-2 flex items-center gap-1.5">
+        <div className="mt-1.5 flex items-center gap-1.5">
           <StatPill label="Rating" variant="amber">
             <Star size={9} className="fill-current" />
             {company.avgRating ?? "—"}
@@ -80,9 +80,10 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
         </div>
       </div>
 
-      <span className="text-on-surface-variant group-hover:text-primary-foreground relative shrink-0 text-sm font-medium transition-colors duration-300">
-        View →
-      </span>
+      <ArrowRight
+        size={16}
+        className="text-on-surface-variant group-hover:text-primary-foreground relative shrink-0 transition-colors duration-300"
+      />
     </Link>
   );
 }
@@ -187,9 +188,9 @@ export function CompaniesDirectory() {
         <div className="flex shrink-0 items-center pr-3">
           <button
             type="button"
-            className="bg-foreground text-background h-10 rounded-xl px-5 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.97]"
+            className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-xl transition-all hover:opacity-80 active:scale-[0.97]"
           >
-            Search
+            <ArrowRight size={18} />
           </button>
         </div>
       </div>

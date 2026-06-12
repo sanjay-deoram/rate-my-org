@@ -1,7 +1,22 @@
 import { db } from "@/lib/db";
 import { companies, reviews, interviews } from "@/drizzle/schema";
 import { eq, desc, sql, count, and, ne } from "drizzle-orm";
-import type { TopRatedCompany } from "@/types/homepage";
+import type { TopRatedCompany, RatingTrend } from "@/types/homepage";
+
+function computeTrend(
+  avgRating: string | null,
+  recentAvg: string | null,
+  reviewCount: number,
+): RatingTrend {
+  if (!avgRating) return "neutral";
+  const overall = parseFloat(avgRating);
+  if (reviewCount >= 3 && recentAvg) {
+    const recent = parseFloat(recentAvg);
+    if (recent > overall + 0.1) return "up";
+    if (recent < overall - 0.1) return "down";
+  }
+  return overall >= 2.5 ? "up" : "down";
+}
 
 export type RecentReviewEntry = {
   id: string;
@@ -49,18 +64,23 @@ export async function getHomepageStats() {
 }
 
 async function queryTopRated(limit: number, withHaving: boolean): Promise<TopRatedCompany[]> {
-  const baseQuery = db
-    .select({
-      slug: companies.slug,
-      name: companies.name,
-      industry: companies.industry,
-      logoKey: companies.logoKey,
-      avgRating: sql<string | null>`AVG(${reviews.overallRating})`,
-      reviewCount: sql<number>`COUNT(${reviews.id})`,
-      latestHeadline: sql<
-        string | null
-      >`(SELECT headline FROM reviews WHERE company_id = ${companies.id} ORDER BY created_at DESC LIMIT 1)`,
-    })
+  const selection = {
+    slug: companies.slug,
+    name: companies.name,
+    industry: companies.industry,
+    logoKey: companies.logoKey,
+    avgRating: sql<string | null>`AVG(${reviews.overallRating})`,
+    reviewCount: sql<number>`COUNT(${reviews.id})`,
+    latestHeadline: sql<
+      string | null
+    >`(SELECT headline FROM reviews WHERE company_id = ${companies.id} ORDER BY created_at DESC LIMIT 1)`,
+    recentAvgRating: sql<
+      string | null
+    >`(SELECT AVG(overall_rating) FROM (SELECT overall_rating FROM reviews WHERE company_id = ${companies.id} ORDER BY created_at DESC LIMIT 5) sub)`,
+  };
+
+  const base = db
+    .select(selection)
     .from(companies)
     .leftJoin(reviews, eq(reviews.companyId, companies.id))
     .where(eq(companies.status, "approved"))
@@ -68,11 +88,12 @@ async function queryTopRated(limit: number, withHaving: boolean): Promise<TopRat
     .orderBy(desc(sql`AVG(${reviews.overallRating})`))
     .limit(limit);
 
-  if (withHaving) {
-    return baseQuery.having(sql`COUNT(${reviews.id}) > 0`);
-  }
+  const rows = await (withHaving ? base.having(sql`COUNT(${reviews.id}) > 0`) : base);
 
-  return baseQuery;
+  return rows.map(({ recentAvgRating, ...row }) => ({
+    ...row,
+    ratingTrend: computeTrend(row.avgRating, recentAvgRating, row.reviewCount),
+  }));
 }
 
 export async function getTopRatedCompanies(limit = 6): Promise<TopRatedCompany[]> {

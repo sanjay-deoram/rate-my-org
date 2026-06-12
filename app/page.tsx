@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { BadgeCheck } from "lucide-react";
+import { BadgeCheck, Ghost } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
@@ -52,14 +52,22 @@ export default async function HomePage() {
               </div>
 
               <h1 className="text-foreground mb-6 text-5xl leading-[1.05] font-black tracking-tighter md:text-6xl lg:text-7xl">
-                Every company.
+                Rate your org.
                 <br />
-                On the record.
+                <span className="inline-flex items-center gap-3">
+                  <span className="from-foreground to-outline bg-gradient-to-r bg-clip-text text-transparent italic">
+                    Anonymously.
+                  </span>
+                  <Ghost
+                    className="animate-float text-foreground/25 shrink-0"
+                    strokeWidth={1.2}
+                    style={{ width: "0.65em", height: "0.65em" }}
+                  />
+                </span>
               </h1>
 
               <p className="text-on-surface-variant mb-10 max-w-md text-base leading-relaxed md:text-lg">
-                A permanent, anonymous index of what it&apos;s really like to work — and interview —
-                anywhere. No login. No takedowns.
+                Know before you join. Real reviews, real interviews. No login. No takedowns.
               </p>
 
               <div className="mb-8 w-full max-w-lg">
@@ -96,68 +104,94 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Top Rated card — desktop only shows here; on mobile it renders below */}
-            <div className="w-full shrink-0 md:w-[400px]">
+            <div className="w-full shrink-0 md:w-[420px]">
               <TopRatedCard leaderboard={leaderboard} />
             </div>
           </div>
         </section>
 
-        {/* Divider */}
-        <div className="border-surface-container-highest mx-8 border-t md:mx-12" />
-
         {/* Trending carousel section */}
-        <section className="mx-auto max-w-7xl px-8 py-20 md:px-12">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <div className="mb-3 flex items-center gap-2">
-                <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 rounded-full" />
-                <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                  Trending This Week
-                </span>
+        <section className="bg-surface-container-low">
+          <div className="mx-auto max-w-7xl px-8 py-20 md:px-12">
+            <div className="mb-8 flex items-end justify-between">
+              <div>
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 rounded-full" />
+                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Trending This Week
+                  </span>
+                </div>
+                <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+                  Where people are looking now
+                </h2>
               </div>
-              <h2 className="text-3xl font-black tracking-tight md:text-4xl">
-                Where people are looking now
-              </h2>
             </div>
+            <HomeCarousel companies={topRated} />
           </div>
-          <HomeCarousel companies={topRated} />
         </section>
-
-        {/* Divider */}
-        <div className="border-surface-container-highest mx-8 border-t md:mx-12" />
 
         {/* Recent reviews */}
         <HomeReviews reviews={recentReviews} />
 
-        {/* Editorial section */}
+        {/* CTA — split with live stat panel */}
         <section className="border-surface-container-highest border-t">
-          <div className="mx-auto flex max-w-7xl flex-col items-center gap-20 px-8 py-32 md:flex-row md:px-12">
-            <div className="flex-1">
-              <div className="bg-surface-container group relative aspect-square w-full overflow-hidden rounded-xl shadow-2xl">
-                <div className="from-surface-container-high to-surface-dim absolute inset-0 bg-linear-to-br" />
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-on-surface-variant/10 text-[120px] leading-none font-black tracking-tighter select-none">
-                    R
-                  </div>
+          <div className="mx-auto max-w-7xl px-8 py-24 md:px-12">
+            <div className="flex flex-col gap-16 md:flex-row md:items-center">
+              <div className="flex-1 space-y-8">
+                <div className="flex items-center gap-2">
+                  <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 animate-pulse rounded-full" />
+                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Growing every day
+                  </span>
                 </div>
-                <div className="absolute inset-0 bg-[repeating-linear-gradient(45deg,transparent,transparent_10px,rgba(27,27,27,0.02)_10px,rgba(27,27,27,0.02)_20px)]" />
-              </div>
-            </div>
-
-            <div className="flex-1 space-y-8">
-              <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                The Digital Curator
-              </span>
-              <blockquote className="text-primary text-4xl leading-tight font-medium tracking-tight md:text-5xl">
-                &quot;We believe that the most valuable data isn&apos;t in a brochure, but in the
-                collective experiences of the people who do the work every day.&quot;
-              </blockquote>
-              <div className="pt-4">
-                <p className="text-on-surface-variant max-w-md text-lg leading-relaxed">
-                  RateMyOrg isn&apos;t just another review site. We treat organizational data as
-                  high-end editorial content, ensuring every insight is presented with the weight
-                  and clarity it deserves.
+                <h2 className="text-4xl font-black tracking-tighter md:text-5xl">
+                  A living record
+                  <br />
+                  of the workplace.
+                </h2>
+                <p className="text-on-surface-variant max-w-sm text-base leading-relaxed">
+                  Every submission is anonymous and permanent. No login, no takedowns, no corporate
+                  spin.
                 </p>
+                <div className="flex flex-col gap-3 sm:flex-row">
+                  <Link
+                    href="/reviews/write"
+                    className="bg-primary text-primary-foreground rounded-full px-6 py-2.5 text-center text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98]"
+                  >
+                    Write a Review
+                  </Link>
+                  <Link
+                    href="/interviews/submit"
+                    className="border-surface-container-highest hover:border-primary rounded-full border px-6 py-2.5 text-center text-sm font-bold transition-colors duration-300"
+                  >
+                    Submit Interview Questions
+                  </Link>
+                </div>
+              </div>
+
+              <div className="flex-1">
+                <div className="from-primary to-primary-container rounded-2xl bg-gradient-to-br p-8">
+                  <p className="text-on-primary-container mb-8 text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Index at a glance
+                  </p>
+                  {(
+                    [
+                      ["Reviews submitted", formatCount(stats.totalReviews)],
+                      ["Companies indexed", formatCount(stats.totalCompanies)],
+                      ["Interview reports", formatCount(stats.totalInterviews)],
+                    ] as const
+                  ).map(([label, value]) => (
+                    <div
+                      key={label}
+                      className="flex items-baseline justify-between border-t border-white/10 py-5"
+                    >
+                      <span className="text-on-primary-container text-sm">{label}</span>
+                      <span className="text-primary-foreground text-3xl font-black tabular-nums">
+                        {value}
+                      </span>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
           </div>
@@ -180,9 +214,11 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
   return (
     <div className="bg-surface-container-lowest border-surface-container-highest overflow-hidden rounded-2xl border">
       {/* Card header */}
-      <div className="border-surface-container-highest flex items-center justify-between border-b px-6 py-4">
-        <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Top Rated</span>
-        <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+      <div className="from-primary to-primary-container flex items-center justify-between bg-gradient-to-b px-7 py-5">
+        <span className="text-primary-foreground text-[10px] font-bold tracking-[0.2em] uppercase">
+          Top Rated
+        </span>
+        <span className="text-primary-foreground/40 text-[10px] font-bold tracking-[0.2em] uppercase">
           Score
         </span>
       </div>
@@ -199,7 +235,7 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
               <Link
                 key={company.slug}
                 href={`/orgs/${company.slug}`}
-                className="border-surface-container-highest group relative isolate flex items-center gap-4 overflow-hidden border-b px-6 py-4 last:border-b-0"
+                className="border-surface-container-highest group relative isolate flex items-center gap-4 overflow-hidden border-b px-7 py-5 last:border-b-0"
               >
                 {/* Slide-in fill */}
                 <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
@@ -208,7 +244,7 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
                   {String(i + 1).padStart(2, "0")}
                 </span>
 
-                <div className="bg-surface-container relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg transition-colors duration-300 group-hover:bg-white/10">
+                <div className="bg-surface-container relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg transition-colors duration-300 group-hover:bg-white/10">
                   {logoSrc ? (
                     <img
                       src={logoSrc}
@@ -223,24 +259,19 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
                 </div>
 
                 <div className="relative min-w-0 flex-1">
-                  <p className="truncate text-sm leading-tight font-bold transition-colors duration-300 group-hover:text-white">
+                  <p className="truncate text-base leading-tight font-bold transition-colors duration-300 group-hover:text-white">
                     {company.name}
                   </p>
-                  {company.industry && (
-                    <p className="text-on-surface-variant truncate text-xs transition-colors duration-300 group-hover:text-white/50">
-                      {company.industry}
-                    </p>
-                  )}
                 </div>
 
                 <div className="relative flex shrink-0 items-center gap-1">
                   {rating ? (
                     <>
                       <BadgeCheck
-                        size={12}
+                        size={14}
                         className="text-tertiary-fixed-dim fill-current transition-colors duration-300 group-hover:text-white"
                       />
-                      <span className="text-sm font-black tabular-nums transition-colors duration-300 group-hover:text-white">
+                      <span className="text-base font-black tabular-nums transition-colors duration-300 group-hover:text-white">
                         {rating}
                       </span>
                     </>

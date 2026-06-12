@@ -39,7 +39,16 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
   if (items.length === 0) return null;
 
   return (
-    <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+    <div
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      style={{
+        maskImage:
+          "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+        WebkitMaskImage:
+          "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+      }}
+    >
       <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
         <CarouselContent>
           {items.map((company) => (

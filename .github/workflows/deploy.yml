@@ -28,6 +28,7 @@ jobs:
       - run: pnpm run build:cf
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          NEXT_PUBLIC_LOGO_CDN: ${{ secrets.NEXT_PUBLIC_LOGO_CDN }}
 
       - name: Deploy via Wrangler
         run: pnpm run deploy:cf

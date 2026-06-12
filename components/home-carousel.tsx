@@ -1,7 +1,8 @@
 "use client";
 
-import { useRef } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { TopRatedCompany } from "@/types/homepage";
 
 interface HomeCarouselProps {
@@ -9,47 +10,45 @@ interface HomeCarouselProps {
 }
 
 export function HomeCarousel({ companies }: HomeCarouselProps) {
-  const stripRef = useRef<HTMLDivElement>(null);
+  const [api, setApi] = useState<CarouselApi>();
+  const [current, setCurrent] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   const filtered = companies.filter((c) => c.latestHeadline?.trim());
 
-  if (filtered.length === 0) return null;
+  // Tile to at least 15 items so Embla always has enough snap positions
+  const MIN_ITEMS = 15;
+  const items =
+    filtered.length === 0
+      ? []
+      : Array.from({ length: Math.ceil(MIN_ITEMS / filtered.length) }, (_, i) =>
+          filtered.map((c, j) => ({ ...c, _key: `${i}-${j}` })),
+        ).flat();
 
-  const items = [...filtered, ...filtered];
+  useEffect(() => {
+    if (!api || paused) return;
 
-  function handleMouseEnter() {
-    if (stripRef.current) {
-      stripRef.current.style.animationPlayState = "paused";
-    }
-  }
+    const timer = setTimeout(() => {
+      api.scrollNext();
+      setCurrent((c) => c + 1);
+    }, 2000);
 
-  function handleMouseLeave() {
-    if (stripRef.current) {
-      stripRef.current.style.animationPlayState = "running";
-    }
-  }
+    return () => clearTimeout(timer);
+  }, [api, current, paused]);
+
+  if (items.length === 0) return null;
 
   return (
-    <div
-      className="overflow-hidden"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-    >
-      <style>{`
-        @keyframes carousel-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-50%); }
-        }
-        .carousel-strip {
-          animation: carousel-scroll 35s linear infinite;
-        }
-      `}</style>
-
-      <div ref={stripRef} className="carousel-strip flex">
-        {items.map((company, index) => (
-          <CarouselCard key={`${company.slug}-${index}`} company={company} />
-        ))}
-      </div>
+    <div onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)}>
+      <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
+        <CarouselContent>
+          {items.map((company) => (
+            <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4" key={company._key}>
+              <CarouselCard company={company} />
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+      </Carousel>
     </div>
   );
 }
@@ -60,8 +59,7 @@ function CarouselCard({ company }: { company: TopRatedCompany }) {
   const logoSrc = logoKey && cdnBase ? `${cdnBase}/${logoKey}` : null;
 
   return (
-    <div className="bg-surface-container-lowest border-surface-container-highest mr-4 flex min-w-[300px] flex-col gap-3 rounded-xl border p-6">
-      {/* Top row */}
+    <div className="bg-surface-container-lowest border-surface-container-highest flex h-full flex-col gap-3 rounded-xl border p-6">
       <div className="flex items-center gap-3">
         <div className="bg-surface-container flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg">
           {logoSrc ? (
@@ -84,12 +82,10 @@ function CarouselCard({ company }: { company: TopRatedCompany }) {
         )}
       </div>
 
-      {/* Quote */}
       <p className="text-on-surface-variant line-clamp-2 flex-1 text-sm italic">
         {latestHeadline ?? "No reviews yet"}
       </p>
 
-      {/* Footer */}
       <div className="flex items-center justify-between pt-1">
         <span className="text-on-surface-variant text-xs">
           {reviewCount} {reviewCount === 1 ? "review" : "reviews"}

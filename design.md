@@ -78,6 +78,114 @@ All colors are exposed as CSS custom properties in `app/globals.css` and availab
 
 ---
 
+## Responsive Design
+
+### Breakpoints
+
+Tailwind defaults apply: `sm` = 640px, `md` = 768px, `lg` = 1024px. Mobile-first — base classes target phones, `md:` targets tablets and up.
+
+### Responsive Type Scale
+
+Every heading that uses a large desktop size must step down on mobile. Never use a fixed large size without a mobile override.
+
+| Role                           | Mobile        | Desktop                               |
+| ------------------------------ | ------------- | ------------------------------------- |
+| Hero / display                 | `text-4xl`    | `md:text-6xl lg:text-7xl`             |
+| Page title (org name)          | `text-2xl`    | `md:text-5xl`                         |
+| Section heading                | `text-xl`     | `sm:text-2xl md:text-3xl lg:text-4xl` |
+| Rating display (KPI)           | `text-5xl`    | `md:text-7xl`                         |
+| KPI card value                 | `text-2xl`    | `md:text-5xl`                         |
+| Small caps label (tight space) | `text-[9px]`  | `md:text-xs`                          |
+| Small caps label (normal)      | `text-[10px]` | —                                     |
+
+### Responsive Spacing
+
+| Token                      | Mobile  | Desktop    |
+| -------------------------- | ------- | ---------- |
+| Section horizontal padding | `px-8`  | `md:px-12` |
+| Section vertical padding   | `py-12` | `md:py-20` |
+| Card internal padding      | `p-4`   | `md:p-8`   |
+| Gap between logo and name  | `gap-4` | `md:gap-8` |
+
+Never increase section padding below `px-8` on mobile — the 32px gutter is the minimum for readability.
+
+### Responsive Component Sizes
+
+**Logo boxes**
+
+```tsx
+<div className="h-16 w-16 md:h-32 md:w-32 rounded-xl">
+```
+
+Always use `shrink-0` to prevent the logo from compressing when text wraps next to it.
+
+**Icon sizes**
+
+Decorative / supporting icons (KPI card corners, inline badges) should be hidden on mobile to reclaim space:
+
+```tsx
+{
+  /* Decorative icon — visible desktop only */
+}
+<div className="hidden h-12 w-12 md:flex ...">
+  <TrendingUp size={20} />
+</div>;
+
+{
+  /* Inline badge icon — shrinks on mobile */
+}
+<BadgeCheck className="h-5 w-5 shrink-0 md:h-7 md:w-7" />;
+```
+
+Never hide icons that carry semantic meaning (e.g. verified checkmark, rating star).
+
+### Responsive Layout Patterns
+
+**KPI / stat grid**
+
+Use `grid-cols-3` at all breakpoints for 3-stat rows. Remove fixed card height on mobile; let content size the card naturally.
+
+```tsx
+<div className="grid grid-cols-3 gap-3 md:gap-8">
+  <div className="rounded-xl p-4 md:h-48 md:p-8">
+    <span className="text-[9px] md:text-xs ...">Label</span>
+    <span className="text-2xl md:text-5xl ...">Value</span>
+  </div>
+</div>
+```
+
+**Horizontal scroll carousels**
+
+Carousel card basis controls how many items are visible. Always show a partial peek of the next card so users know the list is scrollable.
+
+```
+basis-[82%]          → 1 card + peek   (< 640px)
+sm:basis-[55%]       → ~1.8 cards      (640–767px)
+md:basis-1/3         → 3 cards         (768–1023px)
+lg:basis-1/4         → 4 cards         (1024px+)
+```
+
+**Two-column headers (logo + name)**
+
+On mobile, collapse to a tighter row — don't stack logo above name. Reduce both sizes proportionally.
+
+```tsx
+<div className="flex items-center gap-4 md:gap-8">
+  <div className="h-16 w-16 shrink-0 md:h-32 md:w-32 ...">...</div>
+  <h1 className="text-2xl md:text-5xl ...">Company Name</h1>
+</div>
+```
+
+**Stat row (homepage)**
+
+Never use `flex-wrap` for a short stat row — it creates an orphan on the second line. Use `flex` with a smaller `gap-x` on mobile instead.
+
+```tsx
+<div className="flex items-center gap-x-5 md:gap-x-8">
+```
+
+---
+
 ## Border Radius
 
 Base `--radius: 0.375rem`. Scale via Tailwind:

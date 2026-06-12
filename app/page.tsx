@@ -54,14 +54,13 @@ export default async function HomePage() {
               <h1 className="text-foreground mb-6 text-5xl leading-[1.05] font-black tracking-tighter md:text-6xl lg:text-7xl">
                 Rate your org.
                 <br />
-                <span className="inline-flex items-center gap-3">
+                <span className="inline-flex items-center gap-1.5 md:gap-3">
                   <span className="from-foreground to-outline bg-gradient-to-r bg-clip-text text-transparent italic">
                     Anonymously.
                   </span>
                   <Ghost
-                    className="animate-float text-foreground/25 shrink-0"
+                    className="animate-float text-foreground/25 h-[0.5em] w-[0.5em] shrink-0 md:h-[0.65em] md:w-[0.65em]"
                     strokeWidth={1.2}
-                    style={{ width: "0.65em", height: "0.65em" }}
                   />
                 </span>
               </h1>
@@ -75,7 +74,7 @@ export default async function HomePage() {
               </div>
 
               {/* Stats */}
-              <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
+              <div className="flex items-center gap-x-5 md:gap-x-8">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-foreground text-xl font-black tabular-nums">
                     {formatCount(stats.totalReviews)}
@@ -121,7 +120,7 @@ export default async function HomePage() {
                     Trending This Week
                   </span>
                 </div>
-                <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+                <h2 className="text-xl font-black tracking-tight sm:text-2xl md:text-3xl lg:text-4xl">
                   Where people are looking now
                 </h2>
               </div>

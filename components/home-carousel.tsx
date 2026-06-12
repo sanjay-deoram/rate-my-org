@@ -52,7 +52,10 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
       <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
         <CarouselContent>
           {items.map((company) => (
-            <CarouselItem className="basis-1/2 md:basis-1/3 lg:basis-1/4" key={company._key}>
+            <CarouselItem
+              className="basis-[82%] sm:basis-[55%] md:basis-1/3 lg:basis-1/4"
+              key={company._key}
+            >
               <CarouselCard company={company} />
             </CarouselItem>
           ))}

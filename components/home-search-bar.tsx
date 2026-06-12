@@ -3,7 +3,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Search, X, Building2 } from "lucide-react";
+import { Search, X, Building2, ArrowRight } from "lucide-react";
 import { useCompanySearch } from "@/hooks/use-company-search";
 import type { CompanySuggestion } from "@/types/review";
 
@@ -136,9 +136,9 @@ export function HomeSearchBar() {
         <div className="flex shrink-0 items-center pr-3">
           <button
             type="button"
-            className="bg-foreground text-background h-10 rounded-xl px-5 text-sm font-semibold transition-all hover:opacity-80 active:scale-[0.97]"
+            className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-xl transition-all hover:opacity-80 active:scale-[0.97]"
           >
-            Search
+            <ArrowRight size={18} />
           </button>
         </div>
       </div>

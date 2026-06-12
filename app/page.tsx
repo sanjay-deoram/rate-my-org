@@ -54,7 +54,7 @@ export default async function HomePage() {
               <h1 className="text-foreground mb-6 text-5xl leading-[1.05] font-black tracking-tighter md:text-6xl lg:text-7xl">
                 Every company.
                 <br />
-                On the record.
+                <span className="italic">On the record.</span>
               </h1>
 
               <p className="text-on-surface-variant mb-10 max-w-md text-base leading-relaxed md:text-lg">
@@ -102,29 +102,25 @@ export default async function HomePage() {
           </div>
         </section>
 
-        {/* Divider */}
-        <div className="border-surface-container-highest mx-8 border-t md:mx-12" />
-
         {/* Trending carousel section */}
-        <section className="mx-auto max-w-7xl px-8 py-20 md:px-12">
-          <div className="mb-8 flex items-end justify-between">
-            <div>
-              <div className="mb-3 flex items-center gap-2">
-                <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 rounded-full" />
-                <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                  Trending This Week
-                </span>
+        <section className="bg-surface-container-low">
+          <div className="mx-auto max-w-7xl px-8 py-20 md:px-12">
+            <div className="mb-8 flex items-end justify-between">
+              <div>
+                <div className="mb-3 flex items-center gap-2">
+                  <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 rounded-full" />
+                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+                    Trending This Week
+                  </span>
+                </div>
+                <h2 className="text-3xl font-black tracking-tight md:text-4xl">
+                  Where people are looking now
+                </h2>
               </div>
-              <h2 className="text-3xl font-black tracking-tight md:text-4xl">
-                Where people are looking now
-              </h2>
             </div>
+            <HomeCarousel companies={topRated} />
           </div>
-          <HomeCarousel companies={topRated} />
         </section>
-
-        {/* Divider */}
-        <div className="border-surface-container-highest mx-8 border-t md:mx-12" />
 
         {/* Recent reviews */}
         <HomeReviews reviews={recentReviews} />
@@ -166,7 +162,7 @@ export default async function HomePage() {
               </div>
 
               <div className="flex-1">
-                <div className="bg-primary rounded-2xl p-8">
+                <div className="from-primary to-primary-container rounded-2xl bg-gradient-to-br p-8">
                   <p className="text-on-primary-container mb-8 text-[10px] font-bold tracking-[0.2em] uppercase">
                     Index at a glance
                   </p>
@@ -210,9 +206,11 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
   return (
     <div className="bg-surface-container-lowest border-surface-container-highest overflow-hidden rounded-2xl border">
       {/* Card header */}
-      <div className="border-surface-container-highest flex items-center justify-between border-b px-6 py-4">
-        <span className="text-[10px] font-bold tracking-[0.2em] uppercase">Top Rated</span>
-        <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
+      <div className="from-primary to-primary-container flex items-center justify-between bg-gradient-to-b px-6 py-4">
+        <span className="text-primary-foreground text-[10px] font-bold tracking-[0.2em] uppercase">
+          Top Rated
+        </span>
+        <span className="text-primary-foreground/40 text-[10px] font-bold tracking-[0.2em] uppercase">
           Score
         </span>
       </div>

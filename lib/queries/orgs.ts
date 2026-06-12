@@ -3,6 +3,21 @@ import { companies, reviews, interviews } from "@/drizzle/schema";
 import { eq, and, desc } from "drizzle-orm";
 import { difficultyLabel } from "@/lib/org-display";
 import { roundToOneDecimal } from "@/lib/utils";
+import type { RatingTrend } from "@/types/homepage";
+
+function computeTrend(
+  avgRating: number,
+  reviewCount: number,
+  recentReviews: { overallRating: number }[],
+): RatingTrend {
+  if (reviewCount === 0) return "neutral";
+  if (reviewCount >= 3) {
+    const recentAvg = recentReviews.reduce((s, r) => s + r.overallRating, 0) / recentReviews.length;
+    if (recentAvg > avgRating + 0.1) return "up";
+    if (recentAvg < avgRating - 0.1) return "down";
+  }
+  return avgRating >= 2.5 ? "up" : "down";
+}
 
 export async function getCompanyWithStats(slug: string) {
   const [company] = await db
@@ -52,6 +67,7 @@ export async function getCompanyWithStats(slug: string) {
       avgDifficultyLabel: difficultyLabel(avgDifficulty),
       avgDifficultyLevel: Math.round(avgDifficulty),
       interviewCount,
+      ratingTrend: computeTrend(avgRating, reviewCount, companyReviews.slice(0, 5)),
     },
     reviews: companyReviews,
     interviews: companyInterviews,

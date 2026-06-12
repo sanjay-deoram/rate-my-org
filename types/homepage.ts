@@ -1,3 +1,5 @@
+export type RatingTrend = "up" | "down" | "neutral";
+
 export type TopRatedCompany = {
   slug: string;
   name: string;
@@ -6,4 +8,5 @@ export type TopRatedCompany = {
   avgRating: string | null;
   reviewCount: number;
   latestHeadline: string | null;
+  ratingTrend: RatingTrend;
 };

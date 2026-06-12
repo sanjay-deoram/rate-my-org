@@ -1,11 +1,12 @@
 import Link from "next/link";
-import { BadgeCheck, Ghost } from "lucide-react";
+import { Ghost, TrendingUp, TrendingDown } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
 import { HomeCarousel } from "@/components/home-carousel";
 import { HomeReviews } from "@/components/home-reviews";
 import { getHomepageStats, getTopRatedCompanies, getRecentReviews } from "@/lib/queries/homepage";
+import { RatingTrend } from "@/types/homepage";
 
 const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
 
@@ -39,7 +40,7 @@ export default async function HomePage() {
         <section className="mx-auto max-w-7xl px-8 py-14 md:px-12 md:py-20 lg:py-28">
           <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
             {/* Left: copy + search + stats */}
-            <div className="flex-1">
+            <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
               {/* Badge */}
               <div className="mb-6 inline-flex items-center gap-2">
                 <span className="relative flex h-2 w-2">
@@ -74,7 +75,7 @@ export default async function HomePage() {
               </div>
 
               {/* Stats */}
-              <div className="flex items-center gap-x-5 md:gap-x-8">
+              <div className="flex items-center justify-center gap-x-5 md:gap-x-8 lg:justify-start">
                 <div className="flex items-baseline gap-1.5">
                   <span className="text-foreground text-xl font-black tabular-nums">
                     {formatCount(stats.totalReviews)}
@@ -103,7 +104,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Top Rated card — desktop only shows here; on mobile it renders below */}
-            <div className="hidden w-full shrink-0 lg:block lg:w-[420px]">
+            <div className="w-full shrink-0 lg:w-[420px]">
               <TopRatedCard leaderboard={leaderboard} />
             </div>
           </div>
@@ -207,7 +208,19 @@ type LeaderboardEntry = {
   industry: string | null;
   logoKey: string | null;
   avgRating: string | null;
+  ratingTrend: RatingTrend;
 };
+
+function ratingColor(avgRating: string | null): string {
+  if (!avgRating) return "";
+  return parseFloat(avgRating) >= 2.5 ? "text-tertiary-fixed-dim" : "text-destructive";
+}
+
+function TrendIcon({ trend, className }: { trend: RatingTrend; className?: string }) {
+  if (trend === "up") return <TrendingUp size={12} className={className} />;
+  if (trend === "down") return <TrendingDown size={12} className={className} />;
+  return null;
+}
 
 function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
   return (
@@ -266,11 +279,13 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
                 <div className="relative flex shrink-0 items-center gap-1">
                   {rating ? (
                     <>
-                      <BadgeCheck
-                        size={14}
-                        className="text-tertiary-fixed-dim fill-current transition-colors duration-300 group-hover:text-white"
+                      <TrendIcon
+                        trend={company.ratingTrend}
+                        className={`transition-colors duration-300 group-hover:text-white ${ratingColor(company.avgRating)}`}
                       />
-                      <span className="text-base font-black tabular-nums transition-colors duration-300 group-hover:text-white">
+                      <span
+                        className={`text-base font-black tabular-nums transition-colors duration-300 group-hover:text-white ${ratingColor(company.avgRating)}`}
+                      >
                         {rating}
                       </span>
                     </>

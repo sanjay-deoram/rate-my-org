@@ -1,5 +1,13 @@
 import { notFound } from "next/navigation";
-import { BadgeCheck, TrendingUp, BookOpen, MessageSquare, ArrowLeft } from "lucide-react";
+import {
+  BadgeCheck,
+  TrendingUp,
+  TrendingDown,
+  BookOpen,
+  MessageSquare,
+  ArrowLeft,
+} from "lucide-react";
+import type { RatingTrend } from "@/types/homepage";
 import Link from "next/link";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
@@ -79,11 +87,16 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
                 <span className="text-on-surface-variant mb-1 font-mono text-[10px] tracking-widest uppercase md:text-sm">
                   Aggregate Rating
                 </span>
-                <div className="text-5xl leading-none font-black tracking-tighter md:text-7xl">
+                <div
+                  className={`text-5xl leading-none font-black tracking-tighter md:text-7xl ${stats.reviewCount > 0 ? (stats.avgRating >= 2.5 ? "text-tertiary-fixed-dim" : "text-destructive") : ""}`}
+                >
                   {stats.reviewCount > 0 ? stats.avgRating.toFixed(1) : "—"}
                 </div>
               </div>
-              <div className="text-on-surface-variant font-mono text-base md:text-xl">/ 5.0</div>
+              <div className="flex flex-col items-start gap-1 md:items-end">
+                <div className="text-on-surface-variant font-mono text-base md:text-xl">/ 5.0</div>
+                {stats.ratingTrend !== "neutral" && <TrendBadge trend={stats.ratingTrend} />}
+              </div>
             </div>
           </div>
         </section>
@@ -133,10 +146,21 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
           </div>
         </section>
 
-        {/* Main content — variant switcher for A/B/C/D comparison */}
         <OrgContent data={data} />
       </main>
       <Footer />
     </>
+  );
+}
+
+function TrendBadge({ trend }: { trend: RatingTrend }) {
+  const isUp = trend === "up";
+  return (
+    <span
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide ${isUp ? "bg-tertiary-fixed-dim/15 text-tertiary-fixed-dim" : "bg-destructive/10 text-destructive"}`}
+    >
+      {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+      {isUp ? "Trending up" : "Trending down"}
+    </span>
   );
 }

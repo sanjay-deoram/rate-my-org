@@ -18,4 +18,4 @@ bucket_name = "companies-logo"
 
 # Non-secret vars (secrets are set via: wrangler secret put SECRET_NAME)
 [vars]
-NEXT_PUBLIC_LOGO_CDN = "cdn.rate-my-org.com"
+NEXT_PUBLIC_LOGO_CDN = "https://cdn.rate-my-org.com"

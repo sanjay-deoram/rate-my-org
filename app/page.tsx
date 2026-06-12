@@ -36,8 +36,8 @@ export default async function HomePage() {
       <Nav />
       <main className="bg-background min-h-screen pt-20">
         {/* Hero — two-column on desktop, stacked on mobile */}
-        <section className="mx-auto max-w-7xl px-8 py-20 md:px-12 md:py-28">
-          <div className="flex flex-col gap-12 md:flex-row md:items-start md:gap-16">
+        <section className="mx-auto max-w-7xl px-8 py-14 md:px-12 md:py-20 lg:py-28">
+          <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
             {/* Left: copy + search + stats */}
             <div className="flex-1">
               {/* Badge */}
@@ -103,7 +103,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Top Rated card — desktop only shows here; on mobile it renders below */}
-            <div className="w-full shrink-0 md:w-[420px]">
+            <div className="hidden w-full shrink-0 lg:block lg:w-[420px]">
               <TopRatedCard leaderboard={leaderboard} />
             </div>
           </div>

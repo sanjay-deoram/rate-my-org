@@ -46,84 +46,88 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         </div>
 
         {/* Brand header */}
-        <section className="mx-auto mb-16 max-w-7xl px-8 md:px-12">
-          <div className="flex flex-col justify-between gap-8 md:flex-row md:items-end">
-            <div className="flex items-center gap-8">
-              <div className="bg-surface-container-lowest border-border/20 flex h-32 w-32 items-center justify-center overflow-hidden rounded-xl border shadow-sm">
+        <section className="mx-auto mb-10 max-w-7xl px-8 md:mb-16 md:px-12">
+          <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end md:gap-8">
+            <div className="flex items-center gap-4 md:gap-8">
+              <div className="bg-surface-container-lowest border-border/20 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-sm md:h-32 md:w-32">
                 {logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={logoUrl}
                     alt={`${company.name} logo`}
-                    className="h-full w-full object-contain p-3"
+                    className="h-full w-full object-contain p-2 md:p-3"
                   />
                 ) : (
-                  <span className="text-foreground text-5xl font-black">{initial}</span>
+                  <span className="text-foreground text-2xl font-black md:text-5xl">{initial}</span>
                 )}
               </div>
               <div>
-                <div className="mb-2 flex items-center gap-3">
-                  <h1 className="text-foreground text-5xl font-black tracking-[-0.04em]">
+                <div className="mb-1 flex items-center gap-2 md:mb-2 md:gap-3">
+                  <h1 className="text-foreground text-2xl font-black tracking-[-0.04em] md:text-5xl">
                     {company.name}
                   </h1>
-                  <BadgeCheck size={30} className="text-tertiary-fixed-dim fill-current" />
+                  <BadgeCheck className="text-tertiary-fixed-dim h-5 w-5 shrink-0 fill-current md:h-7 md:w-7" />
                 </div>
-                <p className="text-on-surface-variant text-sm font-medium tracking-tight uppercase">
+                <p className="text-on-surface-variant text-xs font-medium tracking-tight uppercase md:text-sm">
                   {tagline}
                 </p>
               </div>
             </div>
 
-            <div className="flex items-baseline gap-4 text-right">
-              <div className="flex flex-col items-end">
-                <span className="text-on-surface-variant mb-1 font-mono text-sm tracking-widest uppercase">
+            <div className="flex items-baseline gap-3 md:gap-4 md:text-right">
+              <div className="flex flex-col md:items-end">
+                <span className="text-on-surface-variant mb-1 font-mono text-[10px] tracking-widest uppercase md:text-sm">
                   Aggregate Rating
                 </span>
-                <div className="text-7xl leading-none font-black tracking-tighter">
+                <div className="text-5xl leading-none font-black tracking-tighter md:text-7xl">
                   {stats.reviewCount > 0 ? stats.avgRating.toFixed(1) : "—"}
                 </div>
               </div>
-              <div className="text-on-surface-variant font-mono text-xl">/ 5.0</div>
+              <div className="text-on-surface-variant font-mono text-base md:text-xl">/ 5.0</div>
             </div>
           </div>
         </section>
 
         {/* KPI grid */}
         <section className="mx-auto mb-8 max-w-7xl px-8 md:px-12">
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
-            <div className="bg-surface-container-low hover:bg-surface-container-highest flex h-48 flex-col justify-between rounded-xl p-8 transition-all duration-300">
-              <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                Recommend to Friend
+          <div className="grid grid-cols-3 gap-3 md:gap-8">
+            <div className="bg-surface-container-low hover:bg-surface-container-highest flex flex-col justify-between rounded-xl p-4 transition-all duration-300 md:h-48 md:p-8">
+              <span className="text-on-surface-variant font-mono text-[9px] tracking-widest uppercase md:text-xs">
+                Recommend
               </span>
-              <div className="flex items-end justify-between">
-                <span className="text-5xl font-bold tracking-tighter">
+              <div className="mt-3 flex items-end justify-between md:mt-0">
+                <span className="text-2xl font-bold tracking-tighter md:text-5xl">
                   {stats.reviewCount > 0 ? `${stats.recommendPct}%` : "—"}
                 </span>
-                <div className="border-outline-variant/20 flex h-12 w-12 items-center justify-center rounded-full border">
+                <div className="border-outline-variant/20 hidden h-12 w-12 items-center justify-center rounded-full border md:flex">
                   <TrendingUp size={20} className="text-tertiary-fixed-dim" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-surface-container-low hover:bg-surface-container-highest flex h-48 flex-col justify-between rounded-xl p-8 transition-all duration-300">
-              <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                Total Reviews
+            <div className="bg-surface-container-low hover:bg-surface-container-highest flex flex-col justify-between rounded-xl p-4 transition-all duration-300 md:h-48 md:p-8">
+              <span className="text-on-surface-variant font-mono text-[9px] tracking-widest uppercase md:text-xs">
+                Reviews
               </span>
-              <div className="flex items-end justify-between">
-                <span className="text-5xl font-bold tracking-tighter">{stats.reviewCount}</span>
-                <div className="border-outline-variant/20 flex h-12 w-12 items-center justify-center rounded-full border">
+              <div className="mt-3 flex items-end justify-between md:mt-0">
+                <span className="text-2xl font-bold tracking-tighter md:text-5xl">
+                  {stats.reviewCount}
+                </span>
+                <div className="border-outline-variant/20 hidden h-12 w-12 items-center justify-center rounded-full border md:flex">
                   <MessageSquare size={20} className="text-tertiary-fixed-dim" />
                 </div>
               </div>
             </div>
 
-            <div className="bg-primary text-primary-foreground flex h-48 flex-col justify-between rounded-xl p-8">
-              <span className="text-on-primary-container font-mono text-xs tracking-widest uppercase">
+            <div className="bg-primary text-primary-foreground flex flex-col justify-between rounded-xl p-4 md:h-48 md:p-8">
+              <span className="text-on-primary-container font-mono text-[9px] tracking-widest uppercase md:text-xs">
                 Interviews
               </span>
-              <div className="flex items-end justify-between">
-                <span className="text-5xl font-bold tracking-tighter">{stats.interviewCount}</span>
-                <BookOpen size={28} />
+              <div className="mt-3 flex items-end justify-between md:mt-0">
+                <span className="text-2xl font-bold tracking-tighter md:text-5xl">
+                  {stats.interviewCount}
+                </span>
+                <BookOpen className="hidden md:block" size={28} />
               </div>
             </div>
           </div>

@@ -67,7 +67,7 @@ export default async function HomePage() {
               </h1>
 
               <p className="text-on-surface-variant mb-10 max-w-md text-base leading-relaxed md:text-lg">
-                The place employees share what Glassdoor won&apos;t.
+                Know before you join. Real reviews, real interviews. No login. No takedowns.
               </p>
 
               <div className="mb-8 w-full max-w-lg">
@@ -104,7 +104,7 @@ export default async function HomePage() {
             </div>
 
             {/* Right: Top Rated card — desktop only shows here; on mobile it renders below */}
-            <div className="w-full shrink-0 md:w-[400px]">
+            <div className="w-full shrink-0 md:w-[420px]">
               <TopRatedCard leaderboard={leaderboard} />
             </div>
           </div>
@@ -214,7 +214,7 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
   return (
     <div className="bg-surface-container-lowest border-surface-container-highest overflow-hidden rounded-2xl border">
       {/* Card header */}
-      <div className="from-primary to-primary-container flex items-center justify-between bg-gradient-to-b px-6 py-4">
+      <div className="from-primary to-primary-container flex items-center justify-between bg-gradient-to-b px-7 py-5">
         <span className="text-primary-foreground text-[10px] font-bold tracking-[0.2em] uppercase">
           Top Rated
         </span>
@@ -235,7 +235,7 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
               <Link
                 key={company.slug}
                 href={`/orgs/${company.slug}`}
-                className="border-surface-container-highest group relative isolate flex items-center gap-4 overflow-hidden border-b px-6 py-4 last:border-b-0"
+                className="border-surface-container-highest group relative isolate flex items-center gap-4 overflow-hidden border-b px-7 py-5 last:border-b-0"
               >
                 {/* Slide-in fill */}
                 <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
@@ -244,7 +244,7 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
                   {String(i + 1).padStart(2, "0")}
                 </span>
 
-                <div className="bg-surface-container relative flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg transition-colors duration-300 group-hover:bg-white/10">
+                <div className="bg-surface-container relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg transition-colors duration-300 group-hover:bg-white/10">
                   {logoSrc ? (
                     <img
                       src={logoSrc}
@@ -259,24 +259,19 @@ function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
                 </div>
 
                 <div className="relative min-w-0 flex-1">
-                  <p className="truncate text-sm leading-tight font-bold transition-colors duration-300 group-hover:text-white">
+                  <p className="truncate text-base leading-tight font-bold transition-colors duration-300 group-hover:text-white">
                     {company.name}
                   </p>
-                  {company.industry && (
-                    <p className="text-on-surface-variant truncate text-xs transition-colors duration-300 group-hover:text-white/50">
-                      {company.industry}
-                    </p>
-                  )}
                 </div>
 
                 <div className="relative flex shrink-0 items-center gap-1">
                   {rating ? (
                     <>
                       <BadgeCheck
-                        size={12}
+                        size={14}
                         className="text-tertiary-fixed-dim fill-current transition-colors duration-300 group-hover:text-white"
                       />
-                      <span className="text-sm font-black tabular-nums transition-colors duration-300 group-hover:text-white">
+                      <span className="text-base font-black tabular-nums transition-colors duration-300 group-hover:text-white">
                         {rating}
                       </span>
                     </>

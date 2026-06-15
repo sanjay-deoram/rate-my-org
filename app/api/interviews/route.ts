@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { interviews, companies } from "@/drizzle/schema";
 import { interviewPostBodySchema } from "@/lib/schemas/interview";
 import { eq } from "drizzle-orm";
+import { getSubmissionGeo, sendInterviewNotification } from "@/lib/email/notify";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
   const { companySlug, ...data } = parsed.data;
 
   const [company] = await db
-    .select({ id: companies.id })
+    .select({ id: companies.id, name: companies.name })
     .from(companies)
     .where(eq(companies.slug, companySlug))
     .limit(1);
@@ -35,6 +36,9 @@ export async function POST(req: NextRequest) {
     .insert(interviews)
     .values({ ...data, companyId: company.id })
     .returning({ id: interviews.id, createdAt: interviews.createdAt });
+
+  const geo = getSubmissionGeo(req);
+  void sendInterviewNotification(parsed.data, company, geo);
 
   return NextResponse.json({ interview: inserted }, { status: 201 });
 }

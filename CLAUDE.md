@@ -15,6 +15,8 @@ Anonymous workplace review platform. No user authentication required. Users can 
 - **TanStack Query v5** (`@tanstack/react-query`) — client-side async state for user-triggered fetches only. `useQuery` for search autocomplete, `useMutation` for form POSTs. Provider in `components/providers.tsx`. Never use in Server Components.
 - **TanStack Form v1** (`@tanstack/react-form`) — form state + field-level validation via render-prop `form.Field` API. Zod 4 is detected automatically via Standard Schema — no adapter needed.
 - **Zod 4** — validation schemas in `lib/schemas/`. Shared across API routes (server) and form field validators (client).
+- **Cloudflare** — Hosted site on cloudflare, R2 bucket for company image, cdn for quick access.
+
 
 ## Key Patterns
 

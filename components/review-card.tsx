@@ -1,11 +1,34 @@
 "use client";
 
+import Link from "next/link";
 import { PlusCircle, MinusCircle, ChevronDown, ChevronUp } from "lucide-react";
-import type { Review } from "@/types/org-content";
 import { formatEmploymentType, timeAgo } from "@/lib/org-display";
 import { useExpandable } from "@/hooks/use-expandable";
 
-export function ReviewCard({ review, showKind }: { review: Review; showKind?: boolean }) {
+export type ReviewCardData = {
+  jobTitle: string;
+  employmentType: string;
+  createdAt: Date | string;
+  overallRating: number;
+  pros: string;
+  cons: string;
+};
+
+type ReviewCardProps = {
+  review: ReviewCardData;
+  showKind?: boolean;
+  companyName?: string;
+  companySlug?: string;
+  companyIndustry?: string | null;
+};
+
+export function ReviewCard({
+  review,
+  showKind,
+  companyName,
+  companySlug,
+  companyIndustry,
+}: ReviewCardProps) {
   const { expanded, setExpanded, overflows, scrollHeight, bodyRef, COLLAPSED_HEIGHT } =
     useExpandable();
 
@@ -20,7 +43,18 @@ export function ReviewCard({ review, showKind }: { review: Review; showKind?: bo
           )}
           <h3 className="mb-1 text-xl font-bold">{review.jobTitle}</h3>
           <p className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-            {formatEmploymentType(review.employmentType)} • {timeAgo(new Date(review.createdAt))}
+            {companyName && companySlug ? (
+              <>
+                <Link
+                  href={`/orgs/${companySlug}`}
+                  className="hover:text-foreground transition-colors"
+                >
+                  {companyName}
+                </Link>
+                {" · "}
+              </>
+            ) : null}
+            {formatEmploymentType(review.employmentType)} · {timeAgo(new Date(review.createdAt))}
           </p>
         </div>
         <div className="bg-primary text-primary-foreground ml-4 flex shrink-0 items-center rounded px-3 py-1">
@@ -77,6 +111,17 @@ export function ReviewCard({ review, showKind }: { review: Review; showKind?: bo
             </>
           )}
         </button>
+      )}
+
+      {companyIndustry && (
+        <div className="border-outline-variant/15 mt-6 flex flex-wrap gap-2 border-t pt-4">
+          <span className="bg-surface-container text-on-surface-variant rounded-full px-3 py-1 font-mono text-[10px] tracking-widest uppercase">
+            {formatEmploymentType(review.employmentType)}
+          </span>
+          <span className="bg-surface-container text-on-surface-variant rounded-full px-3 py-1 font-mono text-[10px] tracking-widest uppercase">
+            {companyIndustry}
+          </span>
+        </div>
       )}
     </article>
   );

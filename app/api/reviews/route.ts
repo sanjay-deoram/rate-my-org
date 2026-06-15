@@ -3,6 +3,7 @@ import { db } from "@/lib/db";
 import { reviews, companies } from "@/drizzle/schema";
 import { reviewPostBodySchema } from "@/lib/schemas/review";
 import { eq } from "drizzle-orm";
+import { getSubmissionGeo, sendReviewNotification } from "@/lib/email/notify";
 
 export const runtime = "nodejs";
 
@@ -22,7 +23,7 @@ export async function POST(req: NextRequest) {
   const { companySlug, ...reviewData } = parsed.data;
 
   const [company] = await db
-    .select({ id: companies.id })
+    .select({ id: companies.id, name: companies.name })
     .from(companies)
     .where(eq(companies.slug, companySlug))
     .limit(1);
@@ -35,6 +36,9 @@ export async function POST(req: NextRequest) {
     .insert(reviews)
     .values({ ...reviewData, companyId: company.id })
     .returning({ id: reviews.id, createdAt: reviews.createdAt });
+
+  const geo = getSubmissionGeo(req);
+  void sendReviewNotification(parsed.data, company, geo);
 
   return NextResponse.json({ review: inserted }, { status: 201 });
 }

@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 
 const navLinks = [
   { label: "Companies", href: "/companies", match: ["/companies", "/orgs"] },
-  { label: "Reviews", href: "/reviews/write", match: ["/reviews"] },
-  { label: "Interviews", href: "/interviews/submit", match: ["/interviews"] },
+  { label: "Reviews", href: "/reviews", match: ["/reviews"] },
+  { label: "Interviews", href: "/interviews", match: ["/interviews"] },
   { label: "About", href: "/about", match: ["/about"] },
 ];
 

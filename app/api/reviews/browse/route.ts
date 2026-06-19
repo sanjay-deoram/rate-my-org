@@ -63,6 +63,7 @@ export async function GET(req: NextRequest) {
       companyName: companies.name,
       companySlug: companies.slug,
       companyIndustry: companies.industry,
+      companyLogoKey: companies.logoKey,
     })
     .from(reviews)
     .innerJoin(companies, eq(reviews.companyId, companies.id))

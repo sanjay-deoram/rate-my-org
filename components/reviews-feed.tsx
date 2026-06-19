@@ -271,6 +271,7 @@ export function ReviewsFeed({
                 companyName={item.companyName}
                 companySlug={item.companySlug}
                 companyIndustry={item.companyIndustry}
+                companyLogoKey={item.companyLogoKey}
               />
             ))}
           </div>

@@ -20,6 +20,7 @@ export type ReviewFeedItem = {
   companyName: string;
   companySlug: string;
   companyIndustry: string | null;
+  companyLogoKey: string | null;
 };
 
 export type ReviewBrowsePage = {

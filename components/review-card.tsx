@@ -82,12 +82,14 @@ export function ReviewCard({
             <h3 className="text-xl leading-tight font-bold">{review.jobTitle}</h3>
             <p className="text-on-surface-variant/70 mt-1 font-mono text-[10px] tracking-widest uppercase">
               {showKind && (
-                <span className="text-on-surface-variant mb-1 inline-block font-mono text-[11px] font-bold tracking-widest uppercase">
-                  Review
-                </span>
-              )}{" "}
-              · {formatEmploymentType(review.employmentType)} ·{" "}
-              {timeAgo(new Date(review.createdAt))}
+                <>
+                  <span className="text-on-surface-variant mb-1 inline-block font-mono text-[11px] font-bold tracking-widest uppercase">
+                    Review
+                  </span>
+                  <span className="text-on-surface-variant mx-1">·</span>
+                </>
+              )}
+              {formatEmploymentType(review.employmentType)} · {timeAgo(new Date(review.createdAt))}
             </p>
           </div>
         </div>

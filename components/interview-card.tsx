@@ -1,17 +1,63 @@
 "use client";
 
+import Link from "next/link";
 import { BadgeCheck, ChevronDown, ChevronUp } from "lucide-react";
-import type { Interview } from "@/types/org-content";
 import { difficultyLabel, timeAgo } from "@/lib/org-display";
+
+export type InterviewCardData = {
+  roleTitle: string;
+  department?: string | null;
+  difficulty: number;
+  overallExperience: string;
+  rounds: Array<{ type: string; notes: string }>;
+  offerReceived: string;
+  createdAt: Date | string;
+};
 import { EXPERIENCE_BADGE } from "@/constants/org-content";
 import { useExpandable } from "@/hooks/use-expandable";
+
+const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
+
+function CompanyLogo({
+  logoKey,
+  name,
+}: {
+  logoKey: string | null | undefined;
+  name: string | undefined;
+}) {
+  if (!name) return null;
+  const parts = name.trim().split(/\s+/);
+  const initials = parts.length >= 2 ? parts[0][0] + parts[parts.length - 1][0] : name.slice(0, 2);
+
+  if (logoKey) {
+    return (
+      <img
+        src={`${CDN}/${logoKey}`}
+        alt={name}
+        className="h-10 w-10 shrink-0 rounded-lg object-cover"
+      />
+    );
+  }
+
+  return (
+    <div className="bg-surface-container text-on-surface-variant flex h-10 w-10 shrink-0 items-center justify-center rounded-lg text-xs font-bold tracking-tight uppercase">
+      {initials}
+    </div>
+  );
+}
 
 export function InterviewCard({
   interview,
   showKind,
+  companyName,
+  companySlug,
+  companyLogoKey,
 }: {
-  interview: Interview;
+  interview: InterviewCardData;
   showKind?: boolean;
+  companyName?: string;
+  companySlug?: string;
+  companyLogoKey?: string | null;
 }) {
   const { expanded, setExpanded, overflows, scrollHeight, bodyRef, COLLAPSED_HEIGHT } =
     useExpandable();
@@ -19,31 +65,43 @@ export function InterviewCard({
   return (
     <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-10 shadow-lg ring-1 shadow-black/[0.06]">
       <div className="mb-6 flex items-start justify-between">
-        <div>
-          {showKind && (
-            <span className="text-on-surface-variant mb-2 inline-block font-mono text-[10px] tracking-widest uppercase">
-              Interview
-            </span>
+        <div className="flex items-center gap-3">
+          {companyLogoKey !== undefined && (
+            <CompanyLogo logoKey={companyLogoKey} name={companyName} />
           )}
-          <h3 className="mb-1 text-xl font-bold">{interview.roleTitle}</h3>
-          <div className="mt-1 flex flex-wrap items-center gap-1.5">
-            {interview.department && (
-              <>
-                <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                  {interview.department}
-                </span>
-                <span className="text-outline-variant font-mono text-sm">·</span>
-              </>
-            )}
-            <span
-              className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${EXPERIENCE_BADGE[interview.overallExperience] ?? "bg-surface-container-high text-on-surface-variant"}`}
-            >
-              {interview.overallExperience}
-            </span>
-            <span className="text-outline-variant font-mono text-sm">·</span>
-            <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-              {timeAgo(new Date(interview.createdAt))}
-            </span>
+          <div>
+            {companyName && companySlug ? (
+              <Link
+                href={`/orgs/${companySlug}`}
+                className="text-on-surface-variant hover:text-foreground mb-1 block font-mono text-[11px] font-bold tracking-widest uppercase transition-colors"
+              >
+                {companyName}
+              </Link>
+            ) : showKind ? (
+              <span className="text-on-surface-variant mb-2 inline-block font-mono text-[10px] tracking-widest uppercase">
+                Interview
+              </span>
+            ) : null}
+            <h3 className="mb-1 text-xl font-bold">{interview.roleTitle}</h3>
+            <div className="mt-1 flex flex-wrap items-center gap-1.5">
+              {interview.department && (
+                <>
+                  <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
+                    {interview.department}
+                  </span>
+                  <span className="text-outline-variant font-mono text-sm">·</span>
+                </>
+              )}
+              <span
+                className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${EXPERIENCE_BADGE[interview.overallExperience] ?? "bg-surface-container-high text-on-surface-variant"}`}
+              >
+                {interview.overallExperience}
+              </span>
+              <span className="text-outline-variant font-mono text-sm">·</span>
+              <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
+                {timeAgo(new Date(interview.createdAt))}
+              </span>
+            </div>
           </div>
         </div>
         <div className="ml-4 flex shrink-0 flex-col items-end gap-1">

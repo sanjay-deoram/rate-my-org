@@ -210,7 +210,7 @@ export function ReviewsFeed({
       {/* Filters + cards */}
       <div className="mx-auto max-w-5xl px-8 py-8 md:px-12">
         {/* Filter row */}
-        <div className="border-outline-variant/15 mb-6 flex flex-wrap items-center gap-2 border-b pb-4">
+        <div className="mb-6 flex flex-wrap items-center gap-2">
           {companiesLoading ? (
             <div className="border-outline-variant/40 bg-surface-container-lowest h-9 w-36 animate-pulse rounded-2xl border" />
           ) : (
@@ -270,6 +270,7 @@ export function ReviewsFeed({
             </span>
           )}
         </div>
+        <div className="border-outline-variant/15 -mx-8 mb-6 border-t md:-mx-12" />
 
         {/* Cards */}
         {isLoading ? (

@@ -12,8 +12,8 @@ const querySchema = z.object({
   minRating: z.coerce.number().int().min(1).max(5).optional(),
   since: z.enum(["today", "week", "month", "year"]).optional(),
   companySlug: z.string().optional(),
-  cursor: z.coerce.number().int().min(0).default(0),
-  limit: z.coerce.number().int().min(1).max(50).default(12),
+  page: z.coerce.number().int().min(1).default(1),
+  limit: z.coerce.number().int().min(1).max(50).default(10),
 });
 
 const SINCE_INTERVAL: Record<string, string> = {
@@ -29,7 +29,8 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { q, sort, minRating, since, companySlug, cursor, limit } = parsed.data;
+  const { q, sort, minRating, since, companySlug, page, limit } = parsed.data;
+  const offset = (page - 1) * limit;
 
   const where = and(
     eq(companies.status, "approved"),
@@ -48,35 +49,41 @@ export async function GET(req: NextRequest) {
     lowest: asc(reviews.overallRating),
   }[sort];
 
-  const rows = await db
-    .select({
-      id: reviews.id,
-      jobTitle: reviews.jobTitle,
-      overallRating: reviews.overallRating,
-      employmentType: reviews.employmentType,
-      employmentStatus: reviews.employmentStatus,
-      pros: reviews.pros,
-      cons: reviews.cons,
-      adviceToManagement: reviews.adviceToManagement,
-      headline: reviews.headline,
-      formerYear: reviews.formerYear,
-      createdAt: reviews.createdAt,
-      companyId: reviews.companyId,
-      companyName: companies.name,
-      companySlug: companies.slug,
-      companyIndustry: companies.industry,
-      companyLogoKey: companies.logoKey,
-    })
-    .from(reviews)
-    .innerJoin(companies, eq(reviews.companyId, companies.id))
-    .where(where)
-    .orderBy(orderBy)
-    .limit(limit + 1)
-    .offset(cursor);
+  const [countResult, rows] = await Promise.all([
+    db
+      .select({ count: sql<number>`count(*)::int` })
+      .from(reviews)
+      .innerJoin(companies, eq(reviews.companyId, companies.id))
+      .where(where),
+    db
+      .select({
+        id: reviews.id,
+        jobTitle: reviews.jobTitle,
+        overallRating: reviews.overallRating,
+        employmentType: reviews.employmentType,
+        employmentStatus: reviews.employmentStatus,
+        pros: reviews.pros,
+        cons: reviews.cons,
+        adviceToManagement: reviews.adviceToManagement,
+        headline: reviews.headline,
+        formerYear: reviews.formerYear,
+        createdAt: reviews.createdAt,
+        companyId: reviews.companyId,
+        companyName: companies.name,
+        companySlug: companies.slug,
+        companyIndustry: companies.industry,
+        companyLogoKey: companies.logoKey,
+      })
+      .from(reviews)
+      .innerJoin(companies, eq(reviews.companyId, companies.id))
+      .where(where)
+      .orderBy(orderBy)
+      .limit(limit)
+      .offset(offset),
+  ]);
 
-  const hasMore = rows.length > limit;
-  const items = hasMore ? rows.slice(0, limit) : rows;
-  const nextCursor = hasMore ? cursor + limit : null;
+  const total = countResult[0]?.count ?? 0;
+  const totalPages = Math.ceil(total / limit);
 
-  return NextResponse.json({ items, nextCursor });
+  return NextResponse.json({ items: rows, total, page, totalPages });
 }

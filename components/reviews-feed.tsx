@@ -1,9 +1,10 @@
 "use client";
 
-import { useState, useRef, useEffect, useCallback } from "react";
+import { useState, useRef } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Search, ChevronDown, MessageSquare, Star, Calendar, Building2, X } from "lucide-react";
 import { ReviewCard } from "@/components/review-card";
-import { useReviewsBrowse } from "@/hooks/use-reviews-browse";
+import { Pagination } from "@/components/ui/pagination";
 import { useCompaniesWithReviews } from "@/hooks/use-companies-with-reviews";
 import {
   DropdownRoot,
@@ -13,6 +14,7 @@ import {
   DropdownClose,
 } from "@/components/ui/dropdown";
 import type { LucideIcon } from "lucide-react";
+import type { ReviewFeedItem } from "@/lib/api/reviews";
 
 const RATING_OPTIONS = [
   { value: "", label: "Any Rating" },
@@ -79,20 +81,36 @@ function FilterDropdown({
 
 type TrendingCompany = { name: string; slug: string };
 
+type ActiveFilters = {
+  q?: string;
+  minRating?: string;
+  since?: string;
+  companySlug?: string;
+};
+
 export function ReviewsFeed({
   totalReviews,
   trendingCompanies,
+  items,
+  total,
+  page,
+  totalPages,
+  filters,
 }: {
   totalReviews: number;
   trendingCompanies: TrendingCompany[];
+  items: ReviewFeedItem[];
+  total: number;
+  page: number;
+  totalPages: number;
+  filters: ActiveFilters;
 }) {
-  const [query, setQuery] = useState("");
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [minRating, setMinRating] = useState("");
-  const [since, setSince] = useState("");
-  const [companySlug, setCompanySlug] = useState("");
+  const router = useRouter();
+  const searchParams = useSearchParams();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const sentinelRef = useRef<HTMLDivElement>(null);
+
+  // Local state only for the search input display value
+  const [query, setQuery] = useState(filters.q ?? "");
 
   const { data: companiesData, isLoading: companiesLoading } = useCompaniesWithReviews();
   const companyOptions = [
@@ -100,53 +118,45 @@ export function ReviewsFeed({
     ...(companiesData ?? []).map((c) => ({ value: c.slug, label: c.name })),
   ];
 
-  const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useReviewsBrowse({
-    q: debouncedQuery || undefined,
-    sort: "recent",
-    minRating: minRating ? parseInt(minRating) : undefined,
-    since: since || undefined,
-    companySlug: companySlug || undefined,
-  });
+  function buildUrl(params: Record<string, string | undefined>) {
+    const sp = new URLSearchParams(searchParams.toString());
+    for (const [k, v] of Object.entries(params)) {
+      if (v) sp.set(k, v);
+      else sp.delete(k);
+    }
+    return `/reviews?${sp}`;
+  }
 
-  const items = data?.pages.flatMap((p) => p.items) ?? [];
-
-  const handleSentinel = useCallback(
-    (entries: IntersectionObserverEntry[]) => {
-      if (entries[0]?.isIntersecting && hasNextPage && !isFetchingNextPage) {
-        fetchNextPage();
-      }
-    },
-    [fetchNextPage, hasNextPage, isFetchingNextPage],
-  );
-
-  useEffect(() => {
-    const el = sentinelRef.current;
-    if (!el) return;
-    const observer = new IntersectionObserver(handleSentinel, { threshold: 0.1 });
-    observer.observe(el);
-    return () => observer.disconnect();
-  }, [handleSentinel]);
+  function setFilter(key: string, value: string | undefined) {
+    router.replace(buildUrl({ [key]: value || undefined, page: undefined }));
+  }
 
   function handleSearchChange(e: React.ChangeEvent<HTMLInputElement>) {
     const val = e.target.value;
     setQuery(val);
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    debounceRef.current = setTimeout(() => setDebouncedQuery(val), 300);
+    debounceRef.current = setTimeout(() => {
+      router.replace(buildUrl({ q: val || undefined, page: undefined }));
+    }, 300);
   }
 
   function handleSearchSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (debounceRef.current) clearTimeout(debounceRef.current);
-    setDebouncedQuery(query);
+    router.replace(buildUrl({ q: query || undefined, page: undefined }));
   }
 
   function pickTrending(companyName: string) {
     setQuery(companyName);
-    setDebouncedQuery(companyName);
+    router.replace(buildUrl({ q: companyName, page: undefined }));
   }
 
-  const hasFilters = debouncedQuery || minRating || since || companySlug;
-  const resultCount = items.length;
+  function clearAll() {
+    setQuery("");
+    router.replace("/reviews");
+  }
+
+  const hasFilters = filters.q || filters.minRating || filters.since || filters.companySlug;
 
   return (
     <div>
@@ -194,7 +204,7 @@ export function ReviewsFeed({
                   type="button"
                   onClick={() => pickTrending(c.name)}
                   className={`rounded-full border px-4 py-1.5 font-mono text-[10px] font-bold tracking-widest uppercase transition-colors ${
-                    debouncedQuery === c.name
+                    filters.q === c.name
                       ? "bg-primary text-primary-foreground border-primary"
                       : "border-outline-variant/40 text-on-surface-variant hover:border-primary/50 hover:text-foreground"
                   }`}
@@ -208,7 +218,7 @@ export function ReviewsFeed({
       </div>
 
       {/* Filters + cards */}
-      <div className="mx-auto max-w-5xl px-8 py-8 md:px-12">
+      <div className="mx-auto max-w-6xl px-8 py-8 md:px-12">
         {/* Filter row */}
         <div className="mb-6 flex flex-wrap items-center gap-2">
           {companiesLoading ? (
@@ -216,70 +226,59 @@ export function ReviewsFeed({
           ) : (
             <FilterDropdown
               icon={Building2}
-              label={companyOptions.find((o) => o.value === companySlug)?.label ?? "All Companies"}
-              active={!!companySlug}
-              value={companySlug}
-              onChange={setCompanySlug}
+              label={
+                companyOptions.find((o) => o.value === (filters.companySlug ?? ""))?.label ??
+                "All Companies"
+              }
+              active={!!filters.companySlug}
+              value={filters.companySlug ?? ""}
+              onChange={(v) => setFilter("companySlug", v)}
               options={companyOptions}
             />
           )}
           <FilterDropdown
             icon={Star}
             label={
-              minRating
-                ? `${RATING_OPTIONS.find((o) => o.value === minRating)?.label ?? "Any Rating"}`
+              filters.minRating
+                ? (RATING_OPTIONS.find((o) => o.value === filters.minRating)?.label ?? "Any Rating")
                 : "Any Rating"
             }
-            active={!!minRating}
-            value={minRating}
-            onChange={setMinRating}
+            active={!!filters.minRating}
+            value={filters.minRating ?? ""}
+            onChange={(v) => setFilter("minRating", v)}
             options={RATING_OPTIONS}
           />
           <FilterDropdown
             icon={Calendar}
             label={
-              since
-                ? `${TIME_OPTIONS.find((o) => o.value === since)?.label ?? "Any Time"}`
+              filters.since
+                ? (TIME_OPTIONS.find((o) => o.value === filters.since)?.label ?? "Any Time")
                 : "Any Time"
             }
-            active={!!since}
-            value={since}
-            onChange={setSince}
+            active={!!filters.since}
+            value={filters.since ?? ""}
+            onChange={(v) => setFilter("since", v)}
             options={TIME_OPTIONS}
           />
           {hasFilters && (
             <button
               type="button"
-              onClick={() => {
-                setQuery("");
-                setDebouncedQuery("");
-                setMinRating("");
-                setSince("");
-                setCompanySlug("");
-              }}
+              onClick={clearAll}
               className="text-on-surface-variant hover:text-foreground flex items-center gap-1 text-xs transition-colors"
             >
               <X size={11} /> Clear
             </button>
           )}
-          {!isLoading && (
-            <span className="text-on-surface-variant ml-auto font-mono text-[10px] tracking-widest uppercase">
-              {hasFilters
-                ? `${resultCount}${hasNextPage ? "+" : ""} result${resultCount !== 1 ? "s" : ""}`
-                : `${totalReviews.toLocaleString()} reviews`}
-            </span>
-          )}
+          <span className="text-on-surface-variant ml-auto font-mono text-[10px] tracking-widest uppercase">
+            {hasFilters
+              ? `${total} result${total !== 1 ? "s" : ""}`
+              : `${totalReviews.toLocaleString()} reviews`}
+          </span>
         </div>
         <div className="border-outline-variant/15 -mx-8 mb-6 border-t md:-mx-12" />
 
         {/* Cards */}
-        {isLoading ? (
-          <div className="space-y-6">
-            {Array.from({ length: 5 }).map((_, i) => (
-              <div key={i} className="bg-surface-container-lowest h-64 animate-pulse rounded-xl" />
-            ))}
-          </div>
-        ) : items.length === 0 ? (
+        {items.length === 0 ? (
           <div className="flex flex-col items-center py-24 text-center">
             <MessageSquare size={40} className="text-on-surface-variant/30 mb-4" />
             <p className="text-on-surface-variant font-medium">No reviews found</p>
@@ -300,10 +299,14 @@ export function ReviewsFeed({
           </div>
         )}
 
-        <div ref={sentinelRef} className="h-4" />
-        {isFetchingNextPage && (
-          <div className="mt-8 flex justify-center">
-            <div className="bg-surface-container h-1.5 w-24 animate-pulse rounded-full" />
+        {/* Pagination */}
+        {items.length > 0 && (
+          <div className="mt-10">
+            <Pagination
+              page={page}
+              totalPages={totalPages}
+              onPageChange={(p) => router.replace(buildUrl({ page: String(p) }))}
+            />
           </div>
         )}
       </div>

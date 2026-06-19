@@ -2,18 +2,11 @@
 
 import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, ChevronDown, MessageSquare, Star, Calendar, Building2, X } from "lucide-react";
+import { Search, MessageSquare, Star, Calendar, Building2, X } from "lucide-react";
 import { ReviewCard } from "@/components/review-card";
 import { Pagination } from "@/components/ui/pagination";
 import { useCompaniesWithReviews } from "@/hooks/use-companies-with-reviews";
-import {
-  DropdownRoot,
-  DropdownTrigger,
-  DropdownContent,
-  DropdownItem,
-  DropdownClose,
-} from "@/components/ui/dropdown";
-import type { LucideIcon } from "lucide-react";
+import { FilterDropdown } from "@/components/ui/filter-dropdown";
 import type { ReviewFeedItem } from "@/lib/api/reviews";
 
 const RATING_OPTIONS = [
@@ -30,54 +23,6 @@ const TIME_OPTIONS = [
   { value: "month", label: "This Month" },
   { value: "year", label: "This Year" },
 ];
-
-function FilterDropdown({
-  icon: Icon,
-  label,
-  active,
-  value,
-  onChange,
-  options,
-}: {
-  icon: LucideIcon;
-  label: string;
-  active: boolean;
-  value: string;
-  onChange: (v: string) => void;
-  options: { value: string; label: string }[];
-}) {
-  return (
-    <DropdownRoot>
-      <DropdownTrigger asChild>
-        <button
-          type="button"
-          className={`flex items-center gap-2 rounded-2xl border px-3.5 py-2 text-sm font-medium shadow-sm transition-colors ${
-            active
-              ? "border-primary/40 bg-primary/5 text-foreground"
-              : "border-outline-variant/40 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"
-          }`}
-        >
-          <Icon size={13} className="shrink-0" />
-          {label}
-          <ChevronDown size={11} className="text-foreground/40 shrink-0" />
-        </button>
-      </DropdownTrigger>
-      <DropdownContent align="start" className="min-w-[150px] py-1">
-        {options.map((o) => (
-          <DropdownClose key={o.value} asChild>
-            <DropdownItem
-              className="text-xs"
-              active={value === o.value}
-              onClick={() => onChange(o.value)}
-            >
-              {o.label}
-            </DropdownItem>
-          </DropdownClose>
-        ))}
-      </DropdownContent>
-    </DropdownRoot>
-  );
-}
 
 type TrendingCompany = { name: string; slug: string };
 

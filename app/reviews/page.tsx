@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { ReviewsFeed } from "@/components/reviews-feed";
@@ -43,20 +44,22 @@ export default async function ReviewsPage({
     <>
       <Nav />
       <main className="min-h-screen pt-20">
-        <ReviewsFeed
-          totalReviews={totalReviews}
-          trendingCompanies={trendingCompanies}
-          items={items}
-          total={total}
-          page={page}
-          totalPages={totalPages}
-          filters={{
-            q: sp.q?.trim() || undefined,
-            minRating: sp.minRating || undefined,
-            since: sp.since || undefined,
-            companySlug: sp.companySlug || undefined,
-          }}
-        />
+        <Suspense>
+          <ReviewsFeed
+            totalReviews={totalReviews}
+            trendingCompanies={trendingCompanies}
+            items={items}
+            total={total}
+            page={page}
+            totalPages={totalPages}
+            filters={{
+              q: sp.q?.trim() || undefined,
+              minRating: sp.minRating || undefined,
+              since: sp.since || undefined,
+              companySlug: sp.companySlug || undefined,
+            }}
+          />
+        </Suspense>
       </main>
       <Footer />
     </>

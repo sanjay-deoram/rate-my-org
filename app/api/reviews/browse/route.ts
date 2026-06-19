@@ -11,6 +11,7 @@ const querySchema = z.object({
   sort: z.enum(["recent", "oldest", "highest", "lowest"]).default("recent"),
   minRating: z.coerce.number().int().min(1).max(5).optional(),
   since: z.enum(["today", "week", "month", "year"]).optional(),
+  companySlug: z.string().optional(),
   cursor: z.coerce.number().int().min(0).default(0),
   limit: z.coerce.number().int().min(1).max(50).default(12),
 });
@@ -28,7 +29,7 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
   }
 
-  const { q, sort, minRating, since, cursor, limit } = parsed.data;
+  const { q, sort, minRating, since, companySlug, cursor, limit } = parsed.data;
 
   const where = and(
     eq(companies.status, "approved"),
@@ -37,6 +38,7 @@ export async function GET(req: NextRequest) {
       ? sql`${reviews.createdAt} >= now() - interval '${sql.raw(SINCE_INTERVAL[since])}'`
       : undefined,
     q ? or(ilike(reviews.jobTitle, `%${q}%`), ilike(companies.name, `%${q}%`)) : undefined,
+    companySlug ? eq(companies.slug, companySlug) : undefined,
   );
 
   const orderBy = {

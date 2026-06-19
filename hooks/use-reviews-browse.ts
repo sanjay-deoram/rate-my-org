@@ -8,6 +8,7 @@ export type ReviewFilters = {
   sort?: string;
   minRating?: number;
   since?: string;
+  companySlug?: string;
 };
 
 export function useReviewsBrowse(filters: ReviewFilters) {

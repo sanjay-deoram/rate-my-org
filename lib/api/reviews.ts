@@ -33,6 +33,7 @@ export async function listReviews(params: {
   sort?: string;
   minRating?: number;
   since?: string;
+  companySlug?: string;
   cursor?: number;
 }): Promise<ReviewBrowsePage> {
   const sp = new URLSearchParams();
@@ -40,6 +41,7 @@ export async function listReviews(params: {
   if (params.sort) sp.set("sort", params.sort);
   if (params.minRating !== undefined) sp.set("minRating", String(params.minRating));
   if (params.since) sp.set("since", params.since);
+  if (params.companySlug) sp.set("companySlug", params.companySlug);
   if (params.cursor !== undefined) sp.set("cursor", String(params.cursor));
   const res = await fetch(`/api/reviews/browse?${sp}`);
   if (!res.ok) throw new Error("Failed to fetch reviews");

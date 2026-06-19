@@ -1,9 +1,10 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Search, ChevronDown, MessageSquare, Star, Calendar, X } from "lucide-react";
+import { Search, ChevronDown, MessageSquare, Star, Calendar, Building2, X } from "lucide-react";
 import { ReviewCard } from "@/components/review-card";
 import { useReviewsBrowse } from "@/hooks/use-reviews-browse";
+import { useCompaniesWithReviews } from "@/hooks/use-companies-with-reviews";
 import {
   DropdownRoot,
   DropdownTrigger,
@@ -89,14 +90,22 @@ export function ReviewsFeed({
   const [debouncedQuery, setDebouncedQuery] = useState("");
   const [minRating, setMinRating] = useState("");
   const [since, setSince] = useState("");
+  const [companySlug, setCompanySlug] = useState("");
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const sentinelRef = useRef<HTMLDivElement>(null);
+
+  const { data: companiesData, isLoading: companiesLoading } = useCompaniesWithReviews();
+  const companyOptions = [
+    { value: "", label: "All Companies" },
+    ...(companiesData ?? []).map((c) => ({ value: c.slug, label: c.name })),
+  ];
 
   const { data, isLoading, fetchNextPage, hasNextPage, isFetchingNextPage } = useReviewsBrowse({
     q: debouncedQuery || undefined,
     sort: "recent",
     minRating: minRating ? parseInt(minRating) : undefined,
     since: since || undefined,
+    companySlug: companySlug || undefined,
   });
 
   const items = data?.pages.flatMap((p) => p.items) ?? [];
@@ -136,7 +145,7 @@ export function ReviewsFeed({
     setDebouncedQuery(companyName);
   }
 
-  const hasFilters = debouncedQuery || minRating || since;
+  const hasFilters = debouncedQuery || minRating || since || companySlug;
   const resultCount = items.length;
 
   return (
@@ -202,6 +211,18 @@ export function ReviewsFeed({
       <div className="mx-auto max-w-5xl px-8 py-8 md:px-12">
         {/* Filter row */}
         <div className="border-outline-variant/15 mb-6 flex flex-wrap items-center gap-2 border-b pb-4">
+          {companiesLoading ? (
+            <div className="border-outline-variant/40 bg-surface-container-lowest h-9 w-36 animate-pulse rounded-2xl border" />
+          ) : (
+            <FilterDropdown
+              icon={Building2}
+              label={companyOptions.find((o) => o.value === companySlug)?.label ?? "All Companies"}
+              active={!!companySlug}
+              value={companySlug}
+              onChange={setCompanySlug}
+              options={companyOptions}
+            />
+          )}
           <FilterDropdown
             icon={Star}
             label={
@@ -234,6 +255,7 @@ export function ReviewsFeed({
                 setDebouncedQuery("");
                 setMinRating("");
                 setSince("");
+                setCompanySlug("");
               }}
               className="text-on-surface-variant hover:text-foreground flex items-center gap-1 text-xs transition-colors"
             >

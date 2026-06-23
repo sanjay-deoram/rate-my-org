@@ -146,14 +146,24 @@ export function Nav() {
               })}
             </div>
 
-            <Link
-              href="/reviews/write"
-              role="menuitem"
-              onClick={() => setMenuOpen(false)}
-              className="from-primary to-primary-container text-primary-foreground mt-2 block rounded-2xl bg-gradient-to-b px-5 py-3.5 text-center text-base font-semibold shadow-md transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
-            >
-              Post Review
-            </Link>
+            <div className="mt-2 grid grid-cols-2 gap-2">
+              <Link
+                href="/reviews/write"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="from-primary to-primary-container text-primary-foreground block rounded-2xl bg-gradient-to-b px-4 py-3.5 text-center text-base font-semibold shadow-md transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
+              >
+                Post Review
+              </Link>
+              <Link
+                href="/interviews/submit"
+                role="menuitem"
+                onClick={() => setMenuOpen(false)}
+                className="border-border/40 text-foreground hover:border-primary block rounded-2xl border px-4 py-3.5 text-center text-base font-semibold transition-colors duration-200 active:scale-[0.98]"
+              >
+                Post Interview
+              </Link>
+            </div>
           </div>
         </div>
       )}

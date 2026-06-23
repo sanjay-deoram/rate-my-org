@@ -83,14 +83,6 @@ export function InterviewCard({
             ) : null}
             <h3 className="mb-1 text-xl font-bold">{interview.roleTitle}</h3>
             <div className="mt-1 flex flex-wrap items-center gap-1.5">
-              {interview.department && (
-                <>
-                  <span className="text-on-surface-variant font-mono text-xs tracking-widest uppercase">
-                    {interview.department}
-                  </span>
-                  <span className="text-outline-variant font-mono text-sm">·</span>
-                </>
-              )}
               <span
                 className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${EXPERIENCE_BADGE[interview.overallExperience] ?? "bg-surface-container-high text-on-surface-variant"}`}
               >

@@ -109,11 +109,17 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
                 Recommend
               </span>
               <div className="mt-3 flex items-end justify-between md:mt-0">
-                <span className="text-2xl font-bold tracking-tighter md:text-5xl">
+                <span
+                  className={`text-2xl font-bold tracking-tighter md:text-5xl ${stats.reviewCount > 0 ? (stats.recommendPct >= 50 ? "text-tertiary-fixed-dim" : "text-destructive") : ""}`}
+                >
                   {stats.reviewCount > 0 ? `${stats.recommendPct}%` : "—"}
                 </span>
                 <div className="border-outline-variant/20 hidden h-12 w-12 items-center justify-center rounded-full border md:flex">
-                  <TrendingUp size={20} className="text-tertiary-fixed-dim" />
+                  {stats.recommendPct >= 50 ? (
+                    <TrendingUp size={20} className="text-tertiary-fixed-dim" />
+                  ) : (
+                    <TrendingDown size={20} className="text-destructive" />
+                  )}
                 </div>
               </div>
             </div>

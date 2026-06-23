@@ -223,3 +223,20 @@
     color: var(--on-tertiary-fixed);
   }
 }
+
+@layer utilities {
+  .scrollbar-design {
+    scrollbar-width: thin;
+    scrollbar-color: var(--outline-variant) transparent;
+  }
+  .scrollbar-design::-webkit-scrollbar {
+    width: 4px;
+  }
+  .scrollbar-design::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  .scrollbar-design::-webkit-scrollbar-thumb {
+    background-color: var(--outline-variant);
+    border-radius: 9999px;
+  }
+}

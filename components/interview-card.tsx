@@ -59,8 +59,7 @@ export function InterviewCard({
   companySlug?: string;
   companyLogoKey?: string | null;
 }) {
-  const { expanded, setExpanded, overflows, scrollHeight, bodyRef, COLLAPSED_HEIGHT } =
-    useExpandable();
+  const { expanded, setExpanded, overflows, maxHeight, bodyRef, onTransitionEnd } = useExpandable();
 
   return (
     <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-10 shadow-lg ring-1 shadow-black/[0.06]">
@@ -122,8 +121,9 @@ export function InterviewCard({
       <div className="relative">
         <div
           ref={bodyRef}
+          onTransitionEnd={onTransitionEnd}
           style={{
-            maxHeight: expanded ? scrollHeight : COLLAPSED_HEIGHT,
+            maxHeight,
             transition: "max-height 0.45s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
           className="overflow-hidden"

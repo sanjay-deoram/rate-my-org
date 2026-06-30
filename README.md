@@ -1,4 +1,5 @@
 # Rate My Org
+Link: https://rate-my-org.com/
 
 > Anonymous company reviews and interview experiences — no sign-in required.
 

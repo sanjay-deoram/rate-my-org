@@ -16,6 +16,7 @@ import { InterviewCard } from "@/components/interview-card";
 import { Pagination } from "@/components/ui/pagination";
 import { useCompaniesWithInterviews } from "@/hooks/use-companies-with-interviews";
 import { FilterDropdown } from "@/components/ui/filter-dropdown";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 import type { InterviewFeedItem } from "@/lib/api/interviews";
 
 const EXPERIENCE_OPTIONS = [
@@ -127,8 +128,9 @@ export function InterviewsFeed({
   return (
     <div>
       {/* Grey hero section */}
-      <div className="bg-surface-container-low w-full px-8 py-16 md:px-12 md:py-20">
-        <div className="mx-auto max-w-5xl">
+      <div className="bg-surface-container-low relative w-full overflow-hidden px-8 py-16 md:px-12 md:py-20">
+        <DecorativeShapes variant="archive" className="scale-x-[-1]" />
+        <div className="relative z-10 mx-auto max-w-5xl">
           <div className="mb-8 text-center">
             <p className="text-on-surface-variant mb-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
               Explore · {totalInterviews.toLocaleString()}+ Anonymous Interviews

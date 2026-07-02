@@ -1,6 +1,7 @@
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { CompaniesDirectory } from "@/components/companies-directory";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -13,8 +14,9 @@ export default function CompaniesPage() {
   return (
     <>
       <Nav />
-      <main className="min-h-screen pt-20">
-        <section className="mx-auto max-w-5xl px-8 py-12 md:px-12 md:py-24">
+      <main className="relative min-h-screen overflow-hidden pt-20">
+        <DecorativeShapes variant="directory" />
+        <section className="relative z-10 mx-auto max-w-5xl px-8 py-12 md:px-12 md:py-24">
           {/* Header */}
           <div className="mb-10 md:mb-12">
             <span className="text-on-surface-variant mb-3 block font-mono text-[10px] tracking-[0.2em] uppercase">

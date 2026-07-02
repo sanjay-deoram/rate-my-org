@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Flag, FileText, ShieldAlert } from "lucide-react";
 import { AdminLogoutButton } from "@/components/admin-logout-button";
 import { PendingCompaniesQueue } from "@/components/pending-companies-queue";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard — RateMyOrg",
@@ -28,7 +29,8 @@ const comingSoon = [
 
 export default function AdminPage() {
   return (
-    <div className="bg-background min-h-screen">
+    <div className="bg-background relative min-h-screen overflow-hidden">
+      <DecorativeShapes variant="admin" />
       {/* Top bar */}
       <header className="border-outline-variant/20 bg-surface-container-lowest sticky top-0 z-10 border-b">
         <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
@@ -44,7 +46,7 @@ export default function AdminPage() {
       </header>
 
       {/* Dashboard */}
-      <main className="mx-auto max-w-5xl px-6 py-16">
+      <main className="relative z-10 mx-auto max-w-5xl px-6 py-16">
         <div className="mb-12">
           <h1 className="text-3xl font-extrabold tracking-tighter">Dashboard</h1>
           <p className="text-on-surface-variant mt-2 text-sm">

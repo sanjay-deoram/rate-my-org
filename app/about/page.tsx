@@ -2,14 +2,16 @@ import Link from "next/link";
 import { X, CheckCircle } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 
 export default function AboutPage() {
   return (
     <>
       <Nav />
-      <main className="bg-background min-h-screen pt-20">
+      <main className="bg-background relative min-h-screen overflow-hidden pt-20">
+        <DecorativeShapes variant="about" />
         {/* Hero */}
-        <section className="relative flex min-h-[60vh] flex-col justify-center px-8 pt-32 pb-24 md:px-12">
+        <section className="relative z-10 flex min-h-[60vh] flex-col justify-center px-8 pt-32 pb-24 md:px-12">
           <div className="ml-[clamp(0rem,8vw,10rem)] max-w-4xl">
             <p className="mb-6 font-mono text-xs tracking-widest uppercase opacity-60">
               Authority: Absolute. Status: Operational.
@@ -25,7 +27,7 @@ export default function AboutPage() {
         </section>
 
         {/* The Difference */}
-        <section className="bg-background px-8 py-32 md:px-12">
+        <section className="bg-background relative z-10 px-8 py-32 md:px-12">
           <div className="mx-auto max-w-[1600px]">
             <div className="mb-20 ml-[clamp(0rem,8vw,10rem)]">
               <h2 className="mb-4 text-5xl font-bold tracking-tight">The Difference</h2>
@@ -120,7 +122,11 @@ export default function AboutPage() {
         </section>
 
         {/* Anonymity Protocol */}
-        <section className="bg-surface-container-low px-8 py-32 md:px-12">
+        <section className="bg-surface-container-low relative z-10 overflow-hidden px-8 py-32 md:px-12">
+          <div
+            aria-hidden
+            className="bg-token-lime/60 absolute right-10 bottom-10 hidden h-28 w-72 rotate-[4deg] rounded-[1rem] lg:block"
+          />
           <div className="mx-auto ml-[clamp(0rem,8vw,10rem)] max-w-[1600px]">
             <div className="max-w-3xl">
               <h2 className="mb-8 text-4xl font-bold tracking-tighter">Anonymity Protocol</h2>
@@ -149,7 +155,7 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-background px-8 py-48 text-center md:px-12">
+        <section className="bg-background relative z-10 px-8 py-48 text-center md:px-12">
           <div className="mx-auto max-w-3xl">
             <h2 className="mb-12 text-5xl font-black tracking-tighter md:text-7xl">
               Contribute to the Ledger.

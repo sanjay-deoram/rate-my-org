@@ -13,6 +13,7 @@ import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { getCompanyWithStats } from "@/lib/queries/orgs";
 import { OrgContent } from "@/components/org-content";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -41,9 +42,10 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
   return (
     <>
       <Nav />
-      <main className="pt-28 pb-24">
+      <main className="relative overflow-hidden pt-28 pb-24">
+        <DecorativeShapes variant="profile" />
         {/* Back button */}
-        <div className="mx-auto mb-8 max-w-7xl px-8 md:px-12">
+        <div className="relative z-10 mx-auto mb-8 max-w-7xl px-8 md:px-12">
           <Link
             href="/companies"
             className="text-on-surface-variant hover:text-foreground inline-flex items-center gap-2 text-sm font-medium transition-colors"
@@ -54,7 +56,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         </div>
 
         {/* Brand header */}
-        <section className="mx-auto mb-10 max-w-7xl px-8 md:mb-16 md:px-12">
+        <section className="relative z-10 mx-auto mb-10 max-w-7xl px-8 md:mb-16 md:px-12">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end md:gap-8">
             <div className="flex items-center gap-4 md:gap-8">
               <div className="bg-surface-container-lowest border-border/20 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-sm md:h-32 md:w-32">
@@ -102,7 +104,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         </section>
 
         {/* KPI grid */}
-        <section className="mx-auto mb-8 max-w-7xl px-8 md:px-12">
+        <section className="relative z-10 mx-auto mb-8 max-w-7xl px-8 md:px-12">
           <div className="grid grid-cols-3 gap-3 md:gap-8">
             <div className="bg-surface-container-low hover:bg-surface-container-highest flex flex-col justify-between rounded-xl p-4 transition-all duration-300 md:h-48 md:p-8">
               <span className="text-on-surface-variant font-mono text-[9px] tracking-widest uppercase md:text-xs">
@@ -152,7 +154,9 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
           </div>
         </section>
 
-        <OrgContent data={data} />
+        <div className="relative z-10">
+          <OrgContent data={data} />
+        </div>
       </main>
       <Footer />
     </>

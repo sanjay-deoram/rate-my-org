@@ -7,6 +7,7 @@ import { ReviewCard } from "@/components/review-card";
 import { Pagination } from "@/components/ui/pagination";
 import { useCompaniesWithReviews } from "@/hooks/use-companies-with-reviews";
 import { FilterDropdown } from "@/components/ui/filter-dropdown";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 import type { ReviewFeedItem } from "@/lib/api/reviews";
 
 const RATING_OPTIONS = [
@@ -106,8 +107,9 @@ export function ReviewsFeed({
   return (
     <div>
       {/* Grey hero section */}
-      <div className="bg-surface-container-low w-full px-8 py-16 md:px-12 md:py-20">
-        <div className="mx-auto max-w-5xl">
+      <div className="bg-surface-container-low relative w-full overflow-hidden px-8 py-16 md:px-12 md:py-20">
+        <DecorativeShapes variant="archive" />
+        <div className="relative z-10 mx-auto max-w-5xl">
           <div className="mb-8 text-center">
             <p className="text-on-surface-variant mb-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
               Explore · {totalReviews.toLocaleString()}+ Anonymous Reviews

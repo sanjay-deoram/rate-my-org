@@ -13,7 +13,7 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
     <button
       type="button"
       onClick={() => router.push(`/orgs/${company.slug}`)}
-      className="group relative flex w-full items-center gap-5 overflow-hidden rounded-xl px-6 py-5 text-left"
+      className="group relative flex w-full items-center gap-4 overflow-hidden rounded-xl px-4 py-4 text-left"
     >
       {/* Primary wipe background */}
       <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
@@ -23,10 +23,10 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
           <img
             src={company.logoUrl}
             alt=""
-            className="bg-surface-container h-14 w-14 rounded-lg object-contain p-1 transition-colors duration-300 group-hover:bg-white/10"
+            className="bg-surface-container h-12 w-12 rounded-lg object-contain p-1 transition-colors duration-300 group-hover:bg-white/10"
           />
         ) : (
-          <div className="bg-surface-container text-on-surface-variant group-hover:text-primary-foreground flex h-14 w-14 items-center justify-center rounded-lg text-xl font-black transition-colors duration-300 group-hover:bg-white/10">
+          <div className="bg-surface-container text-on-surface-variant group-hover:text-primary-foreground flex h-12 w-12 items-center justify-center rounded-lg text-lg font-black transition-colors duration-300 group-hover:bg-white/10">
             {company.name[0]}
           </div>
         )}
@@ -36,12 +36,12 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
         <h3 className="text-foreground group-hover:text-primary-foreground truncate text-base font-bold transition-colors duration-300">
           {company.name}
         </h3>
-        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[11px] tracking-wide transition-colors duration-300">
+        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[11px] transition-colors duration-300">
           {company.slug}
         </p>
       </div>
 
-      <span className="text-on-surface-variant group-hover:text-primary-foreground relative shrink-0 text-sm font-medium transition-colors duration-300">
+      <span className="text-on-surface-variant group-hover:text-primary-foreground relative shrink-0 text-sm font-bold transition-colors duration-300">
         View →
       </span>
     </button>
@@ -51,7 +51,7 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
 function LoadingSkeleton() {
   return (
     <div className="flex items-center gap-5 py-5">
-      <div className="bg-surface-container-high h-14 w-14 animate-pulse rounded-lg" />
+      <div className="bg-surface-container-high h-12 w-12 animate-pulse rounded-lg" />
       <div className="flex-1 space-y-2">
         <div className="bg-surface-container-high h-4 w-40 animate-pulse rounded" />
         <div className="bg-surface-container-high h-3 w-24 animate-pulse rounded" />
@@ -113,7 +113,7 @@ export function HomeSearchBar() {
   return (
     <div className="relative">
       {/* Search bar */}
-      <div className="bg-surface-container-lowest border-border/20 mb-0 flex items-center overflow-visible rounded-2xl border shadow-[0_20px_60px_rgba(27,27,27,0.08)]">
+      <div className="border-border bg-surface-container-lowest mb-0 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
         <div className="flex flex-1 items-center gap-3 px-5 py-3">
           <Search size={18} className="text-on-surface-variant shrink-0" />
           <input
@@ -121,7 +121,7 @@ export function HomeSearchBar() {
             value={query}
             onChange={handleChange}
             placeholder="Search for a company, role, or culture tag..."
-            className="placeholder:text-on-surface-variant/40 flex-1 bg-transparent py-2 text-sm font-medium outline-none"
+            className="placeholder:text-on-surface-variant/45 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
           />
           {query && (
             <button
@@ -136,7 +136,7 @@ export function HomeSearchBar() {
         <div className="flex shrink-0 items-center pr-3">
           <button
             type="button"
-            className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-xl transition-all hover:opacity-80 active:scale-[0.97]"
+            className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-full transition-all hover:opacity-80 active:scale-[0.97]"
           >
             <ArrowRight size={18} />
           </button>
@@ -145,7 +145,7 @@ export function HomeSearchBar() {
 
       {/* Inline results */}
       {isSearching && (
-        <div className="absolute right-0 left-0 z-50 mt-3 rounded-2xl bg-white p-3 shadow-sm">
+        <div className="border-border absolute right-0 left-0 z-50 mt-3 rounded-[1.25rem] border bg-white p-3 shadow-xl">
           <div className="divide-outline-variant/20 max-h-[360px] divide-y overflow-y-auto">
             {isLoading && Array.from({ length: 4 }).map((_, i) => <LoadingSkeleton key={i} />)}
 
@@ -157,7 +157,7 @@ export function HomeSearchBar() {
                 </p>
                 <Link
                   href="/orgs/add"
-                  className="bg-primary text-primary-foreground mt-5 rounded-lg px-4 py-2 text-sm font-semibold transition-opacity hover:opacity-80"
+                  className="bg-primary text-primary-foreground mt-5 rounded-full px-4 py-2 text-sm font-bold transition-opacity hover:opacity-80"
                 >
                   Add organization
                 </Link>

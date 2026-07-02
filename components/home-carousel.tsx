@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import { ArrowRight, Star } from "lucide-react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { TopRatedCompany } from "@/types/homepage";
 
@@ -52,10 +53,7 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
       <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
         <CarouselContent>
           {items.map((company) => (
-            <CarouselItem
-              className="basis-[82%] sm:basis-[55%] md:basis-1/3 lg:basis-1/4"
-              key={company._key}
-            >
+            <CarouselItem className="basis-[84%] sm:basis-[55%] md:basis-1/3" key={company._key}>
               <CarouselCard company={company} />
             </CarouselItem>
           ))}
@@ -66,9 +64,9 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
 }
 
 function ratingColor(avg: string | null) {
-  if (!avg) return "text-tertiary-fixed-dim bg-tertiary-fixed-dim/15";
+  if (!avg) return "text-token-green-deep bg-token-lime/60";
   return parseFloat(avg) >= 2.5
-    ? "text-tertiary-fixed-dim bg-tertiary-fixed-dim/15"
+    ? "text-token-green-deep bg-token-lime/60"
     : "text-destructive bg-destructive/10";
 }
 
@@ -78,40 +76,44 @@ function CarouselCard({ company }: { company: TopRatedCompany }) {
   const logoSrc = logoKey && cdnBase ? `${cdnBase}/${logoKey}` : null;
 
   return (
-    <div className="bg-surface-container-lowest border-surface-container-highest flex h-full flex-col gap-3 rounded-xl border p-6">
+    <div className="border-border bg-surface-container-lowest soft-shadow flex h-full flex-col gap-5 rounded-[1.25rem] border p-5">
       <div className="flex items-center gap-3">
-        <div className="bg-surface-container flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-lg">
+        <div className="bg-surface-container flex h-12 w-12 shrink-0 items-center justify-center overflow-hidden rounded-xl">
           {logoSrc ? (
             <img src={logoSrc} alt={`${name} logo`} className="h-full w-full object-contain" />
           ) : (
-            <span className="text-primary text-lg leading-none font-bold">
+            <span className="text-primary text-lg leading-none font-black">
               {name.charAt(0).toUpperCase()}
             </span>
           )}
         </div>
         <div className="min-w-0">
-          <p className="text-primary truncate leading-tight font-bold">{name}</p>
+          <p className="text-primary truncate leading-tight font-black">{name}</p>
           {industry && <p className="text-on-surface-variant truncate text-xs">{industry}</p>}
         </div>
         {avgRating && (
           <div
             className={`ml-auto flex shrink-0 items-center gap-1 rounded-full px-2 py-0.5 text-xs font-semibold ${ratingColor(avgRating)}`}
           >
+            <Star size={12} fill="currentColor" />
             <span>{parseFloat(avgRating).toFixed(1)}</span>
           </div>
         )}
       </div>
 
-      <p className="text-on-surface-variant line-clamp-2 flex-1 text-sm italic">
+      <p className="line-clamp-3 flex-1 text-lg leading-7 font-black">
         {latestHeadline ?? "No reviews yet"}
       </p>
 
-      <div className="flex items-center justify-between pt-1">
-        <span className="text-on-surface-variant text-xs">
+      <div className="border-border flex items-center justify-between border-t pt-4">
+        <span className="text-on-surface-variant text-xs font-semibold">
           {reviewCount} {reviewCount === 1 ? "review" : "reviews"}
         </span>
-        <Link href={`/orgs/${slug}`} className="text-primary text-xs font-bold hover:underline">
-          View profile →
+        <Link
+          href={`/orgs/${slug}`}
+          className="text-primary inline-flex items-center gap-1 text-xs font-black hover:underline"
+        >
+          View <ArrowRight size={13} />
         </Link>
       </div>
     </div>

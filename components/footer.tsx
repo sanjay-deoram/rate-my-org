@@ -1,25 +1,28 @@
 import Link from "next/link";
 
 const footerLinks = [
-  { label: "Privacy Policy", href: "/privacy" },
-  { label: "Terms of Service", href: "/terms" },
-  { label: "Community Guidelines", href: "/guidelines" },
-  { label: "Company Index", href: "/orgs" },
-  { label: "Support", href: "/support" },
+  { label: "Companies", href: "/companies" },
+  { label: "Reviews", href: "/reviews" },
+  { label: "Interviews", href: "/interviews" },
+  { label: "About", href: "/about" },
 ];
 
 export function Footer() {
   return (
-    <footer className="bg-surface-container-low border-border/20 mt-auto border-t py-16">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-8 md:grid-cols-2">
+    <footer className="border-border bg-surface-container-low mt-auto border-t py-14">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-10 px-5 md:grid-cols-2 md:px-8">
         <div>
-          <div className="mb-6 text-lg font-black tracking-tighter">RateMyOrg</div>
+          <div className="mb-5 text-lg font-black">RateMyOrg</div>
+          <p className="text-on-surface-variant mb-6 max-w-sm text-sm leading-6">
+            Anonymous workplace reviews and interview reports for candidates who want the real story
+            before they apply.
+          </p>
           <div className="flex flex-wrap gap-x-8 gap-y-3">
             {footerLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-on-surface-variant hover:text-foreground text-[10px] font-medium tracking-widest uppercase transition-colors"
+                className="text-on-surface-variant hover:text-foreground text-sm font-bold transition-colors"
               >
                 {link.label}
               </Link>
@@ -28,8 +31,8 @@ export function Footer() {
         </div>
 
         <div className="flex items-center md:justify-end">
-          <p className="text-on-surface-variant font-mono text-[10px] tracking-widest uppercase">
-            © 2025 RateMyOrg. The Digital Curator.
+          <p className="text-on-surface-variant font-mono text-xs">
+            © 2026 RateMyOrg. Anonymous by default.
           </p>
         </div>
       </div>

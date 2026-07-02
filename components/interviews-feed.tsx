@@ -128,14 +128,14 @@ export function InterviewsFeed({
   return (
     <div>
       {/* Grey hero section */}
-      <div className="bg-surface-container-low relative w-full overflow-hidden px-8 py-16 md:px-12 md:py-20">
+      <div className="bg-surface-container-low relative w-full overflow-hidden px-5 py-14 md:px-12 md:py-20">
         <DecorativeShapes variant="archive" className="scale-x-[-1]" />
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="mb-8 text-center">
             <p className="text-on-surface-variant mb-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
               Explore · {totalInterviews.toLocaleString()}+ Anonymous Interviews
             </p>
-            <h1 className="text-foreground text-4xl font-black tracking-tighter md:text-6xl">
+            <h1 className="text-foreground text-3xl font-black sm:text-4xl md:text-6xl">
               Search the archive
             </h1>
           </div>
@@ -175,7 +175,7 @@ export function InterviewsFeed({
 
           {/* Trending company pills */}
           {trendingCompanies.length > 0 && (
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               <span className="text-on-surface-variant font-mono text-[10px] font-bold tracking-widest uppercase">
                 Trending
               </span>
@@ -199,7 +199,7 @@ export function InterviewsFeed({
       </div>
 
       {/* Filters + cards */}
-      <div className="mx-auto max-w-6xl px-8 py-8 md:px-12">
+      <div className="mx-auto max-w-6xl px-5 py-8 md:px-12">
         {/* Filter row */}
         <div className="mb-6 flex flex-wrap items-center gap-2">
           {companiesLoading ? (

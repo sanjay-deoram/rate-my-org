@@ -236,9 +236,21 @@
     @apply bg-background text-foreground;
     -webkit-font-smoothing: antialiased;
     text-rendering: geometricPrecision;
+    overflow-x: hidden;
   }
   html {
     @apply font-sans;
+    overflow-x: hidden;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+    overflow-wrap: anywhere;
+  }
+  p,
+  li {
+    text-wrap: pretty;
   }
   ::selection {
     background-color: var(--token-lime);
@@ -247,6 +259,11 @@
 }
 
 @layer utilities {
+  .break-anywhere {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
   .tracking-tight,
   .tracking-tighter,
   .-tracking-tight,

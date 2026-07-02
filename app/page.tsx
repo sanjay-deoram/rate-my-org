@@ -56,7 +56,7 @@ export default async function HomePage() {
               <p className="text-on-surface-variant mb-4 text-xs font-semibold">
                 Anonymous workplace reviews, interviews, and company signals
               </p>
-              <h1 className="max-w-4xl text-5xl leading-[0.95] font-black md:text-7xl lg:text-8xl">
+              <h1 className="max-w-4xl text-4xl leading-[0.98] font-black sm:text-5xl md:text-7xl lg:text-8xl">
                 Know the culture before the offer lands
               </h1>
               <p className="text-on-surface-variant mt-6 max-w-2xl text-base leading-7 md:text-lg">
@@ -93,7 +93,7 @@ export default async function HomePage() {
           <div className="mx-auto max-w-7xl px-5 md:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <p className="text-on-surface-variant text-xs font-bold">Workplace examples</p>
-              <h2 className="mt-3 text-4xl leading-tight font-black md:text-6xl">
+              <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
                 Each profile shows what people actually experience
               </h2>
               <p className="text-on-surface-variant mt-4 leading-7">
@@ -111,7 +111,7 @@ export default async function HomePage() {
           <div className="mx-auto grid max-w-6xl gap-10 px-5 md:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <div>
               <p className="text-on-surface-variant text-xs font-bold">Anonymous by design</p>
-              <h2 className="mt-3 text-4xl leading-tight font-black md:text-6xl">
+              <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
                 Useful signal without accounts, followers, or corporate polish
               </h2>
               <p className="text-on-surface-variant mt-5 max-w-xl leading-7">
@@ -131,7 +131,7 @@ export default async function HomePage() {
         <section className="px-5 py-20 md:px-8 md:py-28">
           <div className="bg-primary text-primary-foreground mx-auto max-w-5xl rounded-[1.75rem] px-6 py-14 text-center md:px-12">
             <p className="text-xs font-bold text-white/55">Contribute to the index</p>
-            <h2 className="mx-auto mt-3 max-w-3xl text-4xl leading-tight font-black md:text-6xl">
+            <h2 className="mx-auto mt-3 max-w-3xl text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
               Help the next candidate read the room before they join
             </h2>
             <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
@@ -387,7 +387,7 @@ function SignalMap() {
 
   return (
     <div className="space-y-4">
-      <div className="text-token-blue flex items-center justify-between">
+      <div className="text-token-blue flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div className="flex items-center gap-2 font-black">
           <BadgeCheck size={18} />
           With RateMyOrg
@@ -413,7 +413,7 @@ function SignalMap() {
           </div>
         ))}
       </div>
-      <div className="text-destructive flex items-center gap-2">
+      <div className="text-destructive flex items-start gap-2">
         <BriefcaseBusiness size={16} />
         <span className="text-sm font-black">Without shared workplace signal</span>
       </div>

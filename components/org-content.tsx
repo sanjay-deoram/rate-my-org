@@ -179,7 +179,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-8 md:px-12">
+    <div className="mx-auto max-w-7xl px-5 md:px-12">
       <div className="border-border bg-surface-container-lowest mb-6 flex items-center rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
         <Search size={18} className="text-on-surface-variant pointer-events-none shrink-0" />
         <input
@@ -199,7 +199,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         )}
       </div>
 
-      <div className="border-outline-variant/15 mb-8 flex gap-10 border-b">
+      <div className="scrollbar-design border-outline-variant/15 mb-8 flex gap-8 overflow-x-auto border-b">
         {[
           { value: "reviews" as Tab, label: "Reviews", count: reviews.length },
           { value: "both" as Tab, label: "Both", count: reviews.length + interviews.length },
@@ -208,7 +208,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
           <button
             key={value}
             onClick={() => handleSetTab(value)}
-            className={`-mb-px flex flex-col items-start border-b-2 pb-4 transition-all ${
+            className={`-mb-px flex shrink-0 flex-col items-start border-b-2 pb-4 transition-all ${
               tab === value ? "border-foreground" : "border-transparent"
             }`}
           >

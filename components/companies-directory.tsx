@@ -64,7 +64,7 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
         <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[10px] tracking-wide transition-colors duration-300 md:text-[11px]">
           {company.slug}
         </p>
-        <div className="mt-1.5 flex items-center gap-1.5">
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           <StatPill label="Rating" variant="amber">
             <Star size={9} className="fill-current" />
             {company.avgRating ?? "—"}
@@ -196,7 +196,7 @@ export function CompaniesDirectory() {
       </div>
 
       <div
-        className={`divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 pt-2 shadow-sm transition-opacity duration-200 ${isSearchTransitioning ? "opacity-40" : "opacity-100"}`}
+        className={`divide-outline-variant/20 divide-y rounded-2xl bg-white px-3 pt-2 shadow-sm transition-opacity duration-200 sm:px-6 ${isSearchTransitioning ? "opacity-40" : "opacity-100"}`}
       >
         {isInitialLoad && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
 

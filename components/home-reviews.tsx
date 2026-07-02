@@ -96,7 +96,7 @@ export function HomeReviews({ reviews }: { reviews: RecentReviewEntry[] }) {
 
   return (
     <section className="bg-background relative py-20 md:py-28">
-      <div className="mx-auto max-w-7xl px-8 md:px-12">
+      <div className="mx-auto max-w-7xl px-5 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -105,7 +105,7 @@ export function HomeReviews({ reviews }: { reviews: RecentReviewEntry[] }) {
           className="mx-auto flex max-w-[620px] flex-col items-center justify-center"
         >
           <p className="text-on-surface-variant text-xs font-bold">From the community</p>
-          <h2 className="mt-3 text-center text-4xl leading-tight font-black md:text-6xl">
+          <h2 className="mt-3 text-center text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
             Real workplace notes from people who have been inside
           </h2>
           <p className="text-on-surface-variant mt-5 text-center leading-relaxed">

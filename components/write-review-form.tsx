@@ -405,9 +405,9 @@ export function WriteReviewForm() {
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitReview.isPending}
-              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
+              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-8 py-4 font-bold transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
             >
-              {submitReview.isPending ? "Submitting..." : "Submit Review"}
+              {submitReview.isPending ? "Submitting…" : "Submit Review"}
             </button>
           )}
         </form.Subscribe>
@@ -422,7 +422,7 @@ export function WriteReviewForm() {
 export function IntegritySidebar() {
   return (
     <aside className="h-fit lg:sticky lg:top-28 lg:col-span-4">
-      <div className="bg-surface-container-low space-y-8 rounded-xl p-10">
+      <div className="bg-surface-container-low space-y-8 rounded-xl p-6 sm:p-8 lg:p-10">
         <div className="space-y-2">
           <h3 className="text-outline font-mono text-sm tracking-widest uppercase">
             Archive Standards
@@ -434,7 +434,7 @@ export function IntegritySidebar() {
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <ShieldCheck size={18} className="text-primary" />
-              <h4 className="text-sm font-bold tracking-tight uppercase">Verified Sentiment</h4>
+              <h4 className="break-anywhere text-sm font-bold uppercase">Verified Sentiment</h4>
             </div>
             <p className="text-on-surface-variant text-sm leading-relaxed">
               Every entry is cross-referenced with institutional data to ensure the archive
@@ -445,7 +445,7 @@ export function IntegritySidebar() {
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <Lock size={18} className="text-primary" />
-              <h4 className="text-sm font-bold tracking-tight uppercase">Encrypted Identity</h4>
+              <h4 className="break-anywhere text-sm font-bold uppercase">Encrypted Identity</h4>
             </div>
             <p className="text-on-surface-variant text-sm leading-relaxed">
               Your data is hashed at the point of entry. Not even the curators can trace the origin
@@ -456,7 +456,7 @@ export function IntegritySidebar() {
           <div className="space-y-3">
             <div className="flex items-center gap-3">
               <Globe size={18} className="text-primary" />
-              <h4 className="text-sm font-bold tracking-tight uppercase">Community Impact</h4>
+              <h4 className="break-anywhere text-sm font-bold uppercase">Community Impact</h4>
             </div>
             <p className="text-on-surface-variant text-sm leading-relaxed">
               Transparent organizations yield better results. Your feedback fuels the macro-shift in
@@ -480,7 +480,7 @@ export function IntegritySidebar() {
         </div>
       </div>
 
-      <div className="bg-primary-container text-primary-foreground group relative mt-8 overflow-hidden rounded-xl p-10">
+      <div className="bg-primary-container text-primary-foreground group relative mt-8 overflow-hidden rounded-xl p-6 sm:p-8 lg:p-10">
         <div className="relative z-10 space-y-4">
           <h3 className="text-lg leading-tight font-bold">Need corporate assistance?</h3>
           <p className="text-on-primary-container text-sm">

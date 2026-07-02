@@ -15,11 +15,11 @@ export default function SubmitInterviewPage() {
       <Nav />
       <main className="relative min-h-screen overflow-hidden">
         <DecorativeShapes variant="form" className="scale-x-[-1]" />
-        <div className="relative z-10 mx-auto max-w-7xl px-8 pt-32 pb-24 md:px-12">
-          <div className="grid grid-cols-1 gap-16 lg:grid-cols-12">
-            <div className="space-y-12 lg:col-span-8">
+        <div className="relative z-10 mx-auto max-w-7xl px-5 pt-28 pb-20 md:px-12 md:pt-32 md:pb-24">
+          <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
+            <div className="min-w-0 space-y-12 lg:col-span-8">
               <header className="space-y-4">
-                <h1 className="text-foreground mb-4 text-5xl font-extrabold tracking-tighter">
+                <h1 className="text-foreground mb-4 text-4xl font-extrabold sm:text-5xl">
                   Document Your
                   <br />
                   Interview Experience

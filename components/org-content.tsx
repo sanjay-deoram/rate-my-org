@@ -180,24 +180,21 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
   return (
     <div className="mx-auto max-w-7xl px-8 md:px-12">
-      <div className="relative mb-6">
-        <Search
-          size={16}
-          className="text-on-surface-variant pointer-events-none absolute top-1/2 left-4 -translate-y-1/2"
-        />
+      <div className="border-border bg-surface-container-lowest mb-6 flex items-center rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
+        <Search size={18} className="text-on-surface-variant pointer-events-none shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by job title, role, or department…"
-          className="border-outline-variant/30 bg-surface-container-lowest placeholder:text-on-surface-variant/50 focus:border-primary w-full rounded-xl border py-3.5 pr-10 pl-11 text-sm transition-all outline-none"
+          className="placeholder:text-on-surface-variant/45 ml-3 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
         />
         {query && (
           <button
             onClick={() => setQuery("")}
-            className="text-on-surface-variant hover:text-foreground absolute top-1/2 right-3.5 -translate-y-1/2 transition-colors"
+            className="text-on-surface-variant hover:text-foreground shrink-0 transition-colors"
           >
-            <X size={15} />
+            <X size={16} />
           </button>
         )}
       </div>

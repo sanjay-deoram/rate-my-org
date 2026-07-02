@@ -154,7 +154,7 @@ export function Nav() {
                 href="/reviews/write"
                 role="menuitem"
                 onClick={() => setMenuOpen(false)}
-                className="bg-primary text-primary-foreground block rounded-xl px-4 py-3.5 text-center text-base font-bold shadow-md transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
+                className="bg-token-blue block rounded-xl px-4 py-3.5 text-center text-base font-bold text-white shadow-md transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
               >
                 Post Review
               </Link>

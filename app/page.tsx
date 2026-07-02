@@ -69,7 +69,7 @@ export default async function HomePage() {
               <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/reviews/write"
-                  className="bg-primary text-primary-foreground inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-bold shadow-lg transition hover:opacity-90 active:scale-[0.98]"
+                  className="bg-token-blue inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-bold text-white shadow-lg transition-opacity hover:opacity-90 active:scale-[0.98]"
                 >
                   Write a review
                   <ArrowRight size={16} />

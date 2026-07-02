@@ -165,7 +165,7 @@ export default function AboutPage() {
             <div className="flex flex-col justify-center gap-6 sm:flex-row">
               <Link
                 href="/reviews/write"
-                className="from-primary to-primary-container rounded-lg bg-gradient-to-b px-6 py-4 font-bold text-white transition-transform active:scale-95 sm:px-10 sm:py-5"
+                className="bg-token-blue rounded-lg px-6 py-4 font-bold text-white transition-opacity hover:opacity-90 active:scale-95 sm:px-10 sm:py-5"
               >
                 Submit a Review
               </Link>

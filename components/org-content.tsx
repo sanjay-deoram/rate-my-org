@@ -16,14 +16,14 @@ function ShareFab({ company }: { company: OrgProfile["company"] }) {
     <div className="fixed right-8 bottom-8 z-50 flex flex-col-reverse items-end gap-2.5">
       <Link
         href={`/reviews/write?company=${company.slug}`}
-        className="bg-primary text-primary-foreground flex items-center gap-2.5 rounded-full px-5 py-3.5 text-sm font-semibold shadow-xl transition-all duration-200 hover:scale-105 hover:shadow-2xl"
+        className="bg-token-blue flex items-center gap-2.5 rounded-full px-5 py-3.5 text-sm font-bold text-white shadow-xl transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
       >
         <MessageSquare size={15} />
         Write a Review
       </Link>
       <Link
         href={`/interviews/submit?company=${company.slug}`}
-        className="bg-background text-foreground border-border/40 hover:bg-surface-container-low flex items-center gap-2.5 rounded-full border py-2.5 pr-5 pl-4 text-sm font-semibold shadow-lg transition-all hover:shadow-xl"
+        className="border-border bg-card hover:border-primary text-foreground flex items-center gap-2.5 rounded-full border py-2.5 pr-5 pl-4 text-sm font-bold shadow-lg transition-colors active:scale-[0.98]"
       >
         <BookOpen size={15} />
         Submit Interview

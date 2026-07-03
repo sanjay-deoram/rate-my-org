@@ -13,7 +13,7 @@ export type InterviewCardData = {
   offerReceived: string;
   createdAt: Date | string;
 };
-import { EXPERIENCE_BADGE } from "@/constants/org-content";
+import { EXPERIENCE_BADGE, OFFER_BADGE } from "@/constants/org-content";
 import { useExpandable } from "@/hooks/use-expandable";
 
 const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
@@ -61,14 +61,33 @@ export function InterviewCard({
 }) {
   const { expanded, setExpanded, overflows, maxHeight, bodyRef, onTransitionEnd } = useExpandable();
 
+  const difficultyBadge = (
+    <div className="bg-surface-container-high rounded px-2 py-0.5">
+      <span className="font-mono text-xs font-bold tracking-widest uppercase">
+        {difficultyLabel(interview.difficulty)}
+      </span>
+    </div>
+  );
+
+  const offerBadge = (
+    <div
+      className={`flex items-center gap-2 rounded-full px-3 py-1 ${OFFER_BADGE[interview.offerReceived] ?? "bg-surface-container-high text-on-surface-variant"}`}
+    >
+      <BadgeCheck size={14} className="fill-current" />
+      <span className="text-[10px] font-bold tracking-wider uppercase">
+        Offer: {interview.offerReceived}
+      </span>
+    </div>
+  );
+
   return (
-    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-10 shadow-lg ring-1 shadow-black/[0.06]">
-      <div className="mb-6 flex items-start justify-between">
-        <div className="flex items-center gap-3">
+    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-5 shadow-lg ring-1 shadow-black/[0.06] sm:p-8 lg:p-10">
+      <div className="mb-4 flex items-start justify-between gap-3 sm:mb-6">
+        <div className="flex min-w-0 items-start gap-3">
           {companyLogoKey !== undefined && (
             <CompanyLogo logoKey={companyLogoKey} name={companyName} />
           )}
-          <div>
+          <div className="min-w-0">
             {companyName && companySlug ? (
               <Link
                 href={`/orgs/${companySlug}`}
@@ -81,7 +100,7 @@ export function InterviewCard({
                 Interview
               </span>
             ) : null}
-            <h3 className="mb-1 text-xl font-bold">{interview.roleTitle}</h3>
+            <h3 className="mb-1 text-lg font-bold sm:text-xl">{interview.roleTitle}</h3>
             <div className="mt-1 flex flex-wrap items-center gap-1.5">
               <span
                 className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${EXPERIENCE_BADGE[interview.overallExperience] ?? "bg-surface-container-high text-on-surface-variant"}`}
@@ -95,19 +114,15 @@ export function InterviewCard({
             </div>
           </div>
         </div>
-        <div className="ml-4 flex shrink-0 flex-col items-end gap-1">
-          <div className="bg-surface-container-high rounded px-3 py-1">
-            <span className="font-mono text-xs font-bold tracking-widest uppercase">
-              {difficultyLabel(interview.difficulty)}
-            </span>
-          </div>
-          <div className="flex items-center gap-2 rounded-full bg-[#d1fadf] px-3 py-1 text-[#00632d]">
-            <BadgeCheck size={14} className="fill-current" />
-            <span className="text-[10px] font-bold tracking-wider uppercase">
-              Offer: {interview.offerReceived}
-            </span>
-          </div>
+        <div className="ml-4 hidden shrink-0 flex-col items-end gap-1 sm:flex">
+          {difficultyBadge}
+          {offerBadge}
         </div>
+      </div>
+
+      <div className="mb-6 flex flex-wrap items-center gap-2 sm:hidden">
+        {difficultyBadge}
+        {offerBadge}
       </div>
 
       <div className="relative">

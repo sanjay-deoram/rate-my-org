@@ -63,13 +63,13 @@ export function ReviewCard({
   const { expanded, setExpanded, overflows, maxHeight, bodyRef, onTransitionEnd } = useExpandable();
 
   return (
-    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-10 shadow-lg ring-1 shadow-black/[0.06]">
-      <div className="mb-6 flex items-start justify-between gap-4">
-        <div className="flex items-center gap-3">
+    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-5 shadow-lg ring-1 shadow-black/[0.06] sm:p-8 lg:p-10">
+      <div className="mb-6 flex items-start justify-between gap-3">
+        <div className="flex min-w-0 items-start gap-3">
           {companyLogoKey !== undefined && (
             <CompanyLogo logoKey={companyLogoKey} name={companyName} />
           )}
-          <div>
+          <div className="min-w-0">
             {companyName && companySlug ? (
               <Link
                 href={`/orgs/${companySlug}`}
@@ -78,7 +78,7 @@ export function ReviewCard({
                 {companyName}
               </Link>
             ) : null}
-            <h3 className="text-xl leading-tight font-bold">{review.jobTitle}</h3>
+            <h3 className="text-lg leading-tight font-bold sm:text-xl">{review.jobTitle}</h3>
             <p className="text-on-surface-variant/70 mt-1 font-mono text-[10px] tracking-widest uppercase">
               {showKind && (
                 <>
@@ -92,7 +92,7 @@ export function ReviewCard({
             </p>
           </div>
         </div>
-        <div className="bg-primary text-primary-foreground ml-4 flex shrink-0 items-center rounded px-3 py-1">
+        <div className="bg-primary text-primary-foreground ml-2 flex shrink-0 items-center rounded px-2.5 py-1 sm:ml-4 sm:px-3">
           <span className="text-sm font-bold">{review.overallRating.toFixed(1)}</span>
         </div>
       </div>
@@ -107,7 +107,7 @@ export function ReviewCard({
           }}
           className="overflow-hidden"
         >
-          <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
             <div>
               <h4 className="mb-3 flex items-center gap-2 text-xs font-black tracking-widest uppercase">
                 <PlusCircle size={16} className="text-tertiary-fixed-dim" /> Pros

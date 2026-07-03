@@ -384,7 +384,7 @@ export function SubmitInterviewForm() {
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitInterview.isPending}
-              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-8 py-4 font-bold transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
+              className="bg-token-blue w-full rounded-xl px-8 py-4 font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
             >
               {submitInterview.isPending ? "Submitting…" : "Submit Interview"}
             </button>

@@ -1,6 +1,6 @@
 export function EmptyState({ query }: { query: string }) {
   return (
-    <div className="py-20 text-center">
+    <div className="py-12 text-center sm:py-20">
       <p className="text-on-surface-variant text-sm">
         {query ? `No results for "${query}"` : "Nothing here yet. Be the first to share!"}
       </p>

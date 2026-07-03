@@ -74,7 +74,7 @@ function SegBtn({
   return (
     <button
       {...props}
-      className={`flex max-w-[72vw] shrink-0 items-center gap-1.5 px-4 py-2.5 text-xs font-medium whitespace-nowrap transition-colors sm:max-w-none ${
+      className={`flex max-w-[72vw] shrink-0 items-center gap-1.5 px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:max-w-none sm:px-4 sm:py-2.5 ${
         first ? "rounded-l-xl" : ""
       } ${last ? "rounded-r-xl" : ""} ${
         active ? "text-foreground" : "text-on-surface-variant hover:text-foreground"
@@ -126,7 +126,7 @@ export function OrgFilterBar({
   const showInterviewFilters = tab !== "reviews";
 
   return (
-    <div className="mb-8 flex flex-wrap items-center gap-3">
+    <div className="mb-5 flex flex-wrap items-center gap-3 sm:mb-8">
       <div className="scrollbar-design max-w-full overflow-x-auto pb-1">
         <div className="border-outline-variant/25 divide-outline-variant/20 bg-surface-container-lowest flex w-max min-w-full items-center divide-x overflow-hidden rounded-xl border shadow-sm sm:min-w-0">
           {/* Sort */}

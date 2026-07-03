@@ -13,17 +13,17 @@ import { OrgFilterBar } from "@/components/org-filter-bar";
 
 function ShareFab({ company }: { company: OrgProfile["company"] }) {
   return (
-    <div className="fixed right-8 bottom-8 z-50 flex flex-col-reverse items-end gap-2.5">
+    <div className="fixed right-4 bottom-4 z-50 flex flex-col-reverse items-end gap-2 sm:right-8 sm:bottom-8 sm:gap-2.5">
       <Link
         href={`/reviews/write?company=${company.slug}`}
-        className="bg-token-blue flex items-center gap-2.5 rounded-full px-5 py-3.5 text-sm font-bold text-white shadow-xl transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
+        className="bg-token-blue flex items-center gap-2.5 rounded-full px-4 py-3 text-sm font-bold text-white shadow-xl transition-opacity duration-200 hover:opacity-90 active:scale-[0.98] sm:px-5 sm:py-3.5"
       >
         <MessageSquare size={15} />
         Write a Review
       </Link>
       <Link
         href={`/interviews/submit?company=${company.slug}`}
-        className="border-border bg-card hover:border-primary text-foreground flex items-center gap-2.5 rounded-full border py-2.5 pr-5 pl-4 text-sm font-bold shadow-lg transition-colors active:scale-[0.98]"
+        className="border-border bg-card hover:border-primary text-foreground flex items-center gap-2.5 rounded-full border py-2 pr-4 pl-3.5 text-sm font-bold shadow-lg transition-colors active:scale-[0.98] sm:py-2.5 sm:pr-5 sm:pl-4"
       >
         <BookOpen size={15} />
         Submit Interview
@@ -147,7 +147,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     if (tab === "reviews") {
       if (filteredReviews.length === 0) return <EmptyState query={query} />;
       return (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {filteredReviews.map((r) => (
             <ReviewCard key={r.id} review={r} />
           ))}
@@ -157,7 +157,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     if (tab === "interviews") {
       if (filteredInterviews.length === 0) return <EmptyState query={query} />;
       return (
-        <div className="space-y-4">
+        <div className="space-y-3 sm:space-y-4">
           {filteredInterviews.map((i) => (
             <InterviewCard key={i.id} interview={i} />
           ))}
@@ -166,7 +166,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     }
     if (bothItems.length === 0) return <EmptyState query={query} />;
     return (
-      <div className="space-y-4">
+      <div className="space-y-3 sm:space-y-4">
         {bothItems.map((item) =>
           item._kind === "review" ? (
             <ReviewCard key={`r-${item.id}`} review={item} showKind />
@@ -180,7 +180,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
   return (
     <div className="mx-auto max-w-7xl px-5 md:px-12">
-      <div className="border-border bg-surface-container-lowest mb-6 flex items-center rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
+      <div className="border-border bg-surface-container-lowest mb-4 flex items-center rounded-full border px-4 py-2.5 shadow-[0_20px_60px_rgba(5,8,7,0.08)] sm:mb-6 sm:px-5 sm:py-3">
         <Search size={18} className="text-on-surface-variant pointer-events-none shrink-0" />
         <input
           type="text"
@@ -199,7 +199,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         )}
       </div>
 
-      <div className="scrollbar-design border-outline-variant/15 mb-8 flex gap-8 overflow-x-auto border-b">
+      <div className="scrollbar-design border-outline-variant/15 mb-5 flex gap-5 overflow-x-auto border-b sm:mb-8 sm:gap-8">
         {[
           { value: "reviews" as Tab, label: "Reviews", count: reviews.length },
           { value: "both" as Tab, label: "Both", count: reviews.length + interviews.length },
@@ -208,12 +208,12 @@ export function OrgContent({ data }: { data: OrgProfile }) {
           <button
             key={value}
             onClick={() => handleSetTab(value)}
-            className={`-mb-px flex shrink-0 flex-col items-start border-b-2 pb-4 transition-all ${
+            className={`-mb-px flex shrink-0 flex-col items-start border-b-2 pb-3 transition-all sm:pb-4 ${
               tab === value ? "border-foreground" : "border-transparent"
             }`}
           >
             <span
-              className={`font-mono text-2xl leading-none font-bold tabular-nums transition-colors ${
+              className={`font-mono text-xl leading-none font-bold tabular-nums transition-colors sm:text-2xl ${
                 tab === value ? "text-foreground" : "text-outline-variant/40"
               }`}
             >
@@ -252,7 +252,9 @@ export function OrgContent({ data }: { data: OrgProfile }) {
         clearFilters={clearFilters}
       />
 
-      <h2 className="mb-8 text-2xl font-bold tracking-tight">{tabHeadings[tab]}</h2>
+      <h2 className="mb-5 text-xl font-bold tracking-tight sm:mb-8 sm:text-2xl">
+        {tabHeadings[tab]}
+      </h2>
       {renderFeed()}
 
       <ShareFab company={data.company} />

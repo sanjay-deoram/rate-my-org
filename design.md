@@ -109,6 +109,21 @@ Every heading that uses a large desktop size must step down on mobile. Never use
 
 Never increase section padding below `px-8` on mobile — the 32px gutter is the minimum for readability.
 
+### Feed Cards (review + interview)
+
+Review and interview cards are content-dense, so they must shrink noticeably on phones — padding, header margins, inner gaps, and type all step up with the breakpoint. Do **not** ship a card that only has a single desktop-scale padding value.
+
+| Property              | Mobile        | `sm:` (640px+)      | `lg:` (1024px+) |
+| --------------------- | ------------- | ------------------- | --------------- |
+| Card padding          | `p-5`         | `sm:p-6`            | `lg:p-8`        |
+| Header bottom margin  | `mb-3`/`mb-4` | `sm:mb-5`/`sm:mb-6` | —               |
+| Header / logo gap     | `gap-2.5`     | `sm:gap-3`          | —               |
+| Card title (job/role) | `text-lg`     | `sm:text-xl`        | `lg:text-2xl`   |
+| Timestamp / meta text | `text-xs`     | `sm:text-sm`        | —               |
+| Body / column gap     | `gap-4`       | `sm:gap-6`          | `md:gap-8`      |
+
+**Between cards in a feed**, use `space-y-3 sm:space-y-6` (archive feeds) or `space-y-3 sm:space-y-4` (company page) — never a single large gap that dominates the mobile viewport.
+
 ### Responsive Component Sizes
 
 **Logo boxes**

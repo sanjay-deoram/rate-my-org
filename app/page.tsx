@@ -39,7 +39,7 @@ export default async function HomePage() {
           <div className="relative z-10 mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-8 lg:pt-10">
             <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
               <h1 className="max-w-4xl text-4xl leading-[0.98] font-black sm:text-5xl md:text-7xl lg:text-8xl">
-                Rate your organization.
+                Rate your organization
               </h1>
               <p className="text-on-surface-variant mt-6 max-w-2xl text-base leading-7 md:text-lg">
                 Know before you join. Read and post anonymous company reviews and interview

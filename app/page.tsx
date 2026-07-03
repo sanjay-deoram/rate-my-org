@@ -38,15 +38,12 @@ export default async function HomePage() {
           <div className="bg-token-lime/80 absolute top-44 right-0 h-44 w-24 translate-x-16 rotate-[5deg] rounded-[1.25rem] lg:h-72 lg:w-40" />
           <div className="relative z-10 mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-8 lg:pt-10">
             <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-              <p className="text-on-surface-variant mb-4 text-xs font-semibold">
-                Anonymous workplace reviews, interviews, and company signals
-              </p>
               <h1 className="max-w-4xl text-4xl leading-[0.98] font-black sm:text-5xl md:text-7xl lg:text-8xl">
-                Know the culture before the offer lands
+                Rate your organization.
               </h1>
               <p className="text-on-surface-variant mt-6 max-w-2xl text-base leading-7 md:text-lg">
-                RateMyOrg turns unfiltered employee reviews and interview reports into a clear read
-                on where work feels fair, sharp, and worth your time.
+                Know before you join. Read and post anonymous company reviews and interview
+                experiences, with no login and no takedowns.
               </p>
               <div className="mt-8 w-full max-w-2xl">
                 <HomeSearchBar />

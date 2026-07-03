@@ -24,3 +24,9 @@ export const EXPERIENCE_BADGE: Record<string, string> = {
   Neutral: "bg-surface-container-high text-on-surface-variant",
   Negative: "bg-destructive text-white",
 };
+
+export const OFFER_BADGE: Record<string, string> = {
+  Yes: "bg-[#d1fadf] text-[#00632d]",
+  No: "bg-[#fbdedb] text-[#8c1d18]",
+  "Yes but Declined": "bg-surface-container-high text-on-surface-variant",
+};

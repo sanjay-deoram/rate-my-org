@@ -33,9 +33,15 @@ export function useExpandable() {
       setMaxHeight(el.scrollHeight);
     } else if (maxHeight === "none") {
       // Pin to the current height before collapsing so the transition has a
-      // numeric start value to animate from.
-      setMaxHeight(el.scrollHeight);
-      requestAnimationFrame(() => setMaxHeight(COLLAPSED_HEIGHT));
+      // numeric start value to animate from. Mutating the DOM directly (React
+      // will overwrite it on the next render below) and forcing a synchronous
+      // reflow via offsetHeight makes the browser register that pinned height
+      // as the element's current style *before* we hand React the collapsed
+      // target — otherwise both changes can land in the same commit/paint and
+      // the transition gets skipped entirely.
+      el.style.maxHeight = `${el.scrollHeight}px`;
+      void el.offsetHeight;
+      setMaxHeight(COLLAPSED_HEIGHT);
     } else {
       setMaxHeight(COLLAPSED_HEIGHT);
     }

@@ -34,9 +34,9 @@ export default async function HomePage() {
       <Nav />
       <main className="bg-background min-h-screen overflow-hidden pt-24">
         <section className="relative">
-          <div className="bg-token-green/90 absolute top-20 left-0 hidden h-[560px] w-[38vw] -translate-x-1/3 rotate-[-8deg] rounded-[2rem] shadow-2xl lg:block" />
-          <div className="bg-token-lime/80 absolute top-44 right-0 hidden h-72 w-40 translate-x-16 rotate-[5deg] rounded-[1.25rem] lg:block" />
-          <div className="mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-8 lg:pt-10">
+          <div className="bg-token-green/90 absolute top-20 left-0 h-[560px] w-[38vw] -translate-x-1/3 rotate-[-8deg] rounded-[2rem] shadow-2xl" />
+          <div className="bg-token-lime/80 absolute top-44 right-0 h-72 w-40 translate-x-16 rotate-[5deg] rounded-[1.25rem]" />
+          <div className="relative z-10 mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-8 lg:pt-10">
             <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
               <p className="text-on-surface-variant mb-4 text-xs font-semibold">
                 Anonymous workplace reviews, interviews, and company signals

@@ -127,9 +127,9 @@ export default function AboutPage() {
         <section className="bg-surface-container-low relative z-10 overflow-hidden px-5 py-20 md:px-12 md:py-32">
           <div
             aria-hidden
-            className="bg-token-lime/60 absolute right-10 bottom-10 hidden h-28 w-72 rotate-[4deg] rounded-[1rem] lg:block"
+            className="bg-token-lime/60 absolute right-10 bottom-10 h-28 w-72 rotate-[4deg] rounded-[1rem]"
           />
-          <div className="mx-auto max-w-[1600px] md:ml-[clamp(0rem,8vw,10rem)]">
+          <div className="relative z-10 mx-auto max-w-[1600px] md:ml-[clamp(0rem,8vw,10rem)]">
             <div className="max-w-3xl">
               <h2 className="mb-8 text-3xl font-bold md:text-4xl">Anonymity Protocol</h2>
               <div className="grid grid-cols-1 gap-12 md:grid-cols-2">

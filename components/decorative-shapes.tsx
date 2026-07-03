@@ -53,7 +53,6 @@ export function DecorativeShapes({ variant, className }: DecorativeShapesProps) 
       >
         <span className="bg-token-lime/75 absolute top-24 -right-24 h-44 w-28 rotate-[13deg] rounded-[1.5rem] lg:h-72 lg:w-44" />
         <span className="bg-token-blue/65 absolute top-80 -left-24 h-40 w-24 rotate-[-8deg] rounded-[1.25rem] lg:h-64 lg:w-36" />
-        <span className="bg-ink/90 absolute top-52 left-[52%] h-6 w-16 rotate-[9deg] rounded xl:h-9 xl:w-24" />
       </div>
     );
   }

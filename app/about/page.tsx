@@ -127,7 +127,7 @@ export default function AboutPage() {
         <section className="bg-surface-container-low relative z-10 overflow-hidden px-5 py-20 md:px-12 md:py-32">
           <div
             aria-hidden
-            className="bg-token-lime/60 absolute right-10 bottom-10 h-28 w-72 rotate-[4deg] rounded-[1rem]"
+            className="bg-token-lime/60 absolute right-10 bottom-10 h-20 w-44 rotate-[4deg] rounded-[1rem] lg:h-28 lg:w-72"
           />
           <div className="relative z-10 mx-auto max-w-[1600px] md:ml-[clamp(0rem,8vw,10rem)]">
             <div className="max-w-3xl">

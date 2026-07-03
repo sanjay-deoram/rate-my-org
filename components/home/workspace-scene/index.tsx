@@ -13,10 +13,10 @@ function formatCount(n: number): string {
 export function WorkspaceScene({ stats, leaderboard, mockupCompany }: WorkspaceSceneProps) {
   return (
     <div className="relative mx-auto max-w-6xl">
-      <div className="bg-token-blue/80 absolute top-6 left-2 z-10 h-32 w-32 rotate-[-12deg] rounded-[1.25rem] lg:left-1/2 lg:-translate-x-[520px]" />
-      <div className="absolute top-44 left-4 z-10 h-44 w-44 rotate-[8deg] rounded-full bg-white shadow-xl lg:left-1/2 lg:-translate-x-[410px]" />
-      <div className="bg-ink absolute top-60 left-12 z-20 h-12 w-28 rotate-[-18deg] rounded-md lg:left-1/2 lg:-translate-x-[345px]" />
-      <div className="bg-ink desk-shadow absolute top-36 left-0 z-20 h-52 w-72 rotate-[-9deg] rounded-[1rem] p-8 text-white lg:left-1/2 lg:-translate-x-[190px]">
+      <div className="bg-token-blue/80 absolute top-6 left-2 z-10 h-20 w-20 rotate-[-12deg] rounded-[1.25rem] lg:left-1/2 lg:h-32 lg:w-32 lg:-translate-x-[520px]" />
+      <div className="absolute top-44 left-4 z-10 h-28 w-28 rotate-[8deg] rounded-full bg-white shadow-xl lg:left-1/2 lg:h-44 lg:w-44 lg:-translate-x-[410px]" />
+      <div className="bg-ink absolute top-60 left-12 z-20 h-8 w-20 rotate-[-18deg] rounded-md lg:left-1/2 lg:h-12 lg:w-28 lg:-translate-x-[345px]" />
+      <div className="bg-ink desk-shadow absolute top-36 left-0 z-20 h-36 w-52 rotate-[-9deg] rounded-[1rem] p-6 text-white lg:left-1/2 lg:h-52 lg:w-72 lg:-translate-x-[190px] lg:p-8">
         <p className="text-xs text-white/45">RateMyOrg</p>
         <p className="mt-9 text-4xl leading-none font-black">Culture Signal Playbook</p>
       </div>

@@ -63,6 +63,21 @@ export async function getHomepageStats() {
   };
 }
 
+export async function getHomepageCompanyBrand(slug: string) {
+  const [row] = await db
+    .select({
+      slug: companies.slug,
+      name: companies.name,
+      industry: companies.industry,
+      logoKey: companies.logoKey,
+    })
+    .from(companies)
+    .where(and(eq(companies.slug, slug), eq(companies.status, "approved")))
+    .limit(1);
+
+  return row ?? null;
+}
+
 async function queryTopRated(limit: number, withHaving: boolean): Promise<TopRatedCompany[]> {
   const selection = {
     slug: companies.slug,

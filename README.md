@@ -1,7 +1,5 @@
 # Rate My Org
 
-Link: https://rate-my-org.com/
-
 > Anonymous company reviews and interview experiences — no sign-in required.
 
 Rate My Org is an open, anonymous platform where employees and former employees can rate and review organizations, share interview experiences, and browse community feedback — entirely without creating an account. Think Glassdoor, but with zero friction: no login, no profile, just honest reviews.

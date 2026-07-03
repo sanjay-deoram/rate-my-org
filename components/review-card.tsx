@@ -64,36 +64,41 @@ export function ReviewCard({
 
   return (
     <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-5 shadow-lg ring-1 shadow-black/[0.06] sm:p-8 lg:p-10">
-      <div className="mb-6 flex items-start justify-between gap-3">
-        <div className="flex min-w-0 items-start gap-3">
-          {companyLogoKey !== undefined && (
-            <CompanyLogo logoKey={companyLogoKey} name={companyName} />
-          )}
-          <div className="min-w-0">
+      <div className="mb-6 flex items-start gap-3">
+        {companyLogoKey !== undefined && (
+          <CompanyLogo logoKey={companyLogoKey} name={companyName} />
+        )}
+        <div className="min-w-0 flex-1">
+          <div className="flex items-start justify-between gap-3">
             {companyName && companySlug ? (
               <Link
                 href={`/orgs/${companySlug}`}
-                className="text-on-surface-variant hover:text-foreground mb-1 block font-mono text-[11px] font-bold tracking-widest uppercase transition-colors"
+                className="text-on-surface-variant hover:text-foreground font-mono text-[11px] font-bold tracking-widest uppercase transition-colors"
               >
                 {companyName}
               </Link>
-            ) : null}
-            <h3 className="text-lg leading-tight font-bold sm:text-xl">{review.jobTitle}</h3>
-            <p className="text-on-surface-variant/70 mt-1 font-mono text-[10px] tracking-widest uppercase">
-              {showKind && (
-                <>
-                  <span className="text-on-surface-variant mb-1 inline-block font-mono text-[11px] font-bold tracking-widest uppercase">
-                    Review
-                  </span>
-                  <span className="text-on-surface-variant mx-1">·</span>
-                </>
-              )}
-              {formatEmploymentType(review.employmentType)} · {timeAgo(new Date(review.createdAt))}
-            </p>
+            ) : showKind ? (
+              <span className="text-on-surface-variant font-mono text-[11px] font-bold tracking-widest uppercase">
+                Review
+              </span>
+            ) : (
+              <span />
+            )}
+            <div className="flex shrink-0 flex-col items-end gap-1.5">
+              <span className="text-on-surface-variant text-sm">
+                {timeAgo(new Date(review.createdAt))}
+              </span>
+              <div className="bg-primary text-primary-foreground flex items-center rounded px-2.5 py-1 sm:px-3">
+                <span className="text-sm font-bold">{review.overallRating.toFixed(1)}</span>
+              </div>
+            </div>
           </div>
-        </div>
-        <div className="bg-primary text-primary-foreground ml-2 flex shrink-0 items-center rounded px-2.5 py-1 sm:ml-4 sm:px-3">
-          <span className="text-sm font-bold">{review.overallRating.toFixed(1)}</span>
+          <h3 className="mt-1 text-xl leading-tight font-black tracking-tight sm:text-2xl">
+            {review.jobTitle}
+          </h3>
+          <p className="text-on-surface-variant/70 mt-1 font-mono text-[10px] tracking-widest uppercase">
+            {formatEmploymentType(review.employmentType)}
+          </p>
         </div>
       </div>
 

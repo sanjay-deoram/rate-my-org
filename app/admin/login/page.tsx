@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Lock } from "lucide-react";
 import { AdminLoginForm } from "@/components/admin-login-form";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 
 export const metadata: Metadata = {
   title: "Admin — RateMyOrg",
@@ -9,8 +10,9 @@ export const metadata: Metadata = {
 
 export default function AdminLoginPage() {
   return (
-    <main className="bg-background flex min-h-screen items-center justify-center px-4">
-      <div className="w-full max-w-md">
+    <main className="bg-background relative flex min-h-screen items-center justify-center overflow-hidden px-4">
+      <DecorativeShapes variant="admin" />
+      <div className="relative z-10 w-full max-w-md">
         <div className="mb-12 text-center">
           <p className="text-outline mb-6 font-mono text-xs tracking-widest uppercase">RateMyOrg</p>
           <div className="bg-surface-container-low mx-auto mb-6 flex h-14 w-14 items-center justify-center rounded-full">

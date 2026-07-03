@@ -8,7 +8,7 @@ import { AddOrganizationModal } from "@/components/add-organization-modal";
 import type { CompanySuggestion } from "@/types/review";
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0";
+  "placeholder:text-on-surface-variant/45 w-full bg-transparent py-3 text-sm font-semibold transition-all outline-none focus:ring-0";
 
 type Props = {
   onSelect: (company: CompanySuggestion) => void;
@@ -91,10 +91,15 @@ export function CompanySearchInput({
 
   return (
     <div className={wrapperClassName}>
-      <div className="group relative">
+      <div
+        className={cn(
+          "group border-border bg-surface-container-lowest relative flex items-center rounded-full border px-5 py-1 shadow-[0_20px_60px_rgba(5,8,7,0.08)]",
+          hasError && "border-destructive",
+        )}
+      >
         <Search
-          size={20}
-          className="text-on-surface-variant group-focus-within:text-primary absolute top-1/2 left-0 -translate-y-1/2 transition-colors"
+          size={18}
+          className="text-on-surface-variant group-focus-within:text-primary shrink-0 transition-colors"
         />
         <input
           type="text"
@@ -105,22 +110,21 @@ export function CompanySearchInput({
           placeholder={placeholder}
           className={cn(
             inputCls,
-            "pl-8",
+            "ml-3 min-w-0 flex-1",
             inputSize === "lg" && "text-lg",
             noUnderline && "border-b-0",
-            hasError && "border-destructive",
           )}
         />
       </div>
 
       {showList && (
-        <div className="bg-surface-container-lowest border-outline-variant/20 absolute top-full left-0 z-200 mt-1 w-full overflow-hidden rounded-lg border shadow-lg">
+        <div className="border-border bg-surface-container-lowest absolute top-full left-0 z-200 mt-3 w-full overflow-hidden rounded-[1.25rem] border shadow-xl">
           <div ref={scrollContainerRef} className="max-h-64 overflow-y-auto overscroll-contain p-2">
             {isFetching &&
               suggestions.length === 0 &&
               Array.from({ length: 4 }).map((_, i) => (
                 <div key={i} className="flex items-center gap-4 px-4 py-3">
-                  <div className="bg-surface-container-high h-8 w-8 animate-pulse rounded" />
+                  <div className="bg-surface-container-high h-8 w-8 animate-pulse rounded-lg" />
                   <div className="bg-surface-container-high h-4 w-40 animate-pulse rounded" />
                 </div>
               ))}
@@ -130,21 +134,21 @@ export function CompanySearchInput({
                 key={item.slug}
                 type="button"
                 onMouseDown={() => handleSelect(item)}
-                className="group relative flex w-full items-center gap-4 overflow-hidden rounded-lg px-4 py-3 text-left"
+                className="group relative flex w-full items-center gap-4 overflow-hidden rounded-xl px-4 py-3 text-left"
               >
-                <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-lg transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
                 {item.logoUrl ? (
                   <img
                     src={item.logoUrl}
                     alt=""
-                    className="relative h-8 w-8 rounded object-contain transition-opacity duration-300 group-hover:opacity-80"
+                    className="relative h-8 w-8 rounded-lg object-contain transition-opacity duration-300 group-hover:opacity-80"
                   />
                 ) : (
-                  <div className="bg-surface-container-highest group-hover:text-primary-foreground relative flex h-8 w-8 items-center justify-center rounded text-xs font-black transition-colors duration-300 group-hover:bg-white/20">
+                  <div className="bg-surface-container-highest group-hover:text-primary-foreground relative flex h-8 w-8 items-center justify-center rounded-lg text-xs font-black transition-colors duration-300 group-hover:bg-white/20">
                     {item.name[0]}
                   </div>
                 )}
-                <span className="group-hover:text-primary-foreground relative font-medium transition-colors duration-300">
+                <span className="group-hover:text-primary-foreground relative font-semibold transition-colors duration-300">
                   {item.name}
                 </span>
               </button>
@@ -152,7 +156,7 @@ export function CompanySearchInput({
 
             {isFetchingNextPage && (
               <div className="flex items-center gap-4 px-4 py-3">
-                <div className="bg-surface-container-high h-8 w-8 animate-pulse rounded" />
+                <div className="bg-surface-container-high h-8 w-8 animate-pulse rounded-lg" />
                 <div className="bg-surface-container-high h-4 w-32 animate-pulse rounded" />
               </div>
             )}
@@ -180,16 +184,16 @@ export function CompanySearchInput({
                   setShowDropdown(false);
                   setIsModalOpen(true);
                 }}
-                className="group relative flex w-full items-center gap-4 overflow-hidden rounded-lg px-4 py-3 text-left"
+                className="group relative flex w-full items-center gap-4 overflow-hidden rounded-xl px-4 py-3 text-left"
               >
-                <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
-                <div className="bg-surface-container-highest relative flex h-8 w-8 items-center justify-center rounded transition-colors duration-300 group-hover:bg-white/20">
+                <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
+                <div className="bg-surface-container-highest relative flex h-8 w-8 items-center justify-center rounded-lg transition-colors duration-300 group-hover:bg-white/20">
                   <PlusCircle
                     size={16}
                     className="text-on-surface-variant group-hover:text-primary-foreground transition-colors duration-300"
                   />
                 </div>
-                <span className="text-on-surface-variant group-hover:text-primary-foreground relative text-sm font-medium transition-colors duration-300">
+                <span className="text-on-surface-variant group-hover:text-primary-foreground relative text-sm font-semibold transition-colors duration-300">
                   Add company
                 </span>
               </button>

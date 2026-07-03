@@ -46,10 +46,7 @@ export async function getCompanyWithStats(slug: string) {
     reviewCount > 0
       ? roundToOneDecimal(companyReviews.reduce((s, r) => s + r.overallRating, 0) / reviewCount)
       : 0;
-  const recommendPct =
-    reviewCount > 0
-      ? Math.round((companyReviews.filter((r) => r.overallRating >= 4).length / reviewCount) * 100)
-      : 0;
+  const recommendPct = reviewCount > 0 ? Math.round((avgRating / 5) * 100) : 0;
 
   const interviewCount = companyInterviews.length;
   const avgDifficulty =

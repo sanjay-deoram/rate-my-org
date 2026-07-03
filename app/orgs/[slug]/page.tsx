@@ -13,6 +13,7 @@ import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { getCompanyWithStats } from "@/lib/queries/orgs";
 import { OrgContent } from "@/components/org-content";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -41,9 +42,10 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
   return (
     <>
       <Nav />
-      <main className="pt-28 pb-24">
+      <main className="relative overflow-hidden pt-28 pb-24">
+        <DecorativeShapes variant="profile" />
         {/* Back button */}
-        <div className="mx-auto mb-8 max-w-7xl px-8 md:px-12">
+        <div className="relative z-10 mx-auto mb-8 max-w-7xl px-5 md:px-12">
           <Link
             href="/companies"
             className="text-on-surface-variant hover:text-foreground inline-flex items-center gap-2 text-sm font-medium transition-colors"
@@ -54,9 +56,9 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         </div>
 
         {/* Brand header */}
-        <section className="mx-auto mb-10 max-w-7xl px-8 md:mb-16 md:px-12">
+        <section className="relative z-10 mx-auto mb-10 max-w-7xl px-5 md:mb-16 md:px-12">
           <div className="flex flex-col justify-between gap-6 md:flex-row md:items-end md:gap-8">
-            <div className="flex items-center gap-4 md:gap-8">
+            <div className="flex min-w-0 items-center gap-4 md:gap-8">
               <div className="bg-surface-container-lowest border-border/20 flex h-16 w-16 shrink-0 items-center justify-center overflow-hidden rounded-xl border shadow-sm md:h-32 md:w-32">
                 {logoUrl ? (
                   // eslint-disable-next-line @next/next/no-img-element
@@ -69,14 +71,14 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
                   <span className="text-foreground text-2xl font-black md:text-5xl">{initial}</span>
                 )}
               </div>
-              <div>
+              <div className="min-w-0">
                 <div className="mb-1 flex items-center gap-2 md:mb-2 md:gap-3">
-                  <h1 className="text-foreground text-2xl font-black tracking-[-0.04em] md:text-5xl">
+                  <h1 className="text-foreground break-anywhere text-2xl font-black sm:text-3xl md:text-5xl">
                     {company.name}
                   </h1>
                   <BadgeCheck className="text-tertiary-fixed-dim h-5 w-5 shrink-0 fill-current md:h-7 md:w-7" />
                 </div>
-                <p className="text-on-surface-variant text-xs font-medium tracking-tight uppercase md:text-sm">
+                <p className="text-on-surface-variant break-anywhere text-xs font-medium uppercase md:text-sm">
                   {tagline}
                 </p>
               </div>
@@ -88,7 +90,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
                   Aggregate Rating
                 </span>
                 <div
-                  className={`text-5xl leading-none font-black tracking-tighter md:text-7xl ${stats.reviewCount > 0 ? (stats.avgRating >= 2.5 ? "text-tertiary-fixed-dim" : "text-destructive") : ""}`}
+                  className={`text-5xl leading-none font-black md:text-7xl ${stats.reviewCount > 0 ? (stats.avgRating >= 2.5 ? "text-tertiary-fixed-dim" : "text-destructive") : ""}`}
                 >
                   {stats.reviewCount > 0 ? stats.avgRating.toFixed(1) : "—"}
                 </div>
@@ -102,18 +104,24 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         </section>
 
         {/* KPI grid */}
-        <section className="mx-auto mb-8 max-w-7xl px-8 md:px-12">
-          <div className="grid grid-cols-3 gap-3 md:gap-8">
+        <section className="relative z-10 mx-auto mb-8 max-w-7xl px-5 md:px-12">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-8">
             <div className="bg-surface-container-low hover:bg-surface-container-highest flex flex-col justify-between rounded-xl p-4 transition-all duration-300 md:h-48 md:p-8">
               <span className="text-on-surface-variant font-mono text-[9px] tracking-widest uppercase md:text-xs">
                 Recommend
               </span>
               <div className="mt-3 flex items-end justify-between md:mt-0">
-                <span className="text-2xl font-bold tracking-tighter md:text-5xl">
+                <span
+                  className={`text-2xl font-bold md:text-5xl ${stats.reviewCount > 0 ? (stats.recommendPct >= 50 ? "text-tertiary-fixed-dim" : "text-destructive") : ""}`}
+                >
                   {stats.reviewCount > 0 ? `${stats.recommendPct}%` : "—"}
                 </span>
                 <div className="border-outline-variant/20 hidden h-12 w-12 items-center justify-center rounded-full border md:flex">
-                  <TrendingUp size={20} className="text-tertiary-fixed-dim" />
+                  {stats.recommendPct >= 50 ? (
+                    <TrendingUp size={20} className="text-tertiary-fixed-dim" />
+                  ) : (
+                    <TrendingDown size={20} className="text-destructive" />
+                  )}
                 </div>
               </div>
             </div>
@@ -123,9 +131,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
                 Reviews
               </span>
               <div className="mt-3 flex items-end justify-between md:mt-0">
-                <span className="text-2xl font-bold tracking-tighter md:text-5xl">
-                  {stats.reviewCount}
-                </span>
+                <span className="text-2xl font-bold md:text-5xl">{stats.reviewCount}</span>
                 <div className="border-outline-variant/20 hidden h-12 w-12 items-center justify-center rounded-full border md:flex">
                   <MessageSquare size={20} className="text-tertiary-fixed-dim" />
                 </div>
@@ -137,16 +143,16 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
                 Interviews
               </span>
               <div className="mt-3 flex items-end justify-between md:mt-0">
-                <span className="text-2xl font-bold tracking-tighter md:text-5xl">
-                  {stats.interviewCount}
-                </span>
+                <span className="text-2xl font-bold md:text-5xl">{stats.interviewCount}</span>
                 <BookOpen className="hidden md:block" size={28} />
               </div>
             </div>
           </div>
         </section>
 
-        <OrgContent data={data} />
+        <div className="relative z-10">
+          <OrgContent data={data} />
+        </div>
       </main>
       <Footer />
     </>

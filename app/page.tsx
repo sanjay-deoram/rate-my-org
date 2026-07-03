@@ -1,305 +1,146 @@
 import Link from "next/link";
-import { Ghost, TrendingUp, TrendingDown } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { Nav } from "@/components/nav";
 import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
 import { HomeCarousel } from "@/components/home-carousel";
 import { HomeReviews } from "@/components/home-reviews";
-import { getHomepageStats, getTopRatedCompanies, getRecentReviews } from "@/lib/queries/homepage";
-import { RatingTrend } from "@/types/homepage";
+import { WorkspaceScene, SignalMap } from "@/components/home/workspace-scene";
+import {
+  getHomepageStats,
+  getTopRatedCompanies,
+  getRecentReviews,
+  getHomepageCompanyBrand,
+} from "@/lib/queries/homepage";
 
-const CDN = process.env.NEXT_PUBLIC_LOGO_CDN ?? "";
-
-function formatCount(n: number): string {
-  if (n >= 1_000_000) return `${(n / 1_000_000).toFixed(0)}M`;
-  if (n >= 1_000) return `${(n / 1_000).toFixed(0)}K`;
-  return String(n);
-}
-
-function fmtRating(raw: string | null): string | null {
-  if (!raw) return null;
-  const n = parseFloat(raw);
-  if (isNaN(n)) return null;
-  return (Math.round(n * 10) / 10).toFixed(1);
-}
+const FALLBACK_MOCKUP_COMPANY = {
+  name: "1Password",
+  industry: "Security software",
+  logoKey: "1password.webp",
+};
 
 export default async function HomePage() {
-  const [stats, topRated, recentReviews] = await Promise.all([
+  const [stats, topRated, recentReviews, mockupCompany] = await Promise.all([
     getHomepageStats(),
-    getTopRatedCompanies(6),
+    getTopRatedCompanies(8),
     getRecentReviews(12),
+    getHomepageCompanyBrand("1password"),
   ]);
 
-  const leaderboard = topRated.slice(0, 4);
+  const leaderboard = topRated.slice(0, 5);
 
   return (
     <>
       <Nav />
-      <main className="bg-background min-h-screen pt-20">
-        {/* Hero — two-column on desktop, stacked on mobile */}
-        <section className="mx-auto max-w-7xl px-8 py-14 md:px-12 md:py-20 lg:py-28">
-          <div className="flex flex-col gap-12 lg:flex-row lg:items-start lg:gap-16">
-            {/* Left: copy + search + stats */}
-            <div className="flex flex-1 flex-col items-center text-center lg:items-start lg:text-left">
-              {/* Badge */}
-              <div className="mb-6 inline-flex items-center gap-2">
-                <span className="relative flex h-2 w-2">
-                  <span className="bg-tertiary-fixed-dim absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" />
-                  <span className="bg-tertiary-fixed-dim relative inline-flex h-2 w-2 rounded-full" />
-                </span>
-                <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                  The Workplace Index · Live
-                </span>
-              </div>
-
-              <h1 className="text-foreground mb-6 text-5xl leading-[1.05] font-black tracking-tighter md:text-6xl lg:text-7xl">
-                Rate your org.
-                <br />
-                <span className="inline-flex items-center gap-1.5 md:gap-3">
-                  <span className="from-foreground to-outline bg-gradient-to-r bg-clip-text text-transparent italic">
-                    Anonymously.
-                  </span>
-                  <Ghost
-                    className="animate-float text-foreground/25 h-[0.5em] w-[0.5em] shrink-0 md:h-[0.65em] md:w-[0.65em]"
-                    strokeWidth={1.2}
-                  />
-                </span>
-              </h1>
-
-              <p className="text-on-surface-variant mb-10 max-w-md text-base leading-relaxed md:text-lg">
-                Know before you join. Real reviews, real interviews. No login. No takedowns.
+      <main className="bg-background min-h-screen overflow-hidden pt-24">
+        <section className="relative">
+          <div className="bg-token-green/90 absolute top-20 left-0 hidden h-[560px] w-[38vw] -translate-x-1/3 rotate-[-8deg] rounded-[2rem] shadow-2xl lg:block" />
+          <div className="bg-token-lime/80 absolute top-44 right-0 hidden h-72 w-40 translate-x-16 rotate-[5deg] rounded-[1.25rem] lg:block" />
+          <div className="mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-8 lg:pt-10">
+            <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
+              <p className="text-on-surface-variant mb-4 text-xs font-semibold">
+                Anonymous workplace reviews, interviews, and company signals
               </p>
-
-              <div className="mb-8 w-full max-w-lg">
+              <h1 className="max-w-4xl text-4xl leading-[0.98] font-black sm:text-5xl md:text-7xl lg:text-8xl">
+                Know the culture before the offer lands
+              </h1>
+              <p className="text-on-surface-variant mt-6 max-w-2xl text-base leading-7 md:text-lg">
+                RateMyOrg turns unfiltered employee reviews and interview reports into a clear read
+                on where work feels fair, sharp, and worth your time.
+              </p>
+              <div className="mt-8 w-full max-w-2xl">
                 <HomeSearchBar />
               </div>
-
-              {/* Stats */}
-              <div className="flex items-center justify-center gap-x-5 md:gap-x-8 lg:justify-start">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-foreground text-xl font-black tabular-nums">
-                    {formatCount(stats.totalReviews)}
-                  </span>
-                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                    Reviews
-                  </span>
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-foreground text-xl font-black tabular-nums">
-                    {formatCount(stats.totalCompanies)}
-                  </span>
-                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                    Companies
-                  </span>
-                </div>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-foreground text-xl font-black tabular-nums">
-                    {formatCount(stats.totalInterviews)}
-                  </span>
-                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                    Interviews
-                  </span>
-                </div>
+              <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+                <Link
+                  href="/reviews/write"
+                  className="bg-token-blue inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-bold text-white shadow-lg transition-opacity hover:opacity-90 active:scale-[0.98]"
+                >
+                  Write a review
+                  <ArrowRight size={16} />
+                </Link>
+                <Link
+                  href="/interviews/submit"
+                  className="border-border bg-card hover:border-primary inline-flex h-12 items-center rounded-full border px-6 text-sm font-bold transition active:scale-[0.98]"
+                >
+                  Share interview questions
+                </Link>
               </div>
             </div>
 
-            {/* Right: Top Rated card — desktop only shows here; on mobile it renders below */}
-            <div className="w-full shrink-0 lg:w-[420px]">
-              <TopRatedCard leaderboard={leaderboard} />
+            <div className="relative mt-16 min-h-[620px] lg:mt-20">
+              <WorkspaceScene
+                stats={stats}
+                leaderboard={leaderboard}
+                mockupCompany={mockupCompany ?? FALLBACK_MOCKUP_COMPANY}
+              />
             </div>
           </div>
         </section>
 
-        {/* Trending carousel section */}
-        <section className="bg-surface-container-low">
-          <div className="mx-auto max-w-7xl px-8 py-20 md:px-12">
-            <div className="mb-8 flex items-end justify-between">
-              <div>
-                <div className="mb-3 flex items-center gap-2">
-                  <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 rounded-full" />
-                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                    Trending This Week
-                  </span>
-                </div>
-                <h2 className="text-xl font-black tracking-tight sm:text-2xl md:text-3xl lg:text-4xl">
-                  Where people are looking now
-                </h2>
-              </div>
+        <section className="bg-paper-soft py-20 md:py-28">
+          <div className="mx-auto max-w-7xl px-5 md:px-8">
+            <div className="mx-auto max-w-2xl text-center">
+              <p className="text-on-surface-variant text-xs font-bold">Workplace examples</p>
+              <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
+                Each profile shows what people actually experience
+              </h2>
+              <p className="text-on-surface-variant mt-4 leading-7">
+                Search companies, compare ratings, read recent headlines, and spot the interview
+                patterns candidates keep running into.
+              </p>
             </div>
-            <HomeCarousel companies={topRated} />
+            <div className="mt-12">
+              <HomeCarousel companies={topRated} />
+            </div>
           </div>
         </section>
 
-        {/* Recent reviews */}
+        <section className="py-20 md:py-28">
+          <div className="mx-auto grid max-w-6xl gap-10 px-5 md:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+            <div>
+              <p className="text-on-surface-variant text-xs font-bold">Anonymous by design</p>
+              <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
+                Useful signal without accounts, followers, or corporate polish
+              </h2>
+              <p className="text-on-surface-variant mt-5 max-w-xl leading-7">
+                Submissions are built around concrete context: role, status, ratings, written
+                experience, and interview rounds. The product keeps the friction low and the record
+                focused.
+              </p>
+            </div>
+            <div className="border-border bg-card soft-shadow rounded-[1.75rem] border p-4">
+              <SignalMap />
+            </div>
+          </div>
+        </section>
+
         <HomeReviews reviews={recentReviews} />
 
-        {/* CTA — split with live stat panel */}
-        <section className="border-surface-container-highest border-t">
-          <div className="mx-auto max-w-7xl px-8 py-24 md:px-12">
-            <div className="flex flex-col gap-16 md:flex-row md:items-center">
-              <div className="flex-1 space-y-8">
-                <div className="flex items-center gap-2">
-                  <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 animate-pulse rounded-full" />
-                  <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-                    Growing every day
-                  </span>
-                </div>
-                <h2 className="text-4xl font-black tracking-tighter md:text-5xl">
-                  A living record
-                  <br />
-                  of the workplace.
-                </h2>
-                <p className="text-on-surface-variant max-w-sm text-base leading-relaxed">
-                  Every submission is anonymous and permanent. No login, no takedowns, no corporate
-                  spin.
-                </p>
-                <div className="flex flex-col gap-3 sm:flex-row">
-                  <Link
-                    href="/reviews/write"
-                    className="bg-primary text-primary-foreground rounded-full px-6 py-2.5 text-center text-sm font-bold transition-all hover:opacity-90 active:scale-[0.98]"
-                  >
-                    Write a Review
-                  </Link>
-                  <Link
-                    href="/interviews/submit"
-                    className="border-surface-container-highest hover:border-primary rounded-full border px-6 py-2.5 text-center text-sm font-bold transition-colors duration-300"
-                  >
-                    Submit Interview Questions
-                  </Link>
-                </div>
-              </div>
-
-              <div className="flex-1">
-                <div className="from-primary to-primary-container rounded-2xl bg-gradient-to-br p-8">
-                  <p className="text-on-primary-container mb-8 text-[10px] font-bold tracking-[0.2em] uppercase">
-                    Index at a glance
-                  </p>
-                  {(
-                    [
-                      ["Reviews submitted", formatCount(stats.totalReviews)],
-                      ["Companies indexed", formatCount(stats.totalCompanies)],
-                      ["Interview reports", formatCount(stats.totalInterviews)],
-                    ] as const
-                  ).map(([label, value]) => (
-                    <div
-                      key={label}
-                      className="flex items-baseline justify-between border-t border-white/10 py-5"
-                    >
-                      <span className="text-on-primary-container text-sm">{label}</span>
-                      <span className="text-primary-foreground text-3xl font-black tabular-nums">
-                        {value}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
+        <section className="px-5 py-20 md:px-8 md:py-28">
+          <div className="bg-primary text-primary-foreground mx-auto max-w-5xl rounded-[1.75rem] px-6 py-14 text-center md:px-12">
+            <p className="text-xs font-bold text-white/55">Contribute to the index</p>
+            <h2 className="mx-auto mt-3 max-w-3xl text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
+              Help the next candidate read the room before they join
+            </h2>
+            <div className="mt-8 flex flex-col justify-center gap-3 sm:flex-row">
+              <Link
+                href="/reviews/write"
+                className="bg-token-lime text-on-tertiary-fixed inline-flex h-12 items-center justify-center rounded-full px-6 text-sm font-bold transition hover:opacity-90 active:scale-[0.98]"
+              >
+                Post an anonymous review
+              </Link>
+              <Link
+                href="/companies"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-white/20 px-6 text-sm font-bold transition hover:bg-white/10 active:scale-[0.98]"
+              >
+                Browse companies
+              </Link>
             </div>
           </div>
         </section>
       </main>
       <Footer />
     </>
-  );
-}
-
-type LeaderboardEntry = {
-  slug: string;
-  name: string;
-  industry: string | null;
-  logoKey: string | null;
-  avgRating: string | null;
-  ratingTrend: RatingTrend;
-};
-
-function ratingColor(avgRating: string | null): string {
-  if (!avgRating) return "";
-  return parseFloat(avgRating) >= 2.5 ? "text-tertiary-fixed-dim" : "text-destructive";
-}
-
-function TrendIcon({ trend, className }: { trend: RatingTrend; className?: string }) {
-  if (trend === "up") return <TrendingUp size={12} className={className} />;
-  if (trend === "down") return <TrendingDown size={12} className={className} />;
-  return null;
-}
-
-function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] }) {
-  return (
-    <div className="bg-surface-container-lowest border-surface-container-highest overflow-hidden rounded-2xl border">
-      {/* Card header */}
-      <div className="from-primary to-primary-container flex items-center justify-between bg-gradient-to-b px-7 py-5">
-        <span className="text-primary-foreground text-[10px] font-bold tracking-[0.2em] uppercase">
-          Top Rated
-        </span>
-        <span className="text-primary-foreground/40 text-[10px] font-bold tracking-[0.2em] uppercase">
-          Score
-        </span>
-      </div>
-
-      {/* Rows */}
-      {leaderboard.length === 0 ? (
-        <p className="text-on-surface-variant px-6 py-8 text-sm">No rated companies yet.</p>
-      ) : (
-        <div>
-          {leaderboard.map((company, i) => {
-            const logoSrc = company.logoKey && CDN ? `${CDN}/${company.logoKey}` : null;
-            const rating = fmtRating(company.avgRating);
-            return (
-              <Link
-                key={company.slug}
-                href={`/orgs/${company.slug}`}
-                className="border-surface-container-highest group relative isolate flex items-center gap-4 overflow-hidden border-b px-7 py-5 last:border-b-0"
-              >
-                {/* Slide-in fill */}
-                <div className="bg-primary absolute inset-0 origin-left scale-x-0 transition-transform duration-300 ease-out group-hover:scale-x-100" />
-
-                <span className="text-on-surface-variant relative w-6 shrink-0 font-mono text-xs transition-colors duration-300 group-hover:text-white/50">
-                  {String(i + 1).padStart(2, "0")}
-                </span>
-
-                <div className="bg-surface-container relative flex h-11 w-11 shrink-0 items-center justify-center overflow-hidden rounded-lg transition-colors duration-300 group-hover:bg-white/10">
-                  {logoSrc ? (
-                    <img
-                      src={logoSrc}
-                      alt={`${company.name} logo`}
-                      className="h-full w-full object-contain"
-                    />
-                  ) : (
-                    <span className="text-primary relative text-base leading-none font-black transition-colors duration-300 group-hover:text-white">
-                      {company.name.charAt(0).toUpperCase()}
-                    </span>
-                  )}
-                </div>
-
-                <div className="relative min-w-0 flex-1">
-                  <p className="truncate text-base leading-tight font-bold transition-colors duration-300 group-hover:text-white">
-                    {company.name}
-                  </p>
-                </div>
-
-                <div className="relative flex shrink-0 items-center gap-1">
-                  {rating ? (
-                    <>
-                      <TrendIcon
-                        trend={company.ratingTrend}
-                        className={`transition-colors duration-300 group-hover:text-white ${ratingColor(company.avgRating)}`}
-                      />
-                      <span
-                        className={`text-base font-black tabular-nums transition-colors duration-300 group-hover:text-white ${ratingColor(company.avgRating)}`}
-                      >
-                        {rating}
-                      </span>
-                    </>
-                  ) : (
-                    <span className="text-on-surface-variant text-xs transition-colors duration-300 group-hover:text-white/50">
-                      —
-                    </span>
-                  )}
-                </div>
-              </Link>
-            );
-          })}
-        </div>
-      )}
-    </div>
   );
 }

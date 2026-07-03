@@ -64,7 +64,7 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
         <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[10px] tracking-wide transition-colors duration-300 md:text-[11px]">
           {company.slug}
         </p>
-        <div className="mt-1.5 flex items-center gap-1.5">
+        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
           <StatPill label="Rating" variant="amber">
             <Star size={9} className="fill-current" />
             {company.avgRating ?? "—"}
@@ -165,7 +165,7 @@ export function CompaniesDirectory() {
 
   return (
     <div>
-      <div className="bg-surface-container-lowest border-border/20 mb-8 flex items-center overflow-visible rounded-2xl border shadow-[0_20px_60px_rgba(27,27,27,0.08)]">
+      <div className="border-border bg-surface-container-lowest mb-8 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
         <div className="flex flex-1 items-center gap-3 px-5 py-3">
           <Search size={18} className="text-on-surface-variant shrink-0" />
           <input
@@ -173,7 +173,7 @@ export function CompaniesDirectory() {
             value={query}
             onChange={handleChange}
             placeholder="Search companies..."
-            className="placeholder:text-on-surface-variant/40 flex-1 bg-transparent py-2 text-sm font-medium outline-none"
+            className="placeholder:text-on-surface-variant/45 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
           />
           {query && (
             <button
@@ -188,7 +188,7 @@ export function CompaniesDirectory() {
         <div className="flex shrink-0 items-center pr-3">
           <button
             type="button"
-            className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-xl transition-all hover:opacity-80 active:scale-[0.97]"
+            className="bg-foreground text-background flex h-10 w-10 items-center justify-center rounded-full transition-all hover:opacity-80 active:scale-[0.97]"
           >
             <ArrowRight size={18} />
           </button>
@@ -196,7 +196,7 @@ export function CompaniesDirectory() {
       </div>
 
       <div
-        className={`divide-outline-variant/20 divide-y rounded-2xl bg-white px-6 pt-2 shadow-sm transition-opacity duration-200 ${isSearchTransitioning ? "opacity-40" : "opacity-100"}`}
+        className={`divide-outline-variant/20 divide-y rounded-2xl bg-white px-3 pt-2 shadow-sm transition-opacity duration-200 sm:px-6 ${isSearchTransitioning ? "opacity-40" : "opacity-100"}`}
       >
         {isInitialLoad && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
 

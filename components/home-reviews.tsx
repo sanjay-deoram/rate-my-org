@@ -14,9 +14,9 @@ function ReviewCard({ review }: { review: RecentReviewEntry }) {
   const logoSrc = review.companyLogoKey && CDN ? `${CDN}/${review.companyLogoKey}` : null;
 
   return (
-    <div className="border-surface-container-highest bg-surface-container-lowest shadow-primary/5 w-full max-w-xs rounded-3xl border p-8 shadow-lg">
+    <div className="border-border bg-surface-container-lowest soft-shadow w-full max-w-xs rounded-[1.25rem] border p-6">
       <div className="mb-5 flex items-center gap-3">
-        <div className="bg-surface-container flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full">
+        <div className="bg-surface-container flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-xl">
           {logoSrc ? (
             <img src={logoSrc} alt={review.companyName} className="h-full w-full object-contain" />
           ) : (
@@ -26,15 +26,16 @@ function ReviewCard({ review }: { review: RecentReviewEntry }) {
           )}
         </div>
         <div className="flex flex-col">
-          <span className="text-sm leading-5 font-semibold tracking-tight">
-            {review.companyName}
-          </span>
-          <span className="text-on-surface-variant text-xs leading-5 tracking-tight opacity-70">
+          <span className="text-sm leading-5 font-black">{review.companyName}</span>
+          <span className="text-on-surface-variant text-xs leading-5 opacity-70">
             {review.jobTitle}
           </span>
         </div>
       </div>
       <p className="text-sm leading-relaxed">{truncate(review.headline, 160)}</p>
+      <div className="bg-token-lime/60 text-token-green-deep mt-5 inline-flex rounded-full px-3 py-1 text-xs font-black">
+        {review.overallRating.toFixed(1)} rating
+      </div>
     </div>
   );
 }
@@ -94,25 +95,18 @@ export function HomeReviews({ reviews }: { reviews: RecentReviewEntry[] }) {
   const col3 = reviews.slice(third * 2);
 
   return (
-    <section className="bg-background relative my-20">
-      <div className="mx-auto max-w-7xl px-8 md:px-12">
+    <section className="bg-background relative py-20 md:py-28">
+      <div className="mx-auto max-w-7xl px-5 md:px-12">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           viewport={{ once: true }}
-          className="mx-auto flex max-w-[540px] flex-col items-center justify-center"
+          className="mx-auto flex max-w-[620px] flex-col items-center justify-center"
         >
-          <div className="mb-3 flex items-center gap-2">
-            <span className="bg-tertiary-fixed-dim h-1.5 w-1.5 rounded-full" />
-            <span className="text-on-surface-variant text-[10px] font-bold tracking-[0.2em] uppercase">
-              From the Community
-            </span>
-          </div>
-          <h2 className="text-center text-3xl font-black tracking-tight md:text-4xl lg:text-5xl">
-            Real reviews,
-            <br />
-            real workplaces
+          <p className="text-on-surface-variant text-xs font-bold">From the community</p>
+          <h2 className="mt-3 text-center text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
+            Real workplace notes from people who have been inside
           </h2>
           <p className="text-on-surface-variant mt-5 text-center leading-relaxed">
             Anonymous, unfiltered feedback from people who&apos;ve been there. No spin, no PR
@@ -121,7 +115,7 @@ export function HomeReviews({ reviews }: { reviews: RecentReviewEntry[] }) {
         </motion.div>
 
         <div
-          className="mt-10 flex h-[740px] justify-center gap-6 overflow-hidden"
+          className="mt-12 flex h-[720px] justify-center gap-6 overflow-hidden"
           style={{
             maskImage:
               "linear-gradient(to bottom, transparent 0%, black 18%, black 82%, transparent 100%)",

@@ -2,11 +2,12 @@
 
 import { useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Search, MessageSquare, Star, Calendar, Building2, X } from "lucide-react";
+import { Search, MessageSquare, Star, Calendar, Building2, X, ArrowRight } from "lucide-react";
 import { ReviewCard } from "@/components/review-card";
 import { Pagination } from "@/components/ui/pagination";
 import { useCompaniesWithReviews } from "@/hooks/use-companies-with-reviews";
 import { FilterDropdown } from "@/components/ui/filter-dropdown";
+import { DecorativeShapes } from "@/components/decorative-shapes";
 import type { ReviewFeedItem } from "@/lib/api/reviews";
 
 const RATING_OPTIONS = [
@@ -106,40 +107,54 @@ export function ReviewsFeed({
   return (
     <div>
       {/* Grey hero section */}
-      <div className="bg-surface-container-low w-full px-8 py-16 md:px-12 md:py-20">
-        <div className="mx-auto max-w-5xl">
+      <div className="bg-surface-container-low relative w-full overflow-hidden px-5 py-14 md:px-12 md:py-20">
+        <DecorativeShapes variant="archive" />
+        <div className="relative z-10 mx-auto max-w-5xl">
           <div className="mb-8 text-center">
             <p className="text-on-surface-variant mb-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
               Explore · {totalReviews.toLocaleString()}+ Anonymous Reviews
             </p>
-            <h1 className="text-foreground text-4xl font-black tracking-tighter md:text-6xl">
+            <h1 className="text-foreground text-3xl font-black sm:text-4xl md:text-6xl">
               Search the archive
             </h1>
           </div>
 
           {/* Search bar */}
           <form onSubmit={handleSearchSubmit} className="mb-6">
-            <div className="bg-surface-container-lowest border-outline-variant/20 mx-auto flex max-w-2xl items-center gap-3 rounded-2xl border px-5 py-3 shadow-[0_8px_30px_rgba(27,27,27,0.07)] transition-shadow focus-within:shadow-[0_8px_30px_rgba(27,27,27,0.13)]">
-              <Search size={16} className="text-on-surface-variant shrink-0" />
+            <div className="border-border bg-surface-container-lowest mx-auto flex max-w-2xl items-center gap-3 rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
+              <Search size={18} className="text-on-surface-variant shrink-0" />
               <input
                 type="text"
                 value={query}
                 onChange={handleSearchChange}
                 placeholder="Company name, job title, or keyword..."
-                className="placeholder:text-on-surface-variant/40 flex-1 bg-transparent text-sm font-medium outline-none"
+                className="placeholder:text-on-surface-variant/45 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
               />
+              {query && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setQuery("");
+                    router.replace(buildUrl({ q: undefined, page: undefined }));
+                  }}
+                  className="text-on-surface-variant hover:text-foreground shrink-0 transition-colors"
+                >
+                  <X size={16} />
+                </button>
+              )}
               <button
                 type="submit"
-                className="bg-primary text-primary-foreground shrink-0 rounded-xl px-5 py-2 font-mono text-[10px] font-bold tracking-widest uppercase transition-opacity hover:opacity-80"
+                className="bg-primary text-primary-foreground flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all hover:opacity-80 active:scale-[0.97]"
+                aria-label="Search reviews"
               >
-                Search
+                <ArrowRight size={18} />
               </button>
             </div>
           </form>
 
           {/* Trending company pills */}
           {trendingCompanies.length > 0 && (
-            <div className="flex items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               <span className="text-on-surface-variant font-mono text-[10px] font-bold tracking-widest uppercase">
                 Trending
               </span>
@@ -163,7 +178,7 @@ export function ReviewsFeed({
       </div>
 
       {/* Filters + cards */}
-      <div className="mx-auto max-w-6xl px-8 py-8 md:px-12">
+      <div className="mx-auto max-w-6xl px-5 py-8 md:px-12">
         {/* Filter row */}
         <div className="mb-6 flex flex-wrap items-center gap-2">
           {companiesLoading ? (

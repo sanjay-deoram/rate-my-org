@@ -232,7 +232,7 @@ export function SubmitInterviewForm() {
                     type="button"
                     onClick={() => field.handleChange(field.state.value === exp ? "" : exp)}
                     className={cn(
-                      "rounded-full border px-6 py-3 text-sm font-medium transition-all",
+                      "rounded-full border px-5 py-3 text-sm font-medium transition-colors sm:px-6",
                       field.state.value === exp
                         ? exp === "Great"
                           ? "border-tertiary-fixed-dim bg-tertiary-fixed-dim text-on-tertiary-fixed"
@@ -384,9 +384,9 @@ export function SubmitInterviewForm() {
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitInterview.isPending}
-              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-12 py-4 font-bold tracking-tight transition-all hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto"
+              className="from-primary to-primary-container text-primary-foreground w-full rounded-lg bg-linear-to-b px-8 py-4 font-bold transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
             >
-              {submitInterview.isPending ? "Submitting..." : "Submit Interview"}
+              {submitInterview.isPending ? "Submitting…" : "Submit Interview"}
             </button>
           )}
         </form.Subscribe>
@@ -419,7 +419,7 @@ export function AnonymitySidebar() {
 
   return (
     <aside className="h-fit space-y-8 lg:sticky lg:top-28 lg:col-span-4">
-      <div className="bg-surface-container-low space-y-8 rounded-xl p-10">
+      <div className="bg-surface-container-low space-y-8 rounded-xl p-6 sm:p-8 lg:p-10">
         <div className="space-y-2">
           <div className="bg-tertiary-fixed-dim mb-4 flex h-8 w-8 items-center justify-center rounded-full">
             <Shield size={16} className="text-on-tertiary-fixed" />
@@ -433,7 +433,7 @@ export function AnonymitySidebar() {
               <span className="text-outline shrink-0 font-mono text-xs tracking-widest tabular-nums">
                 {s.num}
               </span>
-              <div className="space-y-1">
+              <div className="min-w-0 space-y-1">
                 <h3 className="font-bold">{s.title}</h3>
                 <p className="text-on-surface-variant text-sm leading-relaxed">{s.desc}</p>
               </div>

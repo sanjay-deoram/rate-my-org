@@ -16,14 +16,14 @@ function ShareFab({ company }: { company: OrgProfile["company"] }) {
     <div className="fixed right-8 bottom-8 z-50 flex flex-col-reverse items-end gap-2.5">
       <Link
         href={`/reviews/write?company=${company.slug}`}
-        className="bg-primary text-primary-foreground flex items-center gap-2.5 rounded-full px-5 py-3.5 text-sm font-semibold shadow-xl transition-all duration-200 hover:scale-105 hover:shadow-2xl"
+        className="bg-token-blue flex items-center gap-2.5 rounded-full px-5 py-3.5 text-sm font-bold text-white shadow-xl transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
       >
         <MessageSquare size={15} />
         Write a Review
       </Link>
       <Link
         href={`/interviews/submit?company=${company.slug}`}
-        className="bg-background text-foreground border-border/40 hover:bg-surface-container-low flex items-center gap-2.5 rounded-full border py-2.5 pr-5 pl-4 text-sm font-semibold shadow-lg transition-all hover:shadow-xl"
+        className="border-border bg-card hover:border-primary text-foreground flex items-center gap-2.5 rounded-full border py-2.5 pr-5 pl-4 text-sm font-bold shadow-lg transition-colors active:scale-[0.98]"
       >
         <BookOpen size={15} />
         Submit Interview
@@ -179,30 +179,27 @@ export function OrgContent({ data }: { data: OrgProfile }) {
   }
 
   return (
-    <div className="mx-auto max-w-7xl px-8 md:px-12">
-      <div className="relative mb-6">
-        <Search
-          size={16}
-          className="text-on-surface-variant pointer-events-none absolute top-1/2 left-4 -translate-y-1/2"
-        />
+    <div className="mx-auto max-w-7xl px-5 md:px-12">
+      <div className="border-border bg-surface-container-lowest mb-6 flex items-center rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
+        <Search size={18} className="text-on-surface-variant pointer-events-none shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by job title, role, or department…"
-          className="border-outline-variant/30 bg-surface-container-lowest placeholder:text-on-surface-variant/50 focus:border-primary w-full rounded-xl border py-3.5 pr-10 pl-11 text-sm transition-all outline-none"
+          className="placeholder:text-on-surface-variant/45 ml-3 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
         />
         {query && (
           <button
             onClick={() => setQuery("")}
-            className="text-on-surface-variant hover:text-foreground absolute top-1/2 right-3.5 -translate-y-1/2 transition-colors"
+            className="text-on-surface-variant hover:text-foreground shrink-0 transition-colors"
           >
-            <X size={15} />
+            <X size={16} />
           </button>
         )}
       </div>
 
-      <div className="border-outline-variant/15 mb-8 flex gap-10 border-b">
+      <div className="scrollbar-design border-outline-variant/15 mb-8 flex gap-8 overflow-x-auto border-b">
         {[
           { value: "reviews" as Tab, label: "Reviews", count: reviews.length },
           { value: "both" as Tab, label: "Both", count: reviews.length + interviews.length },
@@ -211,7 +208,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
           <button
             key={value}
             onClick={() => handleSetTab(value)}
-            className={`-mb-px flex flex-col items-start border-b-2 pb-4 transition-all ${
+            className={`-mb-px flex shrink-0 flex-col items-start border-b-2 pb-4 transition-all ${
               tab === value ? "border-foreground" : "border-transparent"
             }`}
           >

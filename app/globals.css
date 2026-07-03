@@ -238,6 +238,10 @@
     text-rendering: geometricPrecision;
     overflow-x: hidden;
   }
+  body[data-scroll-locked] {
+    margin-right: 0 !important;
+    padding-right: 0 !important;
+  }
   html {
     @apply font-sans;
     overflow-x: hidden;

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { PlusCircle, MinusCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { PlusCircle, MinusCircle, ChevronDown } from "lucide-react";
 import { formatEmploymentType, timeAgo } from "@/lib/org-display";
 import { useExpandable } from "@/hooks/use-expandable";
 
@@ -68,8 +68,8 @@ export function ReviewCard({
         {companyLogoKey !== undefined && (
           <CompanyLogo logoKey={companyLogoKey} name={companyName} />
         )}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
+          <div className="min-w-0">
             {companyName && companySlug ? (
               <Link
                 href={`/orgs/${companySlug}`}
@@ -81,24 +81,22 @@ export function ReviewCard({
               <span className="text-on-surface-variant font-mono text-[11px] font-bold tracking-widest uppercase">
                 Review
               </span>
-            ) : (
-              <span />
-            )}
-            <div className="flex shrink-0 flex-col items-end gap-1.5">
-              <span className="text-on-surface-variant text-sm">
-                {timeAgo(new Date(review.createdAt))}
-              </span>
-              <div className="bg-primary text-primary-foreground flex items-center rounded px-2.5 py-1 sm:px-3">
-                <span className="text-sm font-bold">{review.overallRating.toFixed(1)}</span>
-              </div>
+            ) : null}
+            <h3 className="mt-1 text-xl leading-tight font-black tracking-tight sm:text-2xl">
+              {review.jobTitle}
+            </h3>
+            <p className="text-on-surface-variant/70 mt-1 font-mono text-[10px] tracking-widest uppercase">
+              {formatEmploymentType(review.employmentType)}
+            </p>
+          </div>
+          <div className="flex shrink-0 flex-col items-end gap-1.5">
+            <span className="text-on-surface-variant text-sm">
+              {timeAgo(new Date(review.createdAt))}
+            </span>
+            <div className="bg-primary text-primary-foreground flex items-center rounded px-2.5 py-1 sm:px-3">
+              <span className="text-sm font-bold">{review.overallRating.toFixed(1)}</span>
             </div>
           </div>
-          <h3 className="mt-1 text-xl leading-tight font-black tracking-tight sm:text-2xl">
-            {review.jobTitle}
-          </h3>
-          <p className="text-on-surface-variant/70 mt-1 font-mono text-[10px] tracking-widest uppercase">
-            {formatEmploymentType(review.employmentType)}
-          </p>
         </div>
       </div>
 
@@ -140,17 +138,13 @@ export function ReviewCard({
       {overflows && (
         <button
           onClick={() => setExpanded((e) => !e)}
-          className="text-on-surface-variant hover:text-foreground mt-4 flex items-center gap-1 font-mono text-xs tracking-widest uppercase transition-colors"
+          className="text-on-surface-variant hover:text-foreground mt-4 flex items-center gap-1 text-sm font-bold transition-colors"
         >
-          {expanded ? (
-            <>
-              <ChevronUp size={13} /> Show less
-            </>
-          ) : (
-            <>
-              <ChevronDown size={13} /> Read more
-            </>
-          )}
+          <ChevronDown
+            size={14}
+            className={`transition-transform ${expanded ? "rotate-180" : ""}`}
+          />
+          {expanded ? "Show less" : "Read more"}
         </button>
       )}
     </article>

@@ -72,8 +72,8 @@ export function InterviewCard({
         {companyLogoKey !== undefined && (
           <CompanyLogo logoKey={companyLogoKey} name={companyName} />
         )}
-        <div className="min-w-0 flex-1">
-          <div className="flex items-start justify-between gap-3">
+        <div className="flex min-w-0 flex-1 items-start justify-between gap-3">
+          <div className="min-w-0">
             {companyName && companySlug ? (
               <Link
                 href={`/orgs/${companySlug}`}
@@ -82,24 +82,22 @@ export function InterviewCard({
                 {companyName}
               </Link>
             ) : showKind ? (
-              <span className="text-on-surface-variant font-mono text-[10px] tracking-widest uppercase">
+              <span className="text-on-surface-variant font-mono text-[11px] font-bold tracking-widest uppercase">
                 Interview
               </span>
-            ) : (
-              <span />
+            ) : null}
+            <h3 className="mt-1 text-xl leading-tight font-black tracking-tight sm:text-2xl">
+              {interview.roleTitle}
+            </h3>
+            {interview.department && (
+              <p className="text-on-surface-variant mt-1 text-sm font-medium">
+                {interview.department}
+              </p>
             )}
-            <span className="text-on-surface-variant shrink-0 text-sm">
-              {timeAgo(new Date(interview.createdAt))}
-            </span>
           </div>
-          <h3 className="mt-1 text-xl leading-tight font-black tracking-tight sm:text-2xl">
-            {interview.roleTitle}
-          </h3>
-          {interview.department && (
-            <p className="text-on-surface-variant mt-1 text-sm font-medium">
-              {interview.department}
-            </p>
-          )}
+          <span className="text-on-surface-variant shrink-0 text-sm">
+            {timeAgo(new Date(interview.createdAt))}
+          </span>
         </div>
       </div>
 
@@ -173,7 +171,7 @@ export function InterviewCard({
             size={14}
             className={`transition-transform ${expanded ? "rotate-180" : ""}`}
           />
-          {expanded ? "Show less" : "Continue reading"}
+          {expanded ? "Show less" : "Read more"}
         </button>
       )}
     </article>

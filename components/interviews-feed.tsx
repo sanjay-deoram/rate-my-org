@@ -128,10 +128,10 @@ export function InterviewsFeed({
   return (
     <div>
       {/* Grey hero section */}
-      <div className="bg-surface-container-low relative w-full overflow-hidden px-5 py-14 md:px-12 md:py-20">
+      <div className="bg-surface-container-low relative w-full overflow-hidden px-5 py-10 sm:py-14 md:px-12 md:py-20">
         <DecorativeShapes variant="archive" className="scale-x-[-1]" />
         <div className="relative z-10 mx-auto max-w-5xl">
-          <div className="mb-8 text-center">
+          <div className="mb-6 text-center sm:mb-8">
             <p className="text-on-surface-variant mb-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
               Explore · {totalInterviews.toLocaleString()}+ Anonymous Interviews
             </p>
@@ -199,9 +199,9 @@ export function InterviewsFeed({
       </div>
 
       {/* Filters + cards */}
-      <div className="mx-auto max-w-6xl px-5 py-8 md:px-12">
+      <div className="mx-auto max-w-6xl px-5 py-6 sm:py-8 md:px-12">
         {/* Filter row */}
-        <div className="mb-6 flex flex-wrap items-center gap-2">
+        <div className="mb-4 flex flex-wrap items-center gap-2 sm:mb-6">
           {companiesLoading ? (
             <div className="border-outline-variant/40 bg-surface-container-lowest h-9 w-36 animate-pulse rounded-2xl border" />
           ) : (
@@ -270,16 +270,16 @@ export function InterviewsFeed({
               : `${totalInterviews.toLocaleString()} interviews`}
           </span>
         </div>
-        <div className="border-outline-variant/15 -mx-8 mb-6 border-t md:-mx-12" />
+        <div className="border-outline-variant/15 -mx-8 mb-4 border-t sm:mb-6 md:-mx-12" />
 
         {/* Cards */}
         {items.length === 0 ? (
-          <div className="flex flex-col items-center py-24 text-center">
+          <div className="flex flex-col items-center py-16 text-center sm:py-24">
             <MessageSquare size={40} className="text-on-surface-variant/30 mb-4" />
             <p className="text-on-surface-variant font-medium">No interviews found</p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div className="space-y-3 sm:space-y-6">
             {items.map((item) => (
               <InterviewCard
                 key={item.id}
@@ -295,7 +295,7 @@ export function InterviewsFeed({
 
         {/* Pagination */}
         {items.length > 0 && (
-          <div className="mt-10">
+          <div className="mt-6 sm:mt-10">
             <Pagination
               page={page}
               totalPages={totalPages}

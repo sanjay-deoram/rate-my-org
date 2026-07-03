@@ -45,7 +45,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
       <main className="relative overflow-hidden pt-28 pb-24">
         <DecorativeShapes variant="profile" />
         {/* Back button */}
-        <div className="relative z-10 mx-auto mb-8 max-w-7xl px-5 md:px-12">
+        <div className="relative z-10 mx-auto mb-5 max-w-7xl px-5 md:mb-8 md:px-12">
           <Link
             href="/companies"
             className="text-on-surface-variant hover:text-foreground inline-flex items-center gap-2 text-sm font-medium transition-colors"
@@ -104,7 +104,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         </section>
 
         {/* KPI grid */}
-        <section className="relative z-10 mx-auto mb-8 max-w-7xl px-5 md:px-12">
+        <section className="relative z-10 mx-auto mb-5 max-w-7xl px-5 md:mb-8 md:px-12">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-8">
             <div className="bg-surface-container-low hover:bg-surface-container-highest flex flex-col justify-between rounded-xl p-4 transition-all duration-300 md:h-48 md:p-8">
               <span className="text-on-surface-variant font-mono text-[9px] tracking-widest uppercase md:text-xs">

@@ -63,8 +63,8 @@ export function ReviewCard({
   const { expanded, setExpanded, overflows, maxHeight, bodyRef, onTransitionEnd } = useExpandable();
 
   return (
-    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-5 shadow-lg ring-1 shadow-black/[0.06] sm:p-8 lg:p-10">
-      <div className="mb-6 flex items-start gap-3">
+    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-5 shadow-lg ring-1 shadow-black/[0.06] sm:p-6 lg:p-8">
+      <div className="mb-4 flex items-start gap-2.5 sm:mb-6 sm:gap-3">
         {companyLogoKey !== undefined && (
           <CompanyLogo logoKey={companyLogoKey} name={companyName} />
         )}
@@ -82,7 +82,7 @@ export function ReviewCard({
                 Review
               </span>
             ) : null}
-            <h3 className="mt-1 text-xl leading-tight font-black tracking-tight sm:text-2xl">
+            <h3 className="mt-1 text-lg leading-tight font-black tracking-tight sm:text-xl lg:text-2xl">
               {review.jobTitle}
             </h3>
             <p className="text-on-surface-variant/70 mt-1 font-mono text-[10px] tracking-widest uppercase">
@@ -90,7 +90,7 @@ export function ReviewCard({
             </p>
           </div>
           <div className="flex shrink-0 flex-col items-end gap-1.5">
-            <span className="text-on-surface-variant text-sm">
+            <span className="text-on-surface-variant text-xs sm:text-sm">
               {timeAgo(new Date(review.createdAt))}
             </span>
             <div className="bg-primary text-primary-foreground flex items-center rounded px-2.5 py-1 sm:px-3">
@@ -110,7 +110,7 @@ export function ReviewCard({
           }}
           className="overflow-hidden"
         >
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-2 md:gap-8">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 md:grid-cols-2 md:gap-8">
             <div>
               <h4 className="mb-3 flex items-center gap-2 text-xs font-black tracking-widest uppercase">
                 <PlusCircle size={16} className="text-tertiary-fixed-dim" /> Pros

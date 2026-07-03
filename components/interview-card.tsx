@@ -67,8 +67,8 @@ export function InterviewCard({
   const { expanded, setExpanded, overflows, maxHeight, bodyRef, onTransitionEnd } = useExpandable();
 
   return (
-    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-6 shadow-lg ring-1 shadow-black/[0.06] sm:p-10 lg:p-12">
-      <div className="mb-4 flex items-start gap-3 sm:mb-5">
+    <article className="bg-surface-container-lowest ring-outline-variant/15 rounded-xl p-5 shadow-lg ring-1 shadow-black/[0.06] sm:p-6 lg:p-8">
+      <div className="mb-3 flex items-start gap-2.5 sm:mb-5 sm:gap-3">
         {companyLogoKey !== undefined && (
           <CompanyLogo logoKey={companyLogoKey} name={companyName} />
         )}
@@ -86,7 +86,7 @@ export function InterviewCard({
                 Interview
               </span>
             ) : null}
-            <h3 className="mt-1 text-xl leading-tight font-black tracking-tight sm:text-2xl">
+            <h3 className="mt-1 text-lg leading-tight font-black tracking-tight sm:text-xl lg:text-2xl">
               {interview.roleTitle}
             </h3>
             {interview.department && (
@@ -95,13 +95,13 @@ export function InterviewCard({
               </p>
             )}
           </div>
-          <span className="text-on-surface-variant shrink-0 text-sm">
+          <span className="text-on-surface-variant shrink-0 text-xs sm:text-sm">
             {timeAgo(new Date(interview.createdAt))}
           </span>
         </div>
       </div>
 
-      <div className="border-outline-variant/20 mb-7 flex flex-wrap items-center gap-x-5 gap-y-2 border-y py-3 sm:mb-9">
+      <div className="border-outline-variant/20 mb-5 flex flex-wrap items-center gap-x-4 gap-y-1.5 border-y py-2.5 sm:mb-9 sm:gap-x-5 sm:gap-y-2 sm:py-3">
         <div className="flex items-center gap-2">
           <span
             className={`h-2 w-2 rounded-full ${EXPERIENCE_DOT[interview.overallExperience] ?? "bg-on-surface-variant"}`}
@@ -141,14 +141,16 @@ export function InterviewCard({
             {interview.rounds.map((round, idx) => (
               <div
                 key={idx}
-                className="grid grid-cols-[2.5rem_1fr] gap-4 py-5 first:pt-0 sm:grid-cols-[3rem_1fr]"
+                className="grid grid-cols-[2rem_1fr] gap-3 py-4 first:pt-0 sm:grid-cols-[3rem_1fr] sm:gap-4 sm:py-5"
               >
                 <span className="text-outline-variant font-mono text-xs font-bold">
                   {String(idx + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <p className="mb-2 text-sm font-black tracking-wide uppercase">{round.type}</p>
-                  <p className="text-on-surface-variant text-[15px] leading-relaxed whitespace-pre-wrap">
+                  <p className="mb-1.5 text-[13px] font-black tracking-wide uppercase sm:mb-2 sm:text-sm">
+                    {round.type}
+                  </p>
+                  <p className="text-on-surface-variant text-sm leading-relaxed whitespace-pre-wrap sm:text-[15px]">
                     {round.notes}
                   </p>
                 </div>

@@ -77,6 +77,7 @@ export const reviews = pgTable("reviews", {
   employmentType: employmentTypeEnum("employment_type").notNull(),
   jobTitle: text("job_title").notNull(),
   headline: text("headline").notNull(),
+  summary: text("summary").notNull().default(""),
   pros: text("pros").notNull(),
   cons: text("cons").notNull(),
   adviceToManagement: text("advice_to_management").notNull(),

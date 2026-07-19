@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { Bookmark, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -115,61 +116,69 @@ export function Nav() {
       </div>
 
       {/* Mobile menu panel */}
-      {menuOpen && (
-        <div className="md:hidden">
-          <div
-            className="border-border bg-background/95 mt-3 rounded-[1.25rem] border p-3 shadow-[0_8px_32px_rgba(5,8,7,0.12)] backdrop-blur-xl"
-            role="menu"
+      <AnimatePresence>
+        {menuOpen && (
+          <motion.div
+            initial={{ opacity: 0, y: -8, scale: 0.98 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -8, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: "easeOut" }}
+            className="md:hidden"
           >
-            <div className="flex flex-col gap-1">
-              {navLinks.map((link) => {
-                const active = isActive(link.match);
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    role="menuitem"
-                    onClick={() => setMenuOpen(false)}
-                    className={cn(
-                      "group relative overflow-hidden rounded-xl px-5 py-3.5 text-base font-bold transition-colors duration-300",
-                      active
-                        ? "text-primary-foreground"
-                        : "text-on-surface-variant hover:text-primary-foreground",
-                    )}
-                  >
-                    <div
+            <div
+              className="border-border bg-background/95 mt-3 rounded-[1.25rem] border p-3 shadow-[0_8px_32px_rgba(5,8,7,0.12)] backdrop-blur-xl"
+              role="menu"
+            >
+              <div className="flex flex-col gap-1">
+                {navLinks.map((link) => {
+                  const active = isActive(link.match);
+                  return (
+                    <Link
+                      key={link.href}
+                      href={link.href}
+                      role="menuitem"
+                      onClick={() => setMenuOpen(false)}
                       className={cn(
-                        "bg-primary absolute inset-0 origin-left rounded-xl transition-transform duration-300 ease-out",
-                        active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                        "group relative overflow-hidden rounded-xl px-5 py-3.5 text-base font-bold transition-colors duration-300",
+                        active
+                          ? "text-primary-foreground"
+                          : "text-on-surface-variant hover:text-primary-foreground",
                       )}
-                    />
-                    <span className="relative">{link.label}</span>
-                  </Link>
-                );
-              })}
-            </div>
+                    >
+                      <div
+                        className={cn(
+                          "bg-primary absolute inset-0 origin-left rounded-xl transition-transform duration-300 ease-out",
+                          active ? "scale-x-100" : "scale-x-0 group-hover:scale-x-100",
+                        )}
+                      />
+                      <span className="relative">{link.label}</span>
+                    </Link>
+                  );
+                })}
+              </div>
 
-            <div className="mt-2 grid grid-cols-2 gap-2">
-              <Link
-                href="/reviews/write"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="bg-token-blue block rounded-xl px-4 py-3.5 text-center text-base font-bold text-white shadow-md transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
-              >
-                Post Review
-              </Link>
-              <Link
-                href="/interviews/submit"
-                role="menuitem"
-                onClick={() => setMenuOpen(false)}
-                className="border-border text-foreground hover:border-primary block rounded-xl border px-4 py-3.5 text-center text-base font-bold transition-colors duration-200 active:scale-[0.98]"
-              >
-                Post Interview
-              </Link>
+              <div className="mt-2 grid grid-cols-2 gap-2">
+                <Link
+                  href="/reviews/write"
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                  className="bg-token-blue block rounded-xl px-4 py-3.5 text-center text-base font-bold text-white shadow-md transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
+                >
+                  Post Review
+                </Link>
+                <Link
+                  href="/interviews/submit"
+                  role="menuitem"
+                  onClick={() => setMenuOpen(false)}
+                  className="border-border text-foreground hover:border-primary block rounded-xl border px-4 py-3.5 text-center text-base font-bold transition-colors duration-200 active:scale-[0.98]"
+                >
+                  Post Interview
+                </Link>
+              </div>
             </div>
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </nav>
   );
 }

@@ -32,7 +32,7 @@ function ReviewCard({ review }: { review: RecentReviewEntry }) {
           </span>
         </div>
       </div>
-      <p className="text-sm leading-relaxed">{truncate(review.headline, 160)}</p>
+      <p className="text-sm leading-relaxed">{truncate(review.summary || review.headline, 160)}</p>
       <div className="bg-token-lime/60 text-token-green-deep mt-5 inline-flex rounded-full px-3 py-1 text-xs font-black">
         {review.overallRating.toFixed(1)} rating
       </div>

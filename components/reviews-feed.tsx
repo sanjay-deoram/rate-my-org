@@ -8,6 +8,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { useCompaniesWithReviews } from "@/hooks/use-companies-with-reviews";
 import { FilterDropdown } from "@/components/ui/filter-dropdown";
 import { DecorativeShapes } from "@/components/decorative-shapes";
+import { Stagger, StaggerItem } from "@/components/motion-primitives";
 import type { ReviewFeedItem } from "@/lib/api/reviews";
 
 const RATING_OPTIONS = [
@@ -244,19 +245,20 @@ export function ReviewsFeed({
             <p className="text-on-surface-variant font-medium">No reviews found</p>
           </div>
         ) : (
-          <div className="space-y-3 sm:space-y-6">
+          <Stagger key={page} className="space-y-3 sm:space-y-6">
             {items.map((item) => (
-              <ReviewCard
-                key={item.id}
-                review={item}
-                showKind
-                companyName={item.companyName}
-                companySlug={item.companySlug}
-                companyIndustry={item.companyIndustry}
-                companyLogoKey={item.companyLogoKey}
-              />
+              <StaggerItem key={item.id}>
+                <ReviewCard
+                  review={item}
+                  showKind
+                  companyName={item.companyName}
+                  companySlug={item.companySlug}
+                  companyIndustry={item.companyIndustry}
+                  companyLogoKey={item.companyLogoKey}
+                />
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         )}
 
         {/* Pagination */}

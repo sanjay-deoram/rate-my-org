@@ -15,7 +15,7 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
 
-  const filtered = companies.filter((c) => c.latestHeadline?.trim());
+  const filtered = companies.filter((c) => c.latestSummary?.trim() || c.latestHeadline?.trim());
 
   // Tile to at least 15 items so Embla always has enough snap positions
   const MIN_ITEMS = 15;
@@ -71,7 +71,9 @@ function ratingColor(avg: string | null) {
 }
 
 function CarouselCard({ company }: { company: TopRatedCompany }) {
-  const { slug, name, industry, logoKey, avgRating, reviewCount, latestHeadline } = company;
+  const { slug, name, industry, logoKey, avgRating, reviewCount, latestHeadline, latestSummary } =
+    company;
+  const blurb = latestSummary?.trim() || latestHeadline;
   const cdnBase = process.env.NEXT_PUBLIC_LOGO_CDN;
   const logoSrc = logoKey && cdnBase ? `${cdnBase}/${logoKey}` : null;
 
@@ -102,7 +104,7 @@ function CarouselCard({ company }: { company: TopRatedCompany }) {
       </div>
 
       <p className="line-clamp-3 flex-1 text-lg leading-7 font-black">
-        {latestHeadline ?? "No reviews yet"}
+        {blurb ?? "No reviews yet"}
       </p>
 
       <div className="border-border flex items-center justify-between border-t pt-4">

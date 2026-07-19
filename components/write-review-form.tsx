@@ -85,6 +85,7 @@ export function WriteReviewForm() {
       formerYear: null as number | null,
       employmentType: "" as EmploymentTypeValue | "",
       jobTitle: "",
+      summary: "",
       pros: "",
       cons: "",
       adviceToManagement: "",
@@ -342,6 +343,34 @@ export function WriteReviewForm() {
           <div className="bg-outline-variant/20 h-px flex-1" />
         </div>
         <h2 className="text-2xl font-bold tracking-tight">Your Review</h2>
+
+        <form.Field
+          name="summary"
+          validators={{ onSubmit: z.string().min(1, "Summary is required").max(300) }}
+        >
+          {(field) => (
+            <div className="space-y-2">
+              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                Summary
+              </label>
+              <textarea
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                placeholder="Sum up your experience in 1–2 sentences"
+                rows={2}
+                maxLength={300}
+                className={cn(
+                  textareaCls,
+                  field.state.meta.errors.length > 0 && "border-destructive",
+                )}
+              />
+              {field.state.meta.errors[0] && (
+                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+              )}
+            </div>
+          )}
+        </form.Field>
 
         <form.Field
           name="pros"

@@ -8,5 +8,6 @@ export type TopRatedCompany = {
   avgRating: string | null;
   reviewCount: number;
   latestHeadline: string | null;
+  latestSummary: string | null;
   ratingTrend: RatingTrend;
 };

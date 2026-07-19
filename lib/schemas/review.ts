@@ -10,6 +10,7 @@ export const reviewPostBodySchema = z
     employmentType: z.enum(EMPLOYMENT_TYPE_VALUES),
     jobTitle: z.string().min(1).max(120),
     headline: z.string().optional().default(""),
+    summary: z.string().max(300).optional().default(""),
     pros: z.string().min(1).max(5000),
     cons: z.string().min(1).max(5000),
     adviceToManagement: z.string().optional().default(""),

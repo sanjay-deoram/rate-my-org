@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { companies, reviews, interviews } from "@/drizzle/schema";
-import { eq, desc, sql, count, and, ne } from "drizzle-orm";
+import { eq, desc, sql, count, and, ne, or } from "drizzle-orm";
 import type { TopRatedCompany, RatingTrend } from "@/types/homepage";
 
 function computeTrend(
@@ -21,6 +21,7 @@ function computeTrend(
 export type RecentReviewEntry = {
   id: string;
   headline: string;
+  summary: string;
   overallRating: number;
   jobTitle: string;
   employmentStatus: string;
@@ -34,6 +35,7 @@ export async function getRecentReviews(limit = 8): Promise<RecentReviewEntry[]> 
     .select({
       id: reviews.id,
       headline: reviews.headline,
+      summary: reviews.summary,
       overallRating: reviews.overallRating,
       jobTitle: reviews.jobTitle,
       employmentStatus: reviews.employmentStatus,
@@ -43,8 +45,10 @@ export async function getRecentReviews(limit = 8): Promise<RecentReviewEntry[]> 
     })
     .from(reviews)
     .innerJoin(companies, eq(reviews.companyId, companies.id))
-    .where(and(eq(companies.status, "approved"), ne(reviews.headline, "")))
-    .orderBy(desc(reviews.createdAt))
+    .where(
+      and(eq(companies.status, "approved"), or(ne(reviews.summary, ""), ne(reviews.headline, ""))),
+    )
+    .orderBy(sql`(${reviews.summary} != '') DESC`, desc(reviews.createdAt))
     .limit(limit);
   return rows;
 }
@@ -89,6 +93,9 @@ async function queryTopRated(limit: number, withHaving: boolean): Promise<TopRat
     latestHeadline: sql<
       string | null
     >`(SELECT headline FROM reviews WHERE company_id = ${companies.id} ORDER BY created_at DESC LIMIT 1)`,
+    latestSummary: sql<
+      string | null
+    >`(SELECT summary FROM reviews WHERE company_id = ${companies.id} ORDER BY created_at DESC LIMIT 1)`,
     recentAvgRating: sql<
       string | null
     >`(SELECT AVG(overall_rating) FROM (SELECT overall_rating FROM reviews WHERE company_id = ${companies.id} ORDER BY created_at DESC LIMIT 5) sub)`,

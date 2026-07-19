@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo } from "react";
+import { motion } from "framer-motion";
 import { Search, X, MessageSquare, BookOpen } from "lucide-react";
 import Link from "next/link";
 import type { OrgProfile } from "@/lib/queries/orgs";
@@ -10,10 +11,16 @@ import { ReviewCard } from "@/components/review-card";
 import { InterviewCard } from "@/components/interview-card";
 import { EmptyState } from "@/components/empty-state";
 import { OrgFilterBar } from "@/components/org-filter-bar";
+import { Stagger, StaggerItem } from "@/components/motion-primitives";
 
 function ShareFab({ company }: { company: OrgProfile["company"] }) {
   return (
-    <div className="fixed right-4 bottom-4 z-50 flex flex-col-reverse items-end gap-2 sm:right-8 sm:bottom-8 sm:gap-2.5">
+    <motion.div
+      initial={{ opacity: 0, y: 24, scale: 0.92 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ type: "spring", stiffness: 260, damping: 24, delay: 0.4 }}
+      className="fixed right-4 bottom-4 z-50 flex flex-col-reverse items-end gap-2 sm:right-8 sm:bottom-8 sm:gap-2.5"
+    >
       <Link
         href={`/reviews/write?company=${company.slug}`}
         className="bg-token-blue flex items-center gap-2.5 rounded-full px-4 py-3 text-sm font-bold text-white shadow-xl transition-opacity duration-200 hover:opacity-90 active:scale-[0.98] sm:px-5 sm:py-3.5"
@@ -28,7 +35,7 @@ function ShareFab({ company }: { company: OrgProfile["company"] }) {
         <BookOpen size={15} />
         Submit Interview
       </Link>
-    </div>
+    </motion.div>
   );
 }
 
@@ -147,34 +154,40 @@ export function OrgContent({ data }: { data: OrgProfile }) {
     if (tab === "reviews") {
       if (filteredReviews.length === 0) return <EmptyState query={query} />;
       return (
-        <div className="space-y-3 sm:space-y-4">
+        <Stagger key="reviews" className="space-y-3 sm:space-y-4">
           {filteredReviews.map((r) => (
-            <ReviewCard key={r.id} review={r} />
+            <StaggerItem key={r.id}>
+              <ReviewCard review={r} />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       );
     }
     if (tab === "interviews") {
       if (filteredInterviews.length === 0) return <EmptyState query={query} />;
       return (
-        <div className="space-y-3 sm:space-y-4">
+        <Stagger key="interviews" className="space-y-3 sm:space-y-4">
           {filteredInterviews.map((i) => (
-            <InterviewCard key={i.id} interview={i} />
+            <StaggerItem key={i.id}>
+              <InterviewCard interview={i} />
+            </StaggerItem>
           ))}
-        </div>
+        </Stagger>
       );
     }
     if (bothItems.length === 0) return <EmptyState query={query} />;
     return (
-      <div className="space-y-3 sm:space-y-4">
-        {bothItems.map((item) =>
-          item._kind === "review" ? (
-            <ReviewCard key={`r-${item.id}`} review={item} showKind />
-          ) : (
-            <InterviewCard key={`i-${item.id}`} interview={item} showKind />
-          ),
-        )}
-      </div>
+      <Stagger key="both" className="space-y-3 sm:space-y-4">
+        {bothItems.map((item) => (
+          <StaggerItem key={item._kind === "review" ? `r-${item.id}` : `i-${item.id}`}>
+            {item._kind === "review" ? (
+              <ReviewCard review={item} showKind />
+            ) : (
+              <InterviewCard interview={item} showKind />
+            )}
+          </StaggerItem>
+        ))}
+      </Stagger>
     );
   }
 
@@ -208,10 +221,15 @@ export function OrgContent({ data }: { data: OrgProfile }) {
           <button
             key={value}
             onClick={() => handleSetTab(value)}
-            className={`-mb-px flex shrink-0 flex-col items-start border-b-2 pb-3 transition-all sm:pb-4 ${
-              tab === value ? "border-foreground" : "border-transparent"
-            }`}
+            className="relative -mb-px flex shrink-0 flex-col items-start pb-3 sm:pb-4"
           >
+            {tab === value && (
+              <motion.div
+                layoutId="org-tab-underline"
+                transition={{ type: "spring", stiffness: 400, damping: 34 }}
+                className="bg-foreground absolute inset-x-0 bottom-0 h-0.5"
+              />
+            )}
             <span
               className={`font-mono text-xl leading-none font-bold tabular-nums transition-colors sm:text-2xl ${
                 tab === value ? "text-foreground" : "text-outline-variant/40"

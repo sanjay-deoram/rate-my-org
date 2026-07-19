@@ -4,6 +4,7 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { Search, X, Building2, Star, MessageSquare, Users, ArrowRight } from "lucide-react";
 import { useCompanySearch } from "@/hooks/use-company-search";
+import { FadeIn } from "@/components/motion-primitives";
 import { useCompanyBrowse } from "@/hooks/use-company-browse";
 import type { CompanySuggestion } from "@/types/review";
 
@@ -216,7 +217,9 @@ export function CompaniesDirectory() {
         )}
 
         {companies.map((company) => (
-          <CompanyCard key={company.slug} company={company} />
+          <FadeIn key={company.slug}>
+            <CompanyCard company={company} />
+          </FadeIn>
         ))}
 
         <div ref={sentinelRef} className="h-4" />

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Bookmark, Menu, X } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -18,6 +18,9 @@ export function Nav() {
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const toggleButtonRef = useRef<HTMLButtonElement>(null);
+  const firstMenuLinkRef = useRef<HTMLAnchorElement>(null);
+  const hasOpenedRef = useRef(false);
 
   useEffect(() => {
     const handler = () => setScrolled(window.scrollY > 20);
@@ -35,6 +38,16 @@ export function Nav() {
       window.removeEventListener("keydown", onKey);
       document.body.style.overflow = "";
     };
+  }, [menuOpen]);
+
+  // Move focus into the panel when it opens, and back to the toggle when it closes.
+  useEffect(() => {
+    if (menuOpen) {
+      hasOpenedRef.current = true;
+      firstMenuLinkRef.current?.focus();
+    } else if (hasOpenedRef.current) {
+      toggleButtonRef.current?.focus();
+    }
   }, [menuOpen]);
 
   function isActive(match: string[]) {
@@ -102,6 +115,7 @@ export function Nav() {
 
         {/* Mobile hamburger toggle */}
         <button
+          ref={toggleButtonRef}
           type="button"
           aria-label={menuOpen ? "Close menu" : "Open menu"}
           aria-expanded={menuOpen}
@@ -125,18 +139,15 @@ export function Nav() {
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="md:hidden"
           >
-            <div
-              className="border-border bg-background/95 mt-3 rounded-[1.25rem] border p-3 shadow-[0_8px_32px_rgba(5,8,7,0.12)] backdrop-blur-xl"
-              role="menu"
-            >
+            <div className="border-border bg-background/95 mt-3 rounded-[1.25rem] border p-3 shadow-[0_8px_32px_rgba(5,8,7,0.12)] backdrop-blur-xl">
               <div className="flex flex-col gap-1">
-                {navLinks.map((link) => {
+                {navLinks.map((link, index) => {
                   const active = isActive(link.match);
                   return (
                     <Link
                       key={link.href}
                       href={link.href}
-                      role="menuitem"
+                      ref={index === 0 ? firstMenuLinkRef : undefined}
                       onClick={() => setMenuOpen(false)}
                       className={cn(
                         "group relative overflow-hidden rounded-xl px-5 py-3.5 text-base font-bold transition-colors duration-300",
@@ -160,7 +171,6 @@ export function Nav() {
               <div className="mt-2 grid grid-cols-2 gap-2">
                 <Link
                   href="/reviews/write"
-                  role="menuitem"
                   onClick={() => setMenuOpen(false)}
                   className="bg-token-blue block rounded-xl px-4 py-3.5 text-center text-base font-bold text-white shadow-md transition-opacity duration-200 hover:opacity-90 active:scale-[0.98]"
                 >
@@ -168,7 +178,6 @@ export function Nav() {
                 </Link>
                 <Link
                   href="/interviews/submit"
-                  role="menuitem"
                   onClick={() => setMenuOpen(false)}
                   className="border-border text-foreground hover:border-primary block rounded-xl border px-4 py-3.5 text-center text-base font-bold transition-colors duration-200 active:scale-[0.98]"
                 >

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, Star } from "lucide-react";
+import { ArrowRight, Pause, Play, Star } from "lucide-react";
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel";
 import type { TopRatedCompany } from "@/types/homepage";
 
@@ -14,6 +14,17 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
   const [api, setApi] = useState<CarouselApi>();
   const [current, setCurrent] = useState(0);
   const [paused, setPaused] = useState(false);
+  const [reducedMotion, setReducedMotion] = useState(() => {
+    if (typeof window === "undefined") return false;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  });
+
+  useEffect(() => {
+    const mql = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const handler = (e: MediaQueryListEvent) => setReducedMotion(e.matches);
+    mql.addEventListener("change", handler);
+    return () => mql.removeEventListener("change", handler);
+  }, []);
 
   const filtered = companies.filter((c) => c.latestSummary?.trim() || c.latestHeadline?.trim());
 
@@ -27,7 +38,7 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
         ).flat();
 
   useEffect(() => {
-    if (!api || paused) return;
+    if (!api || paused || reducedMotion) return;
 
     const timer = setTimeout(() => {
       api.scrollNext();
@@ -35,30 +46,47 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
     }, 2000);
 
     return () => clearTimeout(timer);
-  }, [api, current, paused]);
+  }, [api, current, paused, reducedMotion]);
 
   if (items.length === 0) return null;
 
   return (
-    <div
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      style={{
-        maskImage:
-          "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-        WebkitMaskImage:
-          "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
-      }}
-    >
-      <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
-        <CarouselContent>
-          {items.map((company) => (
-            <CarouselItem className="basis-[84%] sm:basis-[55%] md:basis-1/3" key={company._key}>
-              <CarouselCard company={company} />
-            </CarouselItem>
-          ))}
-        </CarouselContent>
-      </Carousel>
+    <div>
+      {!reducedMotion && (
+        <div className="mb-3 flex justify-end">
+          <button
+            type="button"
+            onClick={() => setPaused((p) => !p)}
+            aria-pressed={paused}
+            aria-label={paused ? "Play carousel autoplay" : "Pause carousel autoplay"}
+            className="border-border bg-surface-container-lowest text-on-surface-variant hover:text-foreground focus-visible:ring-ring flex h-9 w-9 items-center justify-center rounded-full border transition-colors focus-visible:ring-2 focus-visible:outline-none"
+          >
+            {paused ? <Play size={14} /> : <Pause size={14} />}
+          </button>
+        </div>
+      )}
+      <div
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
+        style={{
+          maskImage:
+            "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+          WebkitMaskImage:
+            "linear-gradient(to right, transparent 0%, black 10%, black 90%, transparent 100%)",
+        }}
+      >
+        <Carousel setApi={setApi} opts={{ loop: true }} className="w-full">
+          <CarouselContent>
+            {items.map((company) => (
+              <CarouselItem className="basis-[84%] sm:basis-[55%] md:basis-1/3" key={company._key}>
+                <CarouselCard company={company} />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+        </Carousel>
+      </div>
     </div>
   );
 }

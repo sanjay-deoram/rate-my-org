@@ -37,7 +37,7 @@ export default async function HomePage() {
         <section className="relative">
           <div className="bg-token-green/90 absolute top-20 left-0 h-80 w-[24vw] -translate-x-1/3 rotate-[-8deg] rounded-[2rem] shadow-2xl lg:h-[560px] lg:w-[38vw]" />
           <div className="bg-token-lime/80 absolute top-44 right-0 h-44 w-24 translate-x-16 rotate-[5deg] rounded-[1.25rem] lg:h-72 lg:w-40" />
-          <div className="relative z-10 mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-8 lg:pt-10">
+          <div className="relative z-10 mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-12 lg:pt-10">
             <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
               <Reveal>
                 <h1 className="max-w-4xl text-4xl leading-[0.98] font-black sm:text-5xl md:text-7xl lg:text-8xl">
@@ -81,7 +81,7 @@ export default async function HomePage() {
         </section>
 
         <section className="bg-paper-soft py-20 md:py-28">
-          <div className="mx-auto max-w-7xl px-5 md:px-8">
+          <div className="mx-auto max-w-7xl px-5 md:px-12">
             <Reveal className="mx-auto max-w-2xl text-center">
               <p className="text-on-surface-variant text-xs font-bold">Workplace examples</p>
               <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
@@ -99,7 +99,7 @@ export default async function HomePage() {
         </section>
 
         <section className="py-20 md:py-28">
-          <div className="mx-auto grid max-w-6xl gap-10 px-5 md:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
+          <div className="mx-auto grid max-w-6xl gap-10 px-5 md:px-12 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
             <Reveal>
               <p className="text-on-surface-variant text-xs font-bold">Anonymous by design</p>
               <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
@@ -122,7 +122,7 @@ export default async function HomePage() {
 
         <HomeReviews reviews={recentReviews} />
 
-        <section className="px-5 py-20 md:px-8 md:py-28">
+        <section className="px-5 py-20 md:px-12 md:py-28">
           <Reveal className="bg-primary text-primary-foreground mx-auto max-w-5xl rounded-[1.75rem] px-6 py-14 text-center md:px-12">
             <p className="text-xs font-bold text-white/55">Contribute to the index</p>
             <h2 className="mx-auto mt-3 max-w-3xl text-3xl leading-tight font-black sm:text-4xl md:text-6xl">

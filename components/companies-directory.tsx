@@ -9,27 +9,31 @@ import { useCompanyBrowse } from "@/hooks/use-company-browse";
 import type { CompanySuggestion } from "@/types/review";
 
 const STAT_PILL_VARIANT = {
-  amber: "bg-[#3be366]/10 text-[#3be366]",
+  amber: "bg-tertiary-fixed-dim/10 text-token-green-deep",
   neutral: "bg-surface-container text-on-surface-variant",
 } as const;
 
 function StatPill({
   label,
+  value,
   variant,
   children,
 }: {
   label: string;
+  value: string | number;
   variant: keyof typeof STAT_PILL_VARIANT;
   children: React.ReactNode;
 }) {
   return (
     <div className="group/pill relative">
       <span
-        className={`flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] transition-colors duration-300 group-hover:bg-white/10 group-hover:text-white ${STAT_PILL_VARIANT[variant]}`}
+        tabIndex={0}
+        aria-label={`${label}: ${value}`}
+        className={`focus-visible:ring-ring flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] transition-colors duration-300 group-hover:bg-white/10 group-hover:text-white focus-visible:ring-2 focus-visible:outline-none ${STAT_PILL_VARIANT[variant]}`}
       >
         {children}
       </span>
-      <div className="bg-foreground pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 rounded px-2 py-1 font-mono text-[10px] font-medium whitespace-nowrap text-white opacity-0 transition-opacity duration-150 group-hover/pill:opacity-100">
+      <div className="bg-foreground pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 rounded px-2 py-1 font-mono text-[10px] font-medium whitespace-nowrap text-white opacity-0 transition-opacity duration-150 group-focus-within/pill:opacity-100 group-hover/pill:opacity-100">
         {label}
       </div>
     </div>
@@ -62,19 +66,19 @@ function CompanyCard({ company }: { company: CompanySuggestion }) {
         <h3 className="text-foreground group-hover:text-primary-foreground truncate text-sm font-bold transition-colors duration-300 md:text-base">
           {company.name}
         </h3>
-        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 font-mono text-[10px] tracking-wide transition-colors duration-300 md:text-[11px]">
+        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 label-meta transition-colors duration-300">
           {company.slug}
         </p>
         <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <StatPill label="Rating" variant="amber">
+          <StatPill label="Rating" value={company.avgRating ?? "—"} variant="amber">
             <Star size={9} className="fill-current" />
             {company.avgRating ?? "—"}
           </StatPill>
-          <StatPill label="Reviews" variant="neutral">
+          <StatPill label="Reviews" value={company.reviewCount} variant="neutral">
             <MessageSquare size={9} />
             {company.reviewCount}
           </StatPill>
-          <StatPill label="Interviews" variant="neutral">
+          <StatPill label="Interviews" value={company.interviewCount} variant="neutral">
             <Users size={9} />
             {company.interviewCount}
           </StatPill>
@@ -166,15 +170,16 @@ export function CompaniesDirectory() {
 
   return (
     <div>
-      <div className="border-border bg-surface-container-lowest mb-8 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
+      <div className="border-border bg-surface-container-lowest focus-within:ring-ring mb-8 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2">
         <div className="flex flex-1 items-center gap-3 px-5 py-3">
           <Search size={18} className="text-on-surface-variant shrink-0" />
           <input
             type="text"
+            aria-label="Search companies"
             value={query}
             onChange={handleChange}
             placeholder="Search companies..."
-            className="placeholder:text-on-surface-variant/45 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
+            className="placeholder:text-on-surface-variant min-w-0 flex-1 bg-transparent py-2 text-base font-semibold outline-none"
           />
           {query && (
             <button

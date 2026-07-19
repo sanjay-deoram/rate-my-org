@@ -8,7 +8,7 @@ export function PhoneMockup({ company }: { company: MockupCompany }) {
   const industry = company.industry ?? "Security software";
 
   return (
-    <div className="border-ink bg-ink desk-shadow absolute top-4 left-1/2 h-[620px] w-[318px] -translate-x-1/2 rotate-[8deg] rounded-[2.35rem] border-[11px] p-2">
+    <div className="border-ink bg-ink desk-shadow absolute top-4 left-1/2 h-[620px] w-[318px] origin-top -translate-x-1/2 scale-[0.65] rotate-[8deg] rounded-[2.35rem] border-[11px] p-2 sm:scale-90 lg:scale-100">
       <div className="bg-background h-full overflow-hidden rounded-[1.7rem]">
         <div className="flex items-center justify-between px-6 pt-4 text-[11px] font-bold">
           <span>9:41</span>

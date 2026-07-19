@@ -34,20 +34,27 @@ function StarRating({ value, onChange }: StarRatingProps) {
   const display = hoverRating || value;
 
   return (
-    <div className="flex gap-3" onMouseLeave={() => setHoverRating(0)}>
+    <div
+      className="flex gap-3"
+      onMouseLeave={() => setHoverRating(0)}
+      role="radiogroup"
+      aria-label="Overall Rating"
+    >
       {[1, 2, 3, 4, 5].map((star) => (
         <button
           key={star}
           type="button"
+          role="radio"
+          aria-checked={value === star}
           onClick={() => onChange(star)}
           onMouseEnter={() => setHoverRating(star)}
-          aria-label={`${star} star${star > 1 ? "s" : ""}`}
+          aria-label={`${star} out of 5 stars`}
           className="transition-transform duration-100 hover:scale-110 active:scale-95"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
-            className="h-10 w-10 transition-all duration-150"
+            className="h-11 w-11 transition-all duration-150"
             style={{
               fill: star <= display ? "var(--color-tertiary-fixed-dim)" : "none",
               stroke:
@@ -66,10 +73,10 @@ function StarRating({ value, onChange }: StarRatingProps) {
 }
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0";
+  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
 
 const textareaCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full resize-none border-b bg-transparent py-4 text-lg leading-relaxed transition-all outline-none focus:ring-0";
+  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full resize-none border-b bg-transparent py-4 text-lg leading-relaxed transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
 
 export function WriteReviewForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -153,7 +160,9 @@ export function WriteReviewForm() {
                 inputSize="lg"
               />
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -179,7 +188,9 @@ export function WriteReviewForm() {
               </label>
               <StarRating value={field.state.value} onChange={(v) => field.handleChange(v)} />
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -195,14 +206,23 @@ export function WriteReviewForm() {
         >
           {(field) => (
             <div className="space-y-4">
-              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+              <label
+                id="employment-status-label"
+                className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+              >
                 Employment Status
               </label>
-              <div className="flex flex-wrap gap-4">
+              <div
+                className="flex flex-wrap gap-4"
+                role="radiogroup"
+                aria-labelledby="employment-status-label"
+              >
                 {EMPLOYMENT_STATUS_OPTIONS.map(({ value, label }) => (
                   <button
                     key={value}
                     type="button"
+                    role="radio"
+                    aria-checked={field.state.value === value}
                     onClick={() => {
                       field.handleChange(value);
                       if (value === "current_employee") {
@@ -221,7 +241,9 @@ export function WriteReviewForm() {
                 ))}
               </div>
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -242,7 +264,10 @@ export function WriteReviewForm() {
               >
                 {(field) => (
                   <div className="space-y-2">
-                    <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                    <label
+                      htmlFor={field.name}
+                      className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+                    >
                       Year You Left
                     </label>
                     <SelectRoot
@@ -250,8 +275,13 @@ export function WriteReviewForm() {
                       onValueChange={(val) => field.handleChange(val ? Number(val) : null)}
                     >
                       <SelectTrigger
+                        id={field.name}
                         onBlur={field.handleBlur}
                         hasError={field.state.meta.errors.length > 0}
+                        aria-invalid={field.state.meta.errors.length > 0 || undefined}
+                        aria-describedby={
+                          field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
+                        }
                       >
                         <SelectValue placeholder="Select year..." />
                       </SelectTrigger>
@@ -264,7 +294,11 @@ export function WriteReviewForm() {
                       </SelectContent>
                     </SelectRoot>
                     {field.state.meta.errors[0] && (
-                      <p className="text-destructive text-xs">
+                      <p
+                        id={`${field.name}-error`}
+                        role="alert"
+                        className="text-destructive text-xs"
+                      >
                         {errMsg(field.state.meta.errors[0])}
                       </p>
                     )}
@@ -283,7 +317,10 @@ export function WriteReviewForm() {
         >
           {(field) => (
             <div className="space-y-2">
-              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+              <label
+                htmlFor={field.name}
+                className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+              >
                 Employment Type
               </label>
               <SelectRoot
@@ -291,8 +328,13 @@ export function WriteReviewForm() {
                 onValueChange={(val) => field.handleChange(val as EmploymentTypeValue)}
               >
                 <SelectTrigger
+                  id={field.name}
                   onBlur={field.handleBlur}
                   hasError={field.state.meta.errors.length > 0}
+                  aria-invalid={field.state.meta.errors.length > 0 || undefined}
+                  aria-describedby={
+                    field.state.meta.errors.length > 0 ? `${field.name}-error` : undefined
+                  }
                 >
                   <SelectValue placeholder="Select type..." />
                 </SelectTrigger>
@@ -305,7 +347,9 @@ export function WriteReviewForm() {
                 </SelectContent>
               </SelectRoot>
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -315,24 +359,35 @@ export function WriteReviewForm() {
           name="jobTitle"
           validators={{ onSubmit: z.string().min(1, "Job title is required").max(120) }}
         >
-          {(field) => (
-            <div className="space-y-2">
-              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-                Job Title
-              </label>
-              <input
-                type="text"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="e.g. Senior Product Designer"
-                className={cn(inputCls, field.state.meta.errors.length > 0 && "border-destructive")}
-              />
-              {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-              )}
-            </div>
-          )}
+          {(field) => {
+            const hasError = field.state.meta.errors.length > 0;
+            return (
+              <div className="space-y-2">
+                <label
+                  htmlFor={field.name}
+                  className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+                >
+                  Job Title
+                </label>
+                <input
+                  id={field.name}
+                  type="text"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="e.g. Senior Product Designer"
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? `${field.name}-error` : undefined}
+                  className={cn(inputCls, hasError && "border-destructive")}
+                />
+                {field.state.meta.errors[0] && (
+                  <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                    {errMsg(field.state.meta.errors[0])}
+                  </p>
+                )}
+              </div>
+            );
+          }}
         </form.Field>
       </div>
 
@@ -348,82 +403,106 @@ export function WriteReviewForm() {
           name="summary"
           validators={{ onSubmit: z.string().min(1, "Summary is required").max(300) }}
         >
-          {(field) => (
-            <div className="space-y-2">
-              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-                Summary
-              </label>
-              <textarea
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="Sum up your experience in 1–2 sentences"
-                rows={2}
-                maxLength={300}
-                className={cn(
-                  textareaCls,
-                  field.state.meta.errors.length > 0 && "border-destructive",
+          {(field) => {
+            const hasError = field.state.meta.errors.length > 0;
+            return (
+              <div className="space-y-2">
+                <label
+                  htmlFor={field.name}
+                  className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+                >
+                  Summary
+                </label>
+                <textarea
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="Sum up your experience in 1–2 sentences"
+                  rows={2}
+                  maxLength={300}
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? `${field.name}-error` : undefined}
+                  className={cn(textareaCls, hasError && "border-destructive")}
+                />
+                {field.state.meta.errors[0] && (
+                  <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                    {errMsg(field.state.meta.errors[0])}
+                  </p>
                 )}
-              />
-              {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-              )}
-            </div>
-          )}
+              </div>
+            );
+          }}
         </form.Field>
 
         <form.Field
           name="pros"
           validators={{ onSubmit: z.string().min(1, "Pros are required").max(5000) }}
         >
-          {(field) => (
-            <div className="space-y-2">
-              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-                Pros
-              </label>
-              <textarea
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="What did you enjoy about working here?"
-                rows={4}
-                className={cn(
-                  textareaCls,
-                  field.state.meta.errors.length > 0 && "border-destructive",
+          {(field) => {
+            const hasError = field.state.meta.errors.length > 0;
+            return (
+              <div className="space-y-2">
+                <label
+                  htmlFor={field.name}
+                  className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+                >
+                  Pros
+                </label>
+                <textarea
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="What did you enjoy about working here?"
+                  rows={4}
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? `${field.name}-error` : undefined}
+                  className={cn(textareaCls, hasError && "border-destructive")}
+                />
+                {field.state.meta.errors[0] && (
+                  <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                    {errMsg(field.state.meta.errors[0])}
+                  </p>
                 )}
-              />
-              {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-              )}
-            </div>
-          )}
+              </div>
+            );
+          }}
         </form.Field>
 
         <form.Field
           name="cons"
           validators={{ onSubmit: z.string().min(1, "Cons are required").max(5000) }}
         >
-          {(field) => (
-            <div className="space-y-2">
-              <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-                Cons
-              </label>
-              <textarea
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                placeholder="What could be improved?"
-                rows={4}
-                className={cn(
-                  textareaCls,
-                  field.state.meta.errors.length > 0 && "border-destructive",
+          {(field) => {
+            const hasError = field.state.meta.errors.length > 0;
+            return (
+              <div className="space-y-2">
+                <label
+                  htmlFor={field.name}
+                  className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+                >
+                  Cons
+                </label>
+                <textarea
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  placeholder="What could be improved?"
+                  rows={4}
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? `${field.name}-error` : undefined}
+                  className={cn(textareaCls, hasError && "border-destructive")}
+                />
+                {field.state.meta.errors[0] && (
+                  <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                    {errMsg(field.state.meta.errors[0])}
+                  </p>
                 )}
-              />
-              {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-              )}
-            </div>
-          )}
+              </div>
+            );
+          }}
         </form.Field>
       </div>
 
@@ -456,7 +535,7 @@ export function IntegritySidebar() {
           <h3 className="text-outline font-mono text-sm tracking-widest uppercase">
             Archive Standards
           </h3>
-          <h2 className="text-2xl font-black tracking-tighter">The Integrity Protocol</h2>
+          <h2 className="text-2xl font-bold tracking-tight">The Integrity Protocol</h2>
         </div>
 
         <div className="space-y-8">

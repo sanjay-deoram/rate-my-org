@@ -74,7 +74,7 @@ function SegBtn({
   return (
     <button
       {...props}
-      className={`flex max-w-[72vw] shrink-0 items-center gap-1.5 px-3 py-2 text-xs font-medium whitespace-nowrap transition-colors sm:max-w-none sm:px-4 sm:py-2.5 ${
+      className={`flex max-w-[72vw] shrink-0 items-center gap-1.5 px-3 py-2.5 text-xs font-medium whitespace-nowrap transition-colors sm:max-w-none sm:px-4 sm:py-2.5 ${
         first ? "rounded-l-xl" : ""
       } ${last ? "rounded-r-xl" : ""} ${
         active ? "text-foreground" : "text-on-surface-variant hover:text-foreground"
@@ -85,18 +85,19 @@ function SegBtn({
   );
 }
 
-function ClearX({ onClear }: { onClear: () => void }) {
+function ClearX({ onClear, label }: { onClear: () => void; label: string }) {
   return (
-    <span
-      role="button"
+    <button
+      type="button"
       onClick={(e) => {
         e.stopPropagation();
         onClear();
       }}
-      className="text-on-surface-variant hover:text-foreground shrink-0 transition-colors"
+      aria-label={label}
+      className="text-on-surface-variant hover:text-foreground -ml-1 shrink-0 p-2 transition-colors"
     >
       <X size={10} />
-    </span>
+    </button>
   );
 }
 
@@ -156,16 +157,19 @@ export function OrgFilterBar({
           {/* Job Title */}
           {availableJobTitles.length > 0 && (
             <DropdownRoot>
-              <DropdownTrigger asChild>
-                <SegBtn active={jobTitles.length > 0}>
-                  {jobTitleLabel(jobTitles)}
-                  {jobTitles.length > 0 ? (
-                    <ClearX onClear={() => setJobTitles([])} />
-                  ) : (
-                    <ChevronDown size={10} className="text-on-surface-variant" />
-                  )}
-                </SegBtn>
-              </DropdownTrigger>
+              <div className="flex items-center">
+                <DropdownTrigger asChild>
+                  <SegBtn active={jobTitles.length > 0}>
+                    {jobTitleLabel(jobTitles)}
+                    {jobTitles.length === 0 && (
+                      <ChevronDown size={10} className="text-on-surface-variant" />
+                    )}
+                  </SegBtn>
+                </DropdownTrigger>
+                {jobTitles.length > 0 && (
+                  <ClearX onClear={() => setJobTitles([])} label="Clear job title filter" />
+                )}
+              </div>
               <DropdownContent align="start" className="min-w-[190px] py-1">
                 <div className="max-h-52 overflow-y-auto">
                   {availableJobTitles.map((title) => (
@@ -186,16 +190,19 @@ export function OrgFilterBar({
           {/* Min Rating — reviews + both */}
           {showReviewFilters && (
             <DropdownRoot>
-              <DropdownTrigger asChild>
-                <SegBtn active={minRating > 0}>
-                  {minRating > 0 ? `★ ${minRating}+` : "★ Rating"}
-                  {minRating > 0 ? (
-                    <ClearX onClear={() => setMinRating(0)} />
-                  ) : (
-                    <ChevronDown size={10} className="text-on-surface-variant" />
-                  )}
-                </SegBtn>
-              </DropdownTrigger>
+              <div className="flex items-center">
+                <DropdownTrigger asChild>
+                  <SegBtn active={minRating > 0}>
+                    {minRating > 0 ? `★ ${minRating}+` : "★ Rating"}
+                    {minRating === 0 && (
+                      <ChevronDown size={10} className="text-on-surface-variant" />
+                    )}
+                  </SegBtn>
+                </DropdownTrigger>
+                {minRating > 0 && (
+                  <ClearX onClear={() => setMinRating(0)} label="Clear rating filter" />
+                )}
+              </div>
               <DropdownContent align="start" className="min-w-[130px] py-1">
                 {[
                   { value: 0, label: "Any rating" },
@@ -220,16 +227,19 @@ export function OrgFilterBar({
           {/* Emp Type — reviews + both */}
           {showReviewFilters && availableEmpTypes.length > 0 && (
             <DropdownRoot>
-              <DropdownTrigger asChild>
-                <SegBtn active={empTypes.length > 0} last={!showInterviewFilters}>
-                  {empTypeLabel(empTypes)}
-                  {empTypes.length > 0 ? (
-                    <ClearX onClear={() => setEmpTypes([])} />
-                  ) : (
-                    <ChevronDown size={10} className="text-on-surface-variant" />
-                  )}
-                </SegBtn>
-              </DropdownTrigger>
+              <div className="flex items-center">
+                <DropdownTrigger asChild>
+                  <SegBtn active={empTypes.length > 0} last={!showInterviewFilters}>
+                    {empTypeLabel(empTypes)}
+                    {empTypes.length === 0 && (
+                      <ChevronDown size={10} className="text-on-surface-variant" />
+                    )}
+                  </SegBtn>
+                </DropdownTrigger>
+                {empTypes.length > 0 && (
+                  <ClearX onClear={() => setEmpTypes([])} label="Clear employment type filter" />
+                )}
+              </div>
               <DropdownContent align="start" className="min-w-[160px] py-1">
                 {availableEmpTypes.map((type) => (
                   <DropdownItem
@@ -248,16 +258,19 @@ export function OrgFilterBar({
           {/* Experience — interviews + both */}
           {showInterviewFilters && (
             <DropdownRoot>
-              <DropdownTrigger asChild>
-                <SegBtn active={experience.length > 0}>
-                  {experienceLabel(experience)}
-                  {experience.length > 0 ? (
-                    <ClearX onClear={() => setExperience([])} />
-                  ) : (
-                    <ChevronDown size={10} className="text-on-surface-variant" />
-                  )}
-                </SegBtn>
-              </DropdownTrigger>
+              <div className="flex items-center">
+                <DropdownTrigger asChild>
+                  <SegBtn active={experience.length > 0}>
+                    {experienceLabel(experience)}
+                    {experience.length === 0 && (
+                      <ChevronDown size={10} className="text-on-surface-variant" />
+                    )}
+                  </SegBtn>
+                </DropdownTrigger>
+                {experience.length > 0 && (
+                  <ClearX onClear={() => setExperience([])} label="Clear experience filter" />
+                )}
+              </div>
               <DropdownContent align="start" className="min-w-[150px] py-1">
                 {(["Great", "Neutral", "Negative"] as Experience[]).map((exp) => (
                   <DropdownItem
@@ -276,16 +289,19 @@ export function OrgFilterBar({
           {/* Offer — interviews + both */}
           {showInterviewFilters && (
             <DropdownRoot>
-              <DropdownTrigger asChild>
-                <SegBtn active={offerFilter.length > 0} last>
-                  {offerLabel(offerFilter)}
-                  {offerFilter.length > 0 ? (
-                    <ClearX onClear={() => setOfferFilter([])} />
-                  ) : (
-                    <ChevronDown size={10} className="text-on-surface-variant" />
-                  )}
-                </SegBtn>
-              </DropdownTrigger>
+              <div className="flex items-center">
+                <DropdownTrigger asChild>
+                  <SegBtn active={offerFilter.length > 0} last>
+                    {offerLabel(offerFilter)}
+                    {offerFilter.length === 0 && (
+                      <ChevronDown size={10} className="text-on-surface-variant" />
+                    )}
+                  </SegBtn>
+                </DropdownTrigger>
+                {offerFilter.length > 0 && (
+                  <ClearX onClear={() => setOfferFilter([])} label="Clear offer outcome filter" />
+                )}
+              </div>
               <DropdownContent align="start" className="min-w-[170px] py-1">
                 {(["Yes", "No", "Yes but Declined"] as OfferOutcome[]).map((offer) => (
                   <DropdownItem
@@ -305,8 +321,10 @@ export function OrgFilterBar({
 
       {activeFilterCount > 0 && (
         <button
+          type="button"
           onClick={clearFilters}
-          className="text-on-surface-variant hover:text-foreground flex items-center gap-1 text-xs transition-colors"
+          aria-label="Clear all filters"
+          className="text-on-surface-variant hover:text-foreground -m-2 flex items-center gap-1 p-2 text-xs transition-colors"
         >
           <X size={11} /> Clear
         </button>

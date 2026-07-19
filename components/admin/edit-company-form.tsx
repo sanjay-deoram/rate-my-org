@@ -36,7 +36,7 @@ const INDUSTRIES = [
 const COMPANY_SIZES = ["1–10", "11–50", "51–200", "201–500", "501–1,000", "1,001–5,000", "5,000+"];
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-2.5 text-sm font-medium transition-all outline-none focus:ring-0";
+  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-2.5 text-base font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
 
 const labelCls =
   "text-on-surface-variant block text-[10px] font-medium tracking-widest uppercase mb-1";
@@ -80,23 +80,35 @@ export function EditCompanyForm({ company, onSave, onCancel, isSaving }: EditCom
     >
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
         <form.Field name="name" validators={{ onBlur: z.string().min(2, "At least 2 characters") }}>
-          {(field) => (
-            <div>
-              <label className={labelCls}>Company Name</label>
-              <input
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                className={cn(inputCls, field.state.meta.errors.length > 0 && "border-destructive")}
-                placeholder="Acme Corp"
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-destructive mt-1 text-xs">
-                  {errMsg(field.state.meta.errors[0])}
-                </p>
-              )}
-            </div>
-          )}
+          {(field) => {
+            const hasError = field.state.meta.errors.length > 0;
+            return (
+              <div>
+                <label htmlFor={field.name} className={labelCls}>
+                  Company Name
+                </label>
+                <input
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? `${field.name}-error` : undefined}
+                  className={cn(inputCls, hasError && "border-destructive")}
+                  placeholder="Acme Corp"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p
+                    id={`${field.name}-error`}
+                    role="alert"
+                    className="text-destructive mt-1 text-xs"
+                  >
+                    {errMsg(field.state.meta.errors[0])}
+                  </p>
+                )}
+              </div>
+            );
+          }}
         </form.Field>
 
         <form.Field name="industry">
@@ -120,23 +132,35 @@ export function EditCompanyForm({ company, onSave, onCancel, isSaving }: EditCom
         </form.Field>
 
         <form.Field name="headquarters" validators={{ onBlur: z.string().min(2, "Required") }}>
-          {(field) => (
-            <div>
-              <label className={labelCls}>Location</label>
-              <input
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                className={cn(inputCls, field.state.meta.errors.length > 0 && "border-destructive")}
-                placeholder="Toronto, CA"
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-destructive mt-1 text-xs">
-                  {errMsg(field.state.meta.errors[0])}
-                </p>
-              )}
-            </div>
-          )}
+          {(field) => {
+            const hasError = field.state.meta.errors.length > 0;
+            return (
+              <div>
+                <label htmlFor={field.name} className={labelCls}>
+                  Location
+                </label>
+                <input
+                  id={field.name}
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? `${field.name}-error` : undefined}
+                  className={cn(inputCls, hasError && "border-destructive")}
+                  placeholder="Toronto, CA"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p
+                    id={`${field.name}-error`}
+                    role="alert"
+                    className="text-destructive mt-1 text-xs"
+                  >
+                    {errMsg(field.state.meta.errors[0])}
+                  </p>
+                )}
+              </div>
+            );
+          }}
         </form.Field>
 
         <form.Field
@@ -147,24 +171,36 @@ export function EditCompanyForm({ company, onSave, onCancel, isSaving }: EditCom
             }),
           }}
         >
-          {(field) => (
-            <div>
-              <label className={labelCls}>Website</label>
-              <input
-                type="url"
-                value={field.state.value}
-                onChange={(e) => field.handleChange(e.target.value)}
-                onBlur={field.handleBlur}
-                className={cn(inputCls, field.state.meta.errors.length > 0 && "border-destructive")}
-                placeholder="https://acmecorp.com"
-              />
-              {field.state.meta.errors.length > 0 && (
-                <p className="text-destructive mt-1 text-xs">
-                  {errMsg(field.state.meta.errors[0])}
-                </p>
-              )}
-            </div>
-          )}
+          {(field) => {
+            const hasError = field.state.meta.errors.length > 0;
+            return (
+              <div>
+                <label htmlFor={field.name} className={labelCls}>
+                  Website
+                </label>
+                <input
+                  id={field.name}
+                  type="url"
+                  value={field.state.value}
+                  onChange={(e) => field.handleChange(e.target.value)}
+                  onBlur={field.handleBlur}
+                  aria-invalid={hasError || undefined}
+                  aria-describedby={hasError ? `${field.name}-error` : undefined}
+                  className={cn(inputCls, hasError && "border-destructive")}
+                  placeholder="https://acmecorp.com"
+                />
+                {field.state.meta.errors.length > 0 && (
+                  <p
+                    id={`${field.name}-error`}
+                    role="alert"
+                    className="text-destructive mt-1 text-xs"
+                  >
+                    {errMsg(field.state.meta.errors[0])}
+                  </p>
+                )}
+              </div>
+            );
+          }}
         </form.Field>
 
         <form.Field name="size">

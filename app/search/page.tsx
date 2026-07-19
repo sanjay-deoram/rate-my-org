@@ -25,10 +25,10 @@ export default async function SearchPage() {
         <section className="mx-auto max-w-5xl px-5 py-20 md:px-12 md:py-24">
           {/* Header */}
           <div className="mb-12">
-            <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-[0.2em] uppercase">
+            <span className="text-on-surface-variant mb-4 block font-mono text-[10px] tracking-widest uppercase">
               Neon DB · companies
             </span>
-            <h1 className="text-foreground mb-4 text-4xl font-bold md:text-5xl">Companies</h1>
+            <h1 className="text-foreground mb-4 text-3xl font-black md:text-5xl">Companies</h1>
             <p className="text-on-surface-variant max-w-lg text-base leading-relaxed">
               Live data pulled directly from your Neon database via Drizzle ORM.
             </p>

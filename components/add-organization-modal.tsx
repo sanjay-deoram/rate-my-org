@@ -18,7 +18,7 @@ import {
 import { INDUSTRIES } from "@/constants";
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-3 font-medium transition-all outline-none focus:ring-0 text-sm";
+  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-3 font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring text-base";
 
 const labelCls = "text-on-surface-variant block text-xs font-medium tracking-widest uppercase mb-1";
 
@@ -74,7 +74,7 @@ export function AddOrganizationModal({
         <Dialog.Overlay className="data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 fixed inset-0 z-400 bg-black/50" />
         <Dialog.Content
           className={cn(
-            "bg-surface-container-lowest fixed top-1/2 left-1/2 z-400 w-full max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl p-8 shadow-xl",
+            "bg-surface-container-lowest fixed top-1/2 left-1/2 z-400 w-[calc(100%-2rem)] max-w-md -translate-x-1/2 -translate-y-1/2 rounded-2xl p-6 shadow-xl sm:p-8",
             "data-[state=open]:animate-in data-[state=closed]:animate-out",
             "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
             "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
@@ -112,30 +112,36 @@ export function AddOrganizationModal({
               name="name"
               validators={{ onBlur: z.string().min(2, "Name must be at least 2 characters") }}
             >
-              {(field) => (
-                <div>
-                  <label htmlFor={field.name} className={labelCls}>
-                    Company Name <span className="text-destructive">*</span>
-                  </label>
-                  <input
-                    id={field.name}
-                    type="text"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    onBlur={field.handleBlur}
-                    placeholder="e.g. Acme Corp"
-                    className={cn(
-                      inputCls,
-                      field.state.meta.errors.length > 0 && "border-destructive",
+              {(field) => {
+                const hasError = field.state.meta.errors.length > 0;
+                return (
+                  <div>
+                    <label htmlFor={field.name} className={labelCls}>
+                      Company Name <span className="text-destructive">*</span>
+                    </label>
+                    <input
+                      id={field.name}
+                      type="text"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      onBlur={field.handleBlur}
+                      placeholder="e.g. Acme Corp"
+                      aria-invalid={hasError || undefined}
+                      aria-describedby={hasError ? `${field.name}-error` : undefined}
+                      className={cn(inputCls, hasError && "border-destructive")}
+                    />
+                    {field.state.meta.errors.length > 0 && (
+                      <p
+                        id={`${field.name}-error`}
+                        role="alert"
+                        className="text-destructive mt-1 text-xs"
+                      >
+                        {errMsg(field.state.meta.errors[0])}
+                      </p>
                     )}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive mt-1 text-xs">
-                      {errMsg(field.state.meta.errors[0])}
-                    </p>
-                  )}
-                </div>
-              )}
+                  </div>
+                );
+              }}
             </form.Field>
 
             {/* Industry */}
@@ -143,36 +149,46 @@ export function AddOrganizationModal({
               name="industry"
               validators={{ onBlur: z.string().min(1, "Please select an industry") }}
             >
-              {(field) => (
-                <div>
-                  <label className={labelCls}>
-                    Industry <span className="text-destructive">*</span>
-                  </label>
-                  <SelectRoot
-                    value={field.state.value}
-                    onValueChange={(val) => field.handleChange(val)}
-                  >
-                    <SelectTrigger
-                      hasError={field.state.meta.errors.length > 0}
-                      onBlur={field.handleBlur}
+              {(field) => {
+                const hasError = field.state.meta.errors.length > 0;
+                return (
+                  <div>
+                    <label htmlFor={field.name} className={labelCls}>
+                      Industry <span className="text-destructive">*</span>
+                    </label>
+                    <SelectRoot
+                      value={field.state.value}
+                      onValueChange={(val) => field.handleChange(val)}
                     >
-                      <SelectValue placeholder="Select an industry" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {INDUSTRIES.map((ind) => (
-                        <SelectItem key={ind} value={ind}>
-                          {ind}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </SelectRoot>
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive mt-1 text-xs">
-                      {errMsg(field.state.meta.errors[0])}
-                    </p>
-                  )}
-                </div>
-              )}
+                      <SelectTrigger
+                        id={field.name}
+                        hasError={hasError}
+                        onBlur={field.handleBlur}
+                        aria-invalid={hasError || undefined}
+                        aria-describedby={hasError ? `${field.name}-error` : undefined}
+                      >
+                        <SelectValue placeholder="Select an industry" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {INDUSTRIES.map((ind) => (
+                          <SelectItem key={ind} value={ind}>
+                            {ind}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </SelectRoot>
+                    {field.state.meta.errors.length > 0 && (
+                      <p
+                        id={`${field.name}-error`}
+                        role="alert"
+                        className="text-destructive mt-1 text-xs"
+                      >
+                        {errMsg(field.state.meta.errors[0])}
+                      </p>
+                    )}
+                  </div>
+                );
+              }}
             </form.Field>
 
             {/* Location */}
@@ -180,30 +196,36 @@ export function AddOrganizationModal({
               name="headquarters"
               validators={{ onBlur: z.string().min(2, "Location is required") }}
             >
-              {(field) => (
-                <div>
-                  <label htmlFor={field.name} className={labelCls}>
-                    Location <span className="text-destructive">*</span>
-                  </label>
-                  <input
-                    id={field.name}
-                    type="text"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    onBlur={field.handleBlur}
-                    placeholder="e.g. Toronto, CA"
-                    className={cn(
-                      inputCls,
-                      field.state.meta.errors.length > 0 && "border-destructive",
+              {(field) => {
+                const hasError = field.state.meta.errors.length > 0;
+                return (
+                  <div>
+                    <label htmlFor={field.name} className={labelCls}>
+                      Location <span className="text-destructive">*</span>
+                    </label>
+                    <input
+                      id={field.name}
+                      type="text"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      onBlur={field.handleBlur}
+                      placeholder="e.g. Toronto, CA"
+                      aria-invalid={hasError || undefined}
+                      aria-describedby={hasError ? `${field.name}-error` : undefined}
+                      className={cn(inputCls, hasError && "border-destructive")}
+                    />
+                    {field.state.meta.errors.length > 0 && (
+                      <p
+                        id={`${field.name}-error`}
+                        role="alert"
+                        className="text-destructive mt-1 text-xs"
+                      >
+                        {errMsg(field.state.meta.errors[0])}
+                      </p>
                     )}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive mt-1 text-xs">
-                      {errMsg(field.state.meta.errors[0])}
-                    </p>
-                  )}
-                </div>
-              )}
+                  </div>
+                );
+              }}
             </form.Field>
 
             {/* Website */}
@@ -217,30 +239,36 @@ export function AddOrganizationModal({
                   }),
               }}
             >
-              {(field) => (
-                <div>
-                  <label htmlFor={field.name} className={labelCls}>
-                    Website <span className="text-on-surface-variant/50">(optional)</span>
-                  </label>
-                  <input
-                    id={field.name}
-                    type="url"
-                    value={field.state.value}
-                    onChange={(e) => field.handleChange(e.target.value)}
-                    onBlur={field.handleBlur}
-                    placeholder="https://acmecorp.com"
-                    className={cn(
-                      inputCls,
-                      field.state.meta.errors.length > 0 && "border-destructive",
+              {(field) => {
+                const hasError = field.state.meta.errors.length > 0;
+                return (
+                  <div>
+                    <label htmlFor={field.name} className={labelCls}>
+                      Website <span className="text-on-surface-variant/50">(optional)</span>
+                    </label>
+                    <input
+                      id={field.name}
+                      type="url"
+                      value={field.state.value}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      onBlur={field.handleBlur}
+                      placeholder="https://acmecorp.com"
+                      aria-invalid={hasError || undefined}
+                      aria-describedby={hasError ? `${field.name}-error` : undefined}
+                      className={cn(inputCls, hasError && "border-destructive")}
+                    />
+                    {field.state.meta.errors.length > 0 && (
+                      <p
+                        id={`${field.name}-error`}
+                        role="alert"
+                        className="text-destructive mt-1 text-xs"
+                      >
+                        {errMsg(field.state.meta.errors[0])}
+                      </p>
                     )}
-                  />
-                  {field.state.meta.errors.length > 0 && (
-                    <p className="text-destructive mt-1 text-xs">
-                      {errMsg(field.state.meta.errors[0])}
-                    </p>
-                  )}
-                </div>
-              )}
+                  </div>
+                );
+              }}
             </form.Field>
 
             {serverError && <p className="text-destructive rounded-lg text-sm">{serverError}</p>}

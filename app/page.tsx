@@ -5,6 +5,7 @@ import { Footer } from "@/components/footer";
 import { HomeSearchBar } from "@/components/home-search-bar";
 import { HomeCarousel } from "@/components/home-carousel";
 import { HomeReviews } from "@/components/home-reviews";
+import { Reveal } from "@/components/motion-primitives";
 import { WorkspaceScene, SignalMap } from "@/components/home/workspace-scene";
 import {
   getHomepageStats,
@@ -38,17 +39,21 @@ export default async function HomePage() {
           <div className="bg-token-lime/80 absolute top-44 right-0 h-44 w-24 translate-x-16 rotate-[5deg] rounded-[1.25rem] lg:h-72 lg:w-40" />
           <div className="relative z-10 mx-auto max-w-7xl px-5 pt-4 pb-24 md:px-8 lg:pt-10">
             <div className="mx-auto flex max-w-3xl flex-col items-center text-center">
-              <h1 className="max-w-4xl text-4xl leading-[0.98] font-black sm:text-5xl md:text-7xl lg:text-8xl">
-                Rate your organization
-              </h1>
-              <p className="text-on-surface-variant mt-6 max-w-2xl text-base leading-7 md:text-lg">
-                Know before you join. Read and post anonymous company reviews and interview
-                experiences, with no login and no takedowns.
-              </p>
-              <div className="mt-8 w-full max-w-2xl">
+              <Reveal>
+                <h1 className="max-w-4xl text-4xl leading-[0.98] font-black sm:text-5xl md:text-7xl lg:text-8xl">
+                  Rate your organization
+                </h1>
+              </Reveal>
+              <Reveal delay={0.1}>
+                <p className="text-on-surface-variant mt-6 max-w-2xl text-base leading-7 md:text-lg">
+                  Know before you join. Read and post anonymous company reviews and interview
+                  experiences, with no login and no takedowns.
+                </p>
+              </Reveal>
+              <Reveal delay={0.2} className="mt-8 w-full max-w-2xl">
                 <HomeSearchBar />
-              </div>
-              <div className="mt-7 flex flex-wrap items-center justify-center gap-3">
+              </Reveal>
+              <Reveal delay={0.3} className="mt-7 flex flex-wrap items-center justify-center gap-3">
                 <Link
                   href="/reviews/write"
                   className="bg-token-blue inline-flex h-12 items-center gap-2 rounded-full px-6 text-sm font-bold text-white shadow-lg transition-opacity hover:opacity-90 active:scale-[0.98]"
@@ -62,7 +67,7 @@ export default async function HomePage() {
                 >
                   Share interview questions
                 </Link>
-              </div>
+              </Reveal>
             </div>
 
             <div className="relative mt-16 min-h-[620px] lg:mt-20">
@@ -77,7 +82,7 @@ export default async function HomePage() {
 
         <section className="bg-paper-soft py-20 md:py-28">
           <div className="mx-auto max-w-7xl px-5 md:px-8">
-            <div className="mx-auto max-w-2xl text-center">
+            <Reveal className="mx-auto max-w-2xl text-center">
               <p className="text-on-surface-variant text-xs font-bold">Workplace examples</p>
               <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
                 Each profile shows what people actually experience
@@ -86,16 +91,16 @@ export default async function HomePage() {
                 Search companies, compare ratings, read recent headlines, and spot the interview
                 patterns candidates keep running into.
               </p>
-            </div>
-            <div className="mt-12">
+            </Reveal>
+            <Reveal delay={0.15} className="mt-12">
               <HomeCarousel companies={topRated} />
-            </div>
+            </Reveal>
           </div>
         </section>
 
         <section className="py-20 md:py-28">
           <div className="mx-auto grid max-w-6xl gap-10 px-5 md:px-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-            <div>
+            <Reveal>
               <p className="text-on-surface-variant text-xs font-bold">Anonymous by design</p>
               <h2 className="mt-3 text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
                 Useful signal without accounts, followers, or corporate polish
@@ -105,17 +110,20 @@ export default async function HomePage() {
                 experience, and interview rounds. The product keeps the friction low and the record
                 focused.
               </p>
-            </div>
-            <div className="border-border bg-card soft-shadow rounded-[1.75rem] border p-4">
+            </Reveal>
+            <Reveal
+              delay={0.15}
+              className="border-border bg-card soft-shadow rounded-[1.75rem] border p-4"
+            >
               <SignalMap />
-            </div>
+            </Reveal>
           </div>
         </section>
 
         <HomeReviews reviews={recentReviews} />
 
         <section className="px-5 py-20 md:px-8 md:py-28">
-          <div className="bg-primary text-primary-foreground mx-auto max-w-5xl rounded-[1.75rem] px-6 py-14 text-center md:px-12">
+          <Reveal className="bg-primary text-primary-foreground mx-auto max-w-5xl rounded-[1.75rem] px-6 py-14 text-center md:px-12">
             <p className="text-xs font-bold text-white/55">Contribute to the index</p>
             <h2 className="mx-auto mt-3 max-w-3xl text-3xl leading-tight font-black sm:text-4xl md:text-6xl">
               Help the next candidate read the room before they join
@@ -134,7 +142,7 @@ export default async function HomePage() {
                 Browse companies
               </Link>
             </div>
-          </div>
+          </Reveal>
         </section>
       </main>
       <Footer />

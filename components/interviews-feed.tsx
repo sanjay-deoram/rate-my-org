@@ -17,6 +17,7 @@ import { Pagination } from "@/components/ui/pagination";
 import { useCompaniesWithInterviews } from "@/hooks/use-companies-with-interviews";
 import { FilterDropdown } from "@/components/ui/filter-dropdown";
 import { DecorativeShapes } from "@/components/decorative-shapes";
+import { Stagger, StaggerItem } from "@/components/motion-primitives";
 import type { InterviewFeedItem } from "@/lib/api/interviews";
 
 const EXPERIENCE_OPTIONS = [
@@ -279,18 +280,19 @@ export function InterviewsFeed({
             <p className="text-on-surface-variant font-medium">No interviews found</p>
           </div>
         ) : (
-          <div className="space-y-3 sm:space-y-6">
+          <Stagger key={page} className="space-y-3 sm:space-y-6">
             {items.map((item) => (
-              <InterviewCard
-                key={item.id}
-                interview={item}
-                showKind
-                companyName={item.companyName}
-                companySlug={item.companySlug}
-                companyLogoKey={item.companyLogoKey}
-              />
+              <StaggerItem key={item.id}>
+                <InterviewCard
+                  interview={item}
+                  showKind
+                  companyName={item.companyName}
+                  companySlug={item.companySlug}
+                  companyLogoKey={item.companyLogoKey}
+                />
+              </StaggerItem>
             ))}
-          </div>
+          </Stagger>
         )}
 
         {/* Pagination */}

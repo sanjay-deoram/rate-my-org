@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { z } from "zod";
-import { Shield, ArrowRight, Plus, X, ChevronDown } from "lucide-react";
+import { Shield, ArrowRight, Plus, X, ChevronDown, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   INTERVIEW_EXPERIENCES,
@@ -27,7 +27,7 @@ import {
 import { DIFFICULTY_LABELS } from "@/lib/org-display";
 
 const inputCls =
-  "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
+  "border-outline-variant/20 focus:border-primary focus-visible:border-b-2 placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none";
 
 export function SubmitInterviewForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -67,10 +67,20 @@ export function SubmitInterviewForm() {
           <Shield size={28} className="text-on-tertiary-fixed" />
         </div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight">Contribution Published</h2>
-        <p className="text-on-surface-variant max-w-sm">
+        <p className="text-on-surface-variant mb-8 max-w-sm">
           Your interview experience has been added to the archive. Thank you for helping the
           community prepare.
         </p>
+        <button
+          type="button"
+          onClick={() => {
+            form.reset();
+            setSubmitted(false);
+          }}
+          className="bg-token-blue rounded-xl px-8 py-4 font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95"
+        >
+          Submit Another Interview
+        </button>
       </div>
     );
   }
@@ -420,16 +430,14 @@ export function SubmitInterviewForm() {
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitInterview.isPending}
-              className="bg-token-blue w-full rounded-xl px-8 py-4 font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
+              className="bg-token-blue flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
             >
+              {submitInterview.isPending && <Loader2 size={16} className="animate-spin" />}
               {submitInterview.isPending ? "Submitting…" : "Submit Interview"}
             </button>
           )}
         </form.Subscribe>
       </section>
-      {submitInterview.isError && (
-        <p className="text-destructive text-center text-sm">{submitInterview.error.message}</p>
-      )}
     </form>
   );
 }

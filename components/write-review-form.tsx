@@ -3,7 +3,7 @@
 import { useForm } from "@tanstack/react-form";
 import { useState } from "react";
 import { z } from "zod";
-import { ShieldCheck, Lock, Globe } from "lucide-react";
+import { ShieldCheck, Lock, Globe, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
   EMPLOYMENT_TYPE_VALUES,
@@ -73,10 +73,10 @@ function StarRating({ value, onChange }: StarRatingProps) {
 }
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
+  "border-outline-variant/30 focus:border-primary focus-visible:border-b-2 placeholder:text-on-surface-variant w-full border-b bg-transparent py-4 font-medium transition-all outline-none";
 
 const textareaCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full resize-none border-b bg-transparent py-4 text-lg leading-relaxed transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
+  "border-outline-variant/30 focus:border-primary focus-visible:border-b-2 placeholder:text-on-surface-variant w-full resize-none border-b bg-transparent py-4 text-lg leading-relaxed transition-all outline-none";
 
 export function WriteReviewForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -122,10 +122,20 @@ export function WriteReviewForm() {
           <ShieldCheck size={28} className="text-on-tertiary-fixed" />
         </div>
         <h2 className="mb-4 text-3xl font-bold tracking-tight">Review Published</h2>
-        <p className="text-on-surface-variant max-w-sm">
+        <p className="text-on-surface-variant mb-8 max-w-sm">
           Your anonymous contribution has been added to the archive. Thank you for helping the
           community.
         </p>
+        <button
+          type="button"
+          onClick={() => {
+            form.reset();
+            setSubmitted(false);
+          }}
+          className="bg-token-blue rounded-xl px-8 py-4 font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95"
+        >
+          Write Another Review
+        </button>
       </div>
     );
   }
@@ -513,16 +523,14 @@ export function WriteReviewForm() {
             <button
               type="submit"
               disabled={!canSubmit || isSubmitting || submitReview.isPending}
-              className="bg-token-blue w-full rounded-xl px-8 py-4 font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
+              className="bg-token-blue flex w-full items-center justify-center gap-2 rounded-xl px-8 py-4 font-bold text-white shadow-md transition-opacity hover:opacity-90 active:scale-95 disabled:opacity-50 md:w-auto md:px-12"
             >
+              {submitReview.isPending && <Loader2 size={16} className="animate-spin" />}
               {submitReview.isPending ? "Submitting…" : "Submit Review"}
             </button>
           )}
         </form.Subscribe>
       </div>
-      {submitReview.isError && (
-        <p className="text-destructive text-center text-sm">{submitReview.error.message}</p>
-      )}
     </form>
   );
 }

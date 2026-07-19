@@ -143,7 +143,7 @@ export function InterviewsFeed({
 
           {/* Search bar */}
           <form onSubmit={handleSearchSubmit} className="mb-6">
-            <div className="border-border bg-surface-container-lowest focus-within:ring-ring mx-auto flex max-w-2xl items-center gap-3 rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2">
+            <div className="border-border bg-surface-container-lowest focus-within:ring-ring/30 focus-within:ring-offset-background mx-auto flex max-w-2xl items-center gap-3 rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2 focus-within:ring-offset-2">
               <Search size={18} className="text-on-surface-variant shrink-0" />
               <input
                 type="text"

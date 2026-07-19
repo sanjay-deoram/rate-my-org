@@ -131,7 +131,7 @@ export function CompanySearchInput({
     <div ref={containerRef} className={wrapperClassName} onBlur={handleContainerBlur}>
       <div
         className={cn(
-          "group border-border bg-surface-container-lowest focus-within:ring-ring relative flex items-center rounded-full border px-5 py-1 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2",
+          "group border-border bg-surface-container-lowest focus-within:ring-ring/30 focus-within:ring-offset-background relative flex items-center rounded-full border px-5 py-1 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2 focus-within:ring-offset-2",
           hasError && "border-destructive",
         )}
       >

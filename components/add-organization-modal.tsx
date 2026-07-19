@@ -18,7 +18,7 @@ import {
 import { INDUSTRIES } from "@/constants";
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-3 font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring text-base";
+  "border-outline-variant/30 focus:border-primary focus-visible:border-b-2 placeholder:text-on-surface-variant w-full border-b bg-transparent py-3 font-medium transition-all outline-none text-base";
 
 const labelCls = "text-on-surface-variant block text-xs font-medium tracking-widest uppercase mb-1";
 

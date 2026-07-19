@@ -146,7 +146,7 @@ export function HomeSearchBar() {
   return (
     <div className="relative">
       {/* Search bar */}
-      <div className="border-border bg-surface-container-lowest focus-within:ring-ring mb-0 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2">
+      <div className="border-border bg-surface-container-lowest focus-within:ring-ring/30 focus-within:ring-offset-background mb-0 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2 focus-within:ring-offset-2">
         <div className="flex flex-1 items-center gap-3 px-5 py-3">
           <Search size={18} className="text-on-surface-variant shrink-0" />
           <input

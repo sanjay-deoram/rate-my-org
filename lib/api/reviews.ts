@@ -162,7 +162,7 @@ export async function submitReview(body: ReviewPostBody): Promise<SubmitReviewRe
   });
   if (!res.ok) {
     const data = await res.json();
-    throw new Error(data.error ?? "Submission failed");
+    throw new Error(typeof data.error === "string" ? data.error : "Oops, failed to submit review.");
   }
   return res.json();
 }

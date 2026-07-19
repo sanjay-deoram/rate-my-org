@@ -36,7 +36,7 @@ const INDUSTRIES = [
 const COMPANY_SIZES = ["1–10", "11–50", "51–200", "201–500", "501–1,000", "1,001–5,000", "5,000+"];
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-2.5 text-base font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
+  "border-outline-variant/30 focus:border-primary focus-visible:border-b-2 placeholder:text-on-surface-variant w-full border-b bg-transparent py-2.5 text-base font-medium transition-all outline-none";
 
 const labelCls =
   "text-on-surface-variant block text-[10px] font-medium tracking-widest uppercase mb-1";

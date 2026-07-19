@@ -193,14 +193,15 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
   return (
     <div className="mx-auto max-w-7xl px-5 md:px-12">
-      <div className="border-border bg-surface-container-lowest mb-4 flex items-center rounded-full border px-4 py-2.5 shadow-[0_20px_60px_rgba(5,8,7,0.08)] sm:mb-6 sm:px-5 sm:py-3">
+      <div className="border-border bg-surface-container-lowest focus-within:ring-ring mb-4 flex items-center rounded-full border px-4 py-2.5 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2 sm:mb-6 sm:px-5 sm:py-3">
         <Search size={18} className="text-on-surface-variant pointer-events-none shrink-0" />
         <input
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search by job title, role, or department…"
-          className="placeholder:text-on-surface-variant/45 ml-3 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
+          aria-label="Search reviews and interviews"
+          className="placeholder:text-on-surface-variant ml-3 min-w-0 flex-1 bg-transparent py-2 text-base font-semibold outline-none"
         />
         {query && (
           <button

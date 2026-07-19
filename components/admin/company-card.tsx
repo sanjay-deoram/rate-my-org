@@ -129,7 +129,7 @@ export function CompanyCard({ company, isExpanded, onToggleExpand }: CompanyCard
             onClick={() => fileInputRef.current?.click()}
             disabled={uploadLogo.isPending}
             title="Upload logo"
-            className="bg-primary text-primary-foreground absolute -right-1.5 -bottom-1.5 flex h-5 w-5 items-center justify-center rounded-full shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
+            className="bg-primary text-primary-foreground absolute -right-1.5 -bottom-1.5 flex h-6 w-6 items-center justify-center rounded-full shadow-sm transition-opacity hover:opacity-90 disabled:opacity-50"
           >
             {uploadLogo.isPending ? (
               <Loader2 size={10} className="animate-spin" />
@@ -147,7 +147,7 @@ export function CompanyCard({ company, isExpanded, onToggleExpand }: CompanyCard
         </div>
 
         <div className="min-w-0 flex-1">
-          <h3 className="font-bold tracking-tight">{company.name}</h3>
+          <h3 className="text-lg font-bold tracking-tight">{company.name}</h3>
           <div className="text-on-surface-variant mt-1 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs">
             {company.industry && (
               <span className="flex items-center gap-1">
@@ -182,9 +182,7 @@ export function CompanyCard({ company, isExpanded, onToggleExpand }: CompanyCard
               <Briefcase size={11} />
               {company.interviewCount} interview{company.interviewCount !== 1 ? "s" : ""}
             </span>
-            <span className="text-on-surface-variant/60">
-              {timeAgo(new Date(company.createdAt))}
-            </span>
+            <span className="text-on-surface-variant">{timeAgo(new Date(company.createdAt))}</span>
           </div>
         </div>
       </div>
@@ -215,7 +213,7 @@ export function CompanyCard({ company, isExpanded, onToggleExpand }: CompanyCard
             type="button"
             onClick={() => approve.mutate(company.id)}
             disabled={approve.isPending}
-            className="flex items-center gap-1.5 rounded-lg bg-[#3be366] px-3 py-1.5 text-xs font-semibold text-[#030303] transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+            className="bg-tertiary-fixed-dim text-on-tertiary-fixed flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-semibold transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
           >
             {approve.isPending ? (
               <Loader2 size={13} className="animate-spin" />

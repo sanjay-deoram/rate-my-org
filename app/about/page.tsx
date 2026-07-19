@@ -13,7 +13,7 @@ export default function AboutPage() {
         {/* Hero */}
         <section className="relative z-10 flex min-h-[60vh] flex-col justify-center px-5 pt-28 pb-20 md:px-12 md:pt-32 md:pb-24">
           <div className="max-w-4xl md:ml-[clamp(0rem,8vw,10rem)]">
-            <p className="mb-6 font-mono text-xs tracking-widest uppercase opacity-60">
+            <p className="text-on-surface-variant mb-6 font-mono text-xs tracking-widest uppercase">
               Authority: Absolute. Status: Operational.
             </p>
             <h1 className="mb-8 text-5xl leading-[0.95] font-black sm:text-6xl md:text-8xl">
@@ -30,7 +30,7 @@ export default function AboutPage() {
         <section className="bg-background relative z-10 px-5 py-20 md:px-12 md:py-32">
           <div className="mx-auto max-w-[1600px]">
             <div className="mb-12 md:mb-20 md:ml-[clamp(0rem,8vw,10rem)]">
-              <h2 className="mb-4 text-4xl font-bold md:text-5xl">The Difference</h2>
+              <h2 className="mb-4 text-3xl font-bold tracking-tight md:text-5xl">The Difference</h2>
               <p className="text-on-surface-variant text-lg">A binary comparison of integrity.</p>
             </div>
             <div className="border-outline-variant/30 grid grid-cols-1 border md:grid-cols-2">
@@ -39,7 +39,9 @@ export default function AboutPage() {
                 <span className="text-on-surface-variant mb-8 font-mono text-xs tracking-widest uppercase">
                   Status Quo
                 </span>
-                <h3 className="mb-8 text-3xl font-bold md:mb-12 md:text-4xl">Glassdoor</h3>
+                <h3 className="mb-8 text-2xl font-bold tracking-tight md:mb-12 md:text-3xl">
+                  Glassdoor
+                </h3>
                 <ul className="space-y-8 md:space-y-10">
                   <li className="flex items-start gap-4">
                     <X className="text-error mt-0.5 shrink-0" size={22} />
@@ -76,7 +78,7 @@ export default function AboutPage() {
                 <span className="mb-8 font-mono text-xs tracking-widest text-white uppercase">
                   The Alternative
                 </span>
-                <h3 className="mb-8 text-3xl font-bold text-white md:mb-12 md:text-4xl">
+                <h3 className="mb-8 text-2xl font-bold tracking-tight text-white md:mb-12 md:text-3xl">
                   RateMyOrg
                 </h3>
                 <ul className="space-y-8 md:space-y-10">
@@ -131,10 +133,12 @@ export default function AboutPage() {
           />
           <div className="relative z-10 mx-auto max-w-[1600px] md:ml-[clamp(0rem,8vw,10rem)]">
             <div className="max-w-3xl">
-              <h2 className="mb-8 text-3xl font-bold md:text-4xl">Anonymity Protocol</h2>
+              <h2 className="mb-8 text-3xl font-bold tracking-tight md:text-5xl">
+                Anonymity Protocol
+              </h2>
               <div className="grid grid-cols-1 gap-12 md:grid-cols-2">
                 <div>
-                  <h4 className="mb-4 font-mono text-xs tracking-widest uppercase opacity-60">
+                  <h4 className="text-on-surface-variant mb-4 font-mono text-xs tracking-widest uppercase">
                     01 / Vapor-Trace
                   </h4>
                   <p className="text-on-surface-variant leading-relaxed">
@@ -143,7 +147,7 @@ export default function AboutPage() {
                   </p>
                 </div>
                 <div>
-                  <h4 className="mb-4 font-mono text-xs tracking-widest uppercase opacity-60">
+                  <h4 className="text-on-surface-variant mb-4 font-mono text-xs tracking-widest uppercase">
                     02 / Safe Harbor
                   </h4>
                   <p className="text-on-surface-variant leading-relaxed">
@@ -157,9 +161,9 @@ export default function AboutPage() {
         </section>
 
         {/* CTA */}
-        <section className="bg-background relative z-10 px-5 py-24 text-center md:px-12 md:py-48">
+        <section className="bg-background relative z-10 px-5 py-24 text-center md:px-12 md:py-32">
           <div className="mx-auto max-w-3xl">
-            <h2 className="mb-10 text-4xl font-black md:mb-12 md:text-7xl">
+            <h2 className="mb-10 text-4xl font-black md:mb-12 md:text-6xl">
               Contribute to the Ledger.
             </h2>
             <div className="flex flex-col justify-center gap-6 sm:flex-row">

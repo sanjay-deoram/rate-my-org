@@ -27,7 +27,7 @@ import {
 import { DIFFICULTY_LABELS } from "@/lib/org-display";
 
 const inputCls =
-  "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0";
+  "border-outline-variant/20 focus:border-primary placeholder:text-outline-variant w-full border-b bg-transparent py-4 font-medium transition-colors outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
 
 export function SubmitInterviewForm() {
   const [submitted, setSubmitted] = useState(false);
@@ -105,7 +105,9 @@ export function SubmitInterviewForm() {
                 inputSize="lg"
               />
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -124,36 +126,48 @@ export function SubmitInterviewForm() {
             name="roleTitle"
             validators={{ onSubmit: z.string().min(1, "Role title is required").max(120) }}
           >
-            {(field) => (
-              <div className="space-y-6">
-                <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-                  Role Title
-                </label>
-                <input
-                  type="text"
-                  value={field.state.value}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                  onBlur={field.handleBlur}
-                  placeholder="e.g. Senior Product Designer"
-                  className={cn(
-                    inputCls,
-                    field.state.meta.errors.length > 0 && "border-destructive",
+            {(field) => {
+              const hasError = field.state.meta.errors.length > 0;
+              return (
+                <div className="space-y-6">
+                  <label
+                    htmlFor={field.name}
+                    className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+                  >
+                    Role Title
+                  </label>
+                  <input
+                    id={field.name}
+                    type="text"
+                    value={field.state.value}
+                    onChange={(e) => field.handleChange(e.target.value)}
+                    onBlur={field.handleBlur}
+                    placeholder="e.g. Senior Product Designer"
+                    aria-invalid={hasError || undefined}
+                    aria-describedby={hasError ? `${field.name}-error` : undefined}
+                    className={cn(inputCls, hasError && "border-destructive")}
+                  />
+                  {field.state.meta.errors[0] && (
+                    <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                      {errMsg(field.state.meta.errors[0])}
+                    </p>
                   )}
-                />
-                {field.state.meta.errors[0] && (
-                  <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-                )}
-              </div>
-            )}
+                </div>
+              );
+            }}
           </form.Field>
 
           <form.Field name="department">
             {(field) => (
               <div className="space-y-6">
-                <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
+                <label
+                  htmlFor={field.name}
+                  className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+                >
                   Department
                 </label>
                 <input
+                  id={field.name}
                   type="text"
                   value={field.state.value}
                   onChange={(e) => field.handleChange(e.target.value)}
@@ -180,11 +194,13 @@ export function SubmitInterviewForm() {
         >
           {(field) => (
             <div className="space-y-4">
-              <div className="flex gap-3">
+              <div className="flex gap-3" role="radiogroup" aria-label="Interview Difficulty">
                 {[1, 2, 3, 4, 5].map((n) => (
                   <button
                     key={n}
                     type="button"
+                    role="radio"
+                    aria-checked={field.state.value === n}
                     onClick={() => field.handleChange(n)}
                     className={cn(
                       "flex h-14 w-14 flex-col items-center justify-center rounded-xl border text-sm font-bold transition-all",
@@ -203,7 +219,9 @@ export function SubmitInterviewForm() {
                 </p>
               )}
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -225,11 +243,17 @@ export function SubmitInterviewForm() {
         >
           {(field) => (
             <div className="space-y-4">
-              <div className="flex flex-wrap gap-4">
+              <div
+                className="flex flex-wrap gap-4"
+                role="radiogroup"
+                aria-label="Overall Experience"
+              >
                 {INTERVIEW_EXPERIENCES.map((exp) => (
                   <button
                     key={exp}
                     type="button"
+                    role="radio"
+                    aria-checked={field.state.value === exp}
                     onClick={() => field.handleChange(field.state.value === exp ? "" : exp)}
                     className={cn(
                       "rounded-full border px-5 py-3 text-sm font-medium transition-colors sm:px-6",
@@ -247,7 +271,9 @@ export function SubmitInterviewForm() {
                 ))}
               </div>
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -318,7 +344,7 @@ export function SubmitInterviewForm() {
                       field.handleChange(updated);
                     }}
                     placeholder="Describe what happened in this round..."
-                    className="bg-surface-container-lowest placeholder:text-outline-variant focus:ring-primary w-full resize-none rounded-lg border-0 p-3 text-sm leading-relaxed outline-none focus:ring-1"
+                    className="bg-surface-container-lowest placeholder:text-outline-variant focus:ring-primary w-full resize-none rounded-lg border-0 p-3 leading-relaxed outline-none focus:ring-1"
                   />
                 </div>
               ))}
@@ -330,7 +356,9 @@ export function SubmitInterviewForm() {
                 <Plus size={16} /> Add Round
               </button>
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}
@@ -352,11 +380,17 @@ export function SubmitInterviewForm() {
         >
           {(field) => (
             <div className="space-y-4">
-              <div className="flex flex-wrap gap-4">
+              <div
+                className="flex flex-wrap gap-4"
+                role="radiogroup"
+                aria-label="Did You Receive an Offer?"
+              >
                 {OFFER_OUTCOMES.map((outcome) => (
                   <button
                     key={outcome}
                     type="button"
+                    role="radio"
+                    aria-checked={field.state.value === outcome}
                     onClick={() => field.handleChange(field.state.value === outcome ? "" : outcome)}
                     className={cn(
                       "rounded-full border px-6 py-3 text-sm font-medium transition-all",
@@ -370,7 +404,9 @@ export function SubmitInterviewForm() {
                 ))}
               </div>
               {field.state.meta.errors[0] && (
-                <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
               )}
             </div>
           )}

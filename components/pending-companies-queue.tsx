@@ -21,9 +21,9 @@ export function PendingCompaniesQueue() {
         </div>
         <div>
           <div className="flex items-center gap-2">
-            <h2 className="font-bold tracking-tight">Company Management</h2>
+            <h2 className="text-lg font-bold tracking-tight">Company Management</h2>
             {data && data.length > 0 && (
-              <span className="rounded-full bg-[#3be366] px-2 py-0.5 font-mono text-[10px] font-bold tracking-widest text-[#030303] uppercase">
+              <span className="bg-tertiary-fixed-dim text-on-tertiary-fixed rounded-full px-2 py-0.5 font-mono text-[10px] font-bold tracking-widest uppercase">
                 {data.length} pending
               </span>
             )}

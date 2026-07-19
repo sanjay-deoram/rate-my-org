@@ -86,7 +86,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
 
             <div className="flex items-baseline gap-3 md:gap-4 md:text-right">
               <div className="flex flex-col md:items-end">
-                <span className="text-on-surface-variant mb-1 font-mono text-[10px] tracking-widest uppercase md:text-sm">
+                <span className="text-on-surface-variant label-eyebrow mb-1 md:text-sm">
                   Aggregate Rating
                 </span>
                 <div
@@ -107,7 +107,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
         <section className="relative z-10 mx-auto mb-5 max-w-7xl px-5 md:mb-8 md:px-12">
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 md:gap-8">
             <div className="bg-surface-container-low hover:bg-surface-container-highest flex flex-col justify-between rounded-xl p-4 transition-all duration-300 md:h-48 md:p-8">
-              <span className="text-on-surface-variant font-mono text-[9px] tracking-widest uppercase md:text-xs">
+              <span className="text-on-surface-variant font-mono text-[11px] tracking-widest uppercase md:text-xs">
                 Recommend
               </span>
               <div className="mt-3 flex items-end justify-between md:mt-0">
@@ -127,7 +127,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
             </div>
 
             <div className="bg-surface-container-low hover:bg-surface-container-highest flex flex-col justify-between rounded-xl p-4 transition-all duration-300 md:h-48 md:p-8">
-              <span className="text-on-surface-variant font-mono text-[9px] tracking-widest uppercase md:text-xs">
+              <span className="text-on-surface-variant font-mono text-[11px] tracking-widest uppercase md:text-xs">
                 Reviews
               </span>
               <div className="mt-3 flex items-end justify-between md:mt-0">
@@ -139,7 +139,7 @@ export default async function OrgProfilePage({ params }: { params: Promise<{ slu
             </div>
 
             <div className="bg-primary text-primary-foreground flex flex-col justify-between rounded-xl p-4 md:h-48 md:p-8">
-              <span className="text-on-primary-container font-mono text-[9px] tracking-widest uppercase md:text-xs">
+              <span className="text-on-primary-container font-mono text-[11px] tracking-widest uppercase md:text-xs">
                 Interviews
               </span>
               <div className="mt-3 flex items-end justify-between md:mt-0">
@@ -163,9 +163,13 @@ function TrendBadge({ trend }: { trend: RatingTrend }) {
   const isUp = trend === "up";
   return (
     <span
-      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide ${isUp ? "bg-tertiary-fixed-dim/15 text-tertiary-fixed-dim" : "bg-destructive/10 text-destructive"}`}
+      className={`inline-flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] font-bold tracking-wide ${isUp ? "bg-tertiary-fixed-dim/15 text-token-green-deep" : "bg-destructive/10 text-destructive"}`}
     >
-      {isUp ? <TrendingUp size={10} /> : <TrendingDown size={10} />}
+      {isUp ? (
+        <TrendingUp size={10} className="text-tertiary-fixed-dim" />
+      ) : (
+        <TrendingDown size={10} />
+      )}
       {isUp ? "Trending up" : "Trending down"}
     </span>
   );

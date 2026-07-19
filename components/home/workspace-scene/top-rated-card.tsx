@@ -28,7 +28,7 @@ export function TopRatedCard({ leaderboard }: { leaderboard: LeaderboardEntry[] 
     <div className="border-border overflow-hidden rounded-xl border bg-white">
       <div className="bg-ink flex items-center justify-between px-5 py-4 text-white">
         <span className="text-xs font-bold">Top rated organizations</span>
-        <span className="text-xs font-bold text-white/45">Score</span>
+        <span className="text-xs font-bold text-white/60">Score</span>
       </div>
 
       {leaderboard.length === 0 ? (

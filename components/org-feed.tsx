@@ -77,7 +77,7 @@ function InterviewCard({ interview }: { interview: Interview }) {
               </>
             )}
             <span
-              className={`rounded-full px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase ${EXPERIENCE_BADGE[interview.overallExperience] ?? "bg-surface-container-high text-on-surface-variant"}`}
+              className={`label-eyebrow rounded-full px-2.5 py-0.5 ${EXPERIENCE_BADGE[interview.overallExperience] ?? "bg-surface-container-high text-on-surface-variant"}`}
             >
               {interview.overallExperience}
             </span>
@@ -120,7 +120,7 @@ function InterviewCard({ interview }: { interview: Interview }) {
               )}
             </div>
             <div className="flex-1 pb-3">
-              <span className="border-foreground/20 text-foreground mb-1.5 inline-block rounded-full border px-2.5 py-0.5 font-mono text-[10px] font-bold tracking-wider uppercase">
+              <span className="border-foreground/20 text-foreground label-eyebrow mb-1.5 inline-block rounded-full border px-2.5 py-0.5">
                 {round.type}
               </span>
               <p className="text-on-surface-variant text-sm leading-relaxed">{round.notes}</p>

@@ -77,14 +77,12 @@ export function InterviewCard({
             {companyName && companySlug ? (
               <Link
                 href={`/orgs/${companySlug}`}
-                className="text-on-surface-variant hover:text-foreground font-mono text-[11px] font-bold tracking-widest uppercase transition-colors"
+                className="text-on-surface-variant hover:text-foreground label-meta transition-colors"
               >
                 {companyName}
               </Link>
             ) : showKind ? (
-              <span className="text-on-surface-variant font-mono text-[11px] font-bold tracking-widest uppercase">
-                Interview
-              </span>
+              <span className="text-on-surface-variant label-meta">Interview</span>
             ) : null}
             <h3 className="mt-1 text-lg leading-tight font-black tracking-tight sm:text-xl lg:text-2xl">
               {interview.roleTitle}
@@ -147,10 +145,10 @@ export function InterviewCard({
                   {String(idx + 1).padStart(2, "0")}
                 </span>
                 <div>
-                  <p className="mb-1.5 text-[13px] font-black tracking-wide uppercase sm:mb-2 sm:text-sm">
+                  <p className="mb-1.5 text-xs font-black tracking-wide uppercase sm:mb-2 sm:text-sm">
                     {round.type}
                   </p>
-                  <p className="text-on-surface-variant text-sm leading-relaxed whitespace-pre-wrap sm:text-[15px]">
+                  <p className="text-on-surface-variant text-sm leading-relaxed whitespace-pre-wrap sm:text-base">
                     {round.notes}
                   </p>
                 </div>
@@ -167,6 +165,7 @@ export function InterviewCard({
       {overflows && (
         <button
           onClick={() => setExpanded((e) => !e)}
+          aria-expanded={expanded}
           className="text-on-surface-variant hover:text-foreground mt-4 flex items-center gap-1 text-sm font-bold transition-colors"
         >
           <ChevronDown

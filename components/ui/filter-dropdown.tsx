@@ -30,7 +30,7 @@ export function FilterDropdown({
       <DropdownTrigger asChild>
         <button
           type="button"
-          className={`flex items-center gap-2 rounded-2xl border px-3 py-1.5 text-xs font-medium shadow-sm transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
+          className={`flex items-center gap-2 rounded-2xl border px-3 py-2.5 text-xs font-medium shadow-sm transition-colors sm:px-3.5 sm:py-2 sm:text-sm ${
             active
               ? "border-primary/40 bg-primary/5 text-foreground"
               : "border-outline-variant/40 bg-surface-container-lowest text-on-surface-variant hover:border-outline-variant hover:text-foreground"

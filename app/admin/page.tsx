@@ -48,7 +48,7 @@ export default function AdminPage() {
       {/* Dashboard */}
       <main className="relative z-10 mx-auto max-w-5xl px-6 py-16">
         <div className="mb-12">
-          <h1 className="text-3xl font-extrabold tracking-tighter">Dashboard</h1>
+          <h1 className="text-3xl font-black tracking-tighter">Dashboard</h1>
           <p className="text-on-surface-variant mt-2 text-sm">
             Manage content, companies, and platform integrity.
           </p>

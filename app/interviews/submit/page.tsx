@@ -19,7 +19,7 @@ export default function SubmitInterviewPage() {
           <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:gap-16">
             <div className="min-w-0 space-y-12 lg:col-span-8">
               <header className="space-y-4">
-                <h1 className="text-foreground mb-4 text-4xl font-extrabold sm:text-5xl">
+                <h1 className="text-foreground mb-4 text-4xl font-black sm:text-5xl">
                   Document Your
                   <br />
                   Interview Experience

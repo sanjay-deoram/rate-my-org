@@ -112,7 +112,7 @@ export function ReviewsFeed({
         <DecorativeShapes variant="archive" />
         <div className="relative z-10 mx-auto max-w-5xl">
           <div className="mb-6 text-center sm:mb-8">
-            <p className="text-on-surface-variant mb-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
+            <p className="text-on-surface-variant label-eyebrow mb-3">
               Explore · {totalReviews.toLocaleString()}+ Anonymous Reviews
             </p>
             <h1 className="text-foreground text-3xl font-black sm:text-4xl md:text-6xl">
@@ -122,14 +122,15 @@ export function ReviewsFeed({
 
           {/* Search bar */}
           <form onSubmit={handleSearchSubmit} className="mb-6">
-            <div className="border-border bg-surface-container-lowest mx-auto flex max-w-2xl items-center gap-3 rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)]">
+            <div className="border-border bg-surface-container-lowest focus-within:ring-ring mx-auto flex max-w-2xl items-center gap-3 rounded-full border px-5 py-3 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2">
               <Search size={18} className="text-on-surface-variant shrink-0" />
               <input
                 type="text"
                 value={query}
                 onChange={handleSearchChange}
                 placeholder="Company name, job title, or keyword..."
-                className="placeholder:text-on-surface-variant/45 min-w-0 flex-1 bg-transparent py-2 text-sm font-semibold outline-none"
+                aria-label="Search reviews"
+                className="placeholder:text-on-surface-variant min-w-0 flex-1 bg-transparent py-2 text-base font-semibold outline-none"
               />
               {query && (
                 <button
@@ -156,15 +157,13 @@ export function ReviewsFeed({
           {/* Trending company pills */}
           {trendingCompanies.length > 0 && (
             <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
-              <span className="text-on-surface-variant font-mono text-[10px] font-bold tracking-widest uppercase">
-                Trending
-              </span>
+              <span className="text-on-surface-variant label-eyebrow">Trending</span>
               {trendingCompanies.map((c) => (
                 <button
                   key={c.slug}
                   type="button"
                   onClick={() => pickTrending(c.name)}
-                  className={`rounded-full border px-4 py-1.5 font-mono text-[10px] font-bold tracking-widest uppercase transition-colors ${
+                  className={`label-eyebrow rounded-full border px-4 py-2.5 transition-colors ${
                     filters.q === c.name
                       ? "bg-primary text-primary-foreground border-primary"
                       : "border-outline-variant/40 text-on-surface-variant hover:border-primary/50 hover:text-foreground"
@@ -225,18 +224,19 @@ export function ReviewsFeed({
             <button
               type="button"
               onClick={clearAll}
-              className="text-on-surface-variant hover:text-foreground flex items-center gap-1 text-xs transition-colors"
+              aria-label="Clear filters"
+              className="text-on-surface-variant hover:text-foreground -m-2 flex items-center gap-1 p-2 text-xs transition-colors"
             >
               <X size={11} /> Clear
             </button>
           )}
-          <span className="text-on-surface-variant ml-auto font-mono text-[10px] tracking-widest uppercase">
+          <span className="text-on-surface-variant label-eyebrow ml-auto">
             {hasFilters
               ? `${total} result${total !== 1 ? "s" : ""}`
               : `${totalReviews.toLocaleString()} reviews`}
           </span>
         </div>
-        <div className="border-outline-variant/15 -mx-8 mb-4 border-t sm:mb-6 md:-mx-12" />
+        <div className="border-outline-variant/15 -mx-5 mb-4 border-t sm:-mx-8 sm:mb-6 md:-mx-12" />
 
         {/* Cards */}
         {items.length === 0 ? (

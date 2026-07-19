@@ -40,13 +40,15 @@ All colors are exposed as CSS custom properties in `app/globals.css` and availab
 | `--outline`                   | `#747878` | `text-outline`                 |
 | `--outline-variant`           | `#c4c7c7` | `border-outline-variant`       |
 
+**Muted text**: never create muted text with opacity modifiers on `text-on-surface-variant` (e.g. `text-on-surface-variant/40`, `/45`, `/70`) — this fails WCAG AA contrast. Use solid `text-on-surface-variant` instead.
+
 ### Accent (Tertiary / Green)
 
 | Token                  | Value     | Tailwind class                                     | Use                              |
 | ---------------------- | --------- | -------------------------------------------------- | -------------------------------- |
 | `--tertiary-fixed`     | `#6bff84` | `bg-tertiary-fixed`                                | Accent background                |
-| `--tertiary-fixed-dim` | `#3be366` | `bg-tertiary-fixed-dim`, `text-tertiary-fixed-dim` | Verified icons, anonymous toggle |
-| `--on-tertiary-fixed`  | `#002107` | `text-on-tertiary-fixed`                           | Text on green bg                 |
+| `--tertiary-fixed-dim` | `#2f9654` | `bg-tertiary-fixed-dim`, `text-tertiary-fixed-dim` | Verified icons, anonymous toggle |
+| `--on-tertiary-fixed`  | `#071c0d` | `text-on-tertiary-fixed`                           | Text on green bg                 |
 
 ### Inverse Tokens
 
@@ -76,6 +78,17 @@ All colors are exposed as CSS custom properties in `app/globals.css` and availab
 - **Label / small caps**: `font-mono text-[10px] uppercase tracking-widest` (uses Inter via theme)
 - **Italic quotes**: `italic font-bold` or `italic leading-relaxed`
 
+### Typography Roles
+
+Two shared utility classes (defined in `app/globals.css`) codify the small-caps label sizes — use these instead of ad-hoc `text-[Npx]` classes:
+
+- `.label-eyebrow` — `font-mono text-[10px] font-bold tracking-widest uppercase`. Section eyebrows, stat labels, timestamps.
+- `.label-meta` — `font-mono text-[11px] font-bold tracking-widest uppercase`. Inline action labels, tabs, pagination.
+
+Neither class sets a text color — callers apply color (e.g. `text-on-surface-variant`).
+
+Arbitrary sizes like `text-[9px]`, `text-[13px]`, and `text-[15px]` are disallowed elsewhere in the app. The one exception is `text-[9px]`, which is permitted only inside the aria-hidden decorative phone mockup.
+
 ---
 
 ## Responsive Design
@@ -102,12 +115,12 @@ Every heading that uses a large desktop size must step down on mobile. Never use
 
 | Token                      | Mobile  | Desktop    |
 | -------------------------- | ------- | ---------- |
-| Section horizontal padding | `px-8`  | `md:px-12` |
+| Section horizontal padding | `px-5`  | `md:px-12` |
 | Section vertical padding   | `py-12` | `md:py-20` |
 | Card internal padding      | `p-4`   | `md:p-8`   |
 | Gap between logo and name  | `gap-4` | `md:gap-8` |
 
-Never increase section padding below `px-8` on mobile — the 32px gutter is the minimum for readability.
+Section horizontal padding convention is `px-5 md:px-12` — `px-5` is the mobile floor; never go below it.
 
 ### Feed Cards (review + interview)
 
@@ -123,6 +136,14 @@ Review and interview cards are content-dense, so they must shrink noticeably on 
 | Body / column gap     | `gap-4`       | `sm:gap-6`          | `md:gap-8`      |
 
 **Between cards in a feed**, use `space-y-3 sm:space-y-6` (archive feeds) or `space-y-3 sm:space-y-4` (company page) — never a single large gap that dominates the mobile viewport.
+
+### Sidebar / Aside Panel Padding
+
+Side panels (e.g. the summary/aside panel in `write-review-form` and `submit-interview-form`) use their own padding scale, distinct from the card padding scale above:
+
+| Property      | Mobile | `sm:` (640px+) | `lg:` (1024px+) |
+| ------------- | ------ | -------------- | --------------- |
+| Panel padding | `p-6`  | `sm:p-8`       | `lg:p-10`       |
 
 ### Responsive Component Sizes
 

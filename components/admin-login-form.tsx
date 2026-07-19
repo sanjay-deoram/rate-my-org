@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { errMsg } from "@/shared/err-msg";
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant/40 w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0";
+  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
 
 export function AdminLoginForm() {
   const [serverError, setServerError] = useState<string | null>(null);
@@ -47,25 +47,36 @@ export function AdminLoginForm() {
         name="password"
         validators={{ onSubmit: z.string().min(1, "Password is required") }}
       >
-        {(field) => (
-          <div className="space-y-2">
-            <label className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase">
-              Administrator Password
-            </label>
-            <input
-              type="password"
-              value={field.state.value}
-              onChange={(e) => field.handleChange(e.target.value)}
-              onBlur={field.handleBlur}
-              placeholder="••••••••••••"
-              autoComplete="current-password"
-              className={cn(inputCls, field.state.meta.errors.length > 0 && "border-destructive")}
-            />
-            {field.state.meta.errors[0] && (
-              <p className="text-destructive text-xs">{errMsg(field.state.meta.errors[0])}</p>
-            )}
-          </div>
-        )}
+        {(field) => {
+          const hasError = field.state.meta.errors.length > 0;
+          return (
+            <div className="space-y-2">
+              <label
+                htmlFor={field.name}
+                className="text-on-surface-variant block font-mono text-xs tracking-widest uppercase"
+              >
+                Administrator Password
+              </label>
+              <input
+                id={field.name}
+                type="password"
+                value={field.state.value}
+                onChange={(e) => field.handleChange(e.target.value)}
+                onBlur={field.handleBlur}
+                placeholder="••••••••••••"
+                autoComplete="current-password"
+                aria-invalid={hasError || undefined}
+                aria-describedby={hasError ? `${field.name}-error` : undefined}
+                className={cn(inputCls, hasError && "border-destructive")}
+              />
+              {field.state.meta.errors[0] && (
+                <p id={`${field.name}-error`} role="alert" className="text-destructive text-xs">
+                  {errMsg(field.state.meta.errors[0])}
+                </p>
+              )}
+            </div>
+          );
+        }}
       </form.Field>
 
       {serverError && (

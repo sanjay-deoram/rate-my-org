@@ -299,4 +299,22 @@
     background-color: var(--outline-variant);
     border-radius: 9999px;
   }
+
+  .label-eyebrow {
+    @apply font-mono text-[10px] font-bold tracking-widest uppercase;
+  }
+  .label-meta {
+    @apply font-mono text-[11px] font-bold tracking-widest uppercase;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

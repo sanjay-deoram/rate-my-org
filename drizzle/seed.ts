@@ -52,6 +52,8 @@ async function seed() {
         employmentType: "full_time",
         jobTitle: "Software Engineer L4",
         headline: "The highest bar I've ever encountered.",
+        summary:
+          "Surrounded by the best engineers in the industry with real operational rigor. Intense, but the best place to grow as an engineer.",
         pros: "Unrivaled technical talent. You are surrounded by people who wrote the books you learned from. Operational rigor is second to none.",
         cons: "The internal tooling is so specialized it can be hard to map back to industry standards if you leave. Fast pace can be draining.",
         adviceToManagement:
@@ -64,6 +66,8 @@ async function seed() {
         employmentType: "full_time",
         jobTitle: "Product Manager",
         headline: "Demanding but deeply rewarding culture.",
+        summary:
+          "Clear mission, top-of-market pay, and decisions made in writing. Expect launch crunches and a strong 'Stripe way' of doing things.",
         pros: "Extreme clarity of mission. Decisions are made through rigorous writing and debate. Compensation is at the top of the market.",
         cons: "Work-life balance can skew poorly during major product launches. The 'Stripe way' can feel dogmatic to newcomers.",
         adviceToManagement:
@@ -77,6 +81,8 @@ async function seed() {
         employmentType: "full_time",
         jobTitle: "Data Engineer",
         headline: "Great learning environment, intense pace.",
+        summary:
+          "World-class infrastructure and smart colleagues, but long hours are normalized and promotions can feel opaque.",
         pros: "World-class infrastructure and data pipelines. Smart colleagues everywhere. Strong on-boarding program.",
         cons: "Long hours are normalized. Hard to fully disconnect. Promotion cycles can feel opaque.",
         adviceToManagement:

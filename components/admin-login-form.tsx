@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { errMsg } from "@/shared/err-msg";
 
 const inputCls =
-  "border-outline-variant/30 focus:border-primary placeholder:text-on-surface-variant w-full border-b bg-transparent py-4 font-medium transition-all outline-none focus:ring-0 focus-visible:ring-2 focus-visible:ring-ring";
+  "border-outline-variant/30 focus:border-primary focus-visible:border-b-2 placeholder:text-on-surface-variant w-full border-b bg-transparent py-4 font-medium transition-all outline-none";
 
 export function AdminLoginForm() {
   const [serverError, setServerError] = useState<string | null>(null);

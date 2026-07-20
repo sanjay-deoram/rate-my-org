@@ -130,7 +130,7 @@
   --destructive: #ba1a1a;
   --border: #d8ddd9;
   --input: #d8ddd9;
-  --ring: var(--token-blue);
+  --ring: #030303;
   --radius: 0.5rem;
 
   /* Surface hierarchy */

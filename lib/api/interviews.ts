@@ -147,7 +147,9 @@ export async function submitInterview(body: InterviewPostBody): Promise<SubmitIn
   });
   if (!res.ok) {
     const data = await res.json();
-    throw new Error(data.error ?? "Submission failed");
+    throw new Error(
+      typeof data.error === "string" ? data.error : "Oops, failed to submit interview.",
+    );
   }
   return res.json();
 }

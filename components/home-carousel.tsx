@@ -59,7 +59,7 @@ export function HomeCarousel({ companies }: HomeCarouselProps) {
             onClick={() => setPaused((p) => !p)}
             aria-pressed={paused}
             aria-label={paused ? "Play carousel autoplay" : "Pause carousel autoplay"}
-            className="border-border bg-surface-container-lowest text-on-surface-variant hover:text-foreground focus-visible:ring-ring flex h-9 w-9 items-center justify-center rounded-full border transition-colors focus-visible:ring-2 focus-visible:outline-none"
+            className="border-border bg-surface-container-lowest text-on-surface-variant hover:text-foreground focus-visible:ring-ring/30 focus-visible:ring-offset-background flex h-9 w-9 items-center justify-center rounded-full border transition-colors focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none"
           >
             {paused ? <Play size={14} /> : <Pause size={14} />}
           </button>

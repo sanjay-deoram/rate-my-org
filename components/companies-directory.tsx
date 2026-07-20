@@ -29,7 +29,7 @@ function StatPill({
       <span
         tabIndex={0}
         aria-label={`${label}: ${value}`}
-        className={`focus-visible:ring-ring flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] transition-colors duration-300 group-hover:bg-white/10 group-hover:text-white focus-visible:ring-2 focus-visible:outline-none ${STAT_PILL_VARIANT[variant]}`}
+        className={`focus-visible:ring-ring/30 focus-visible:ring-offset-background flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] transition-colors duration-300 group-hover:bg-white/10 group-hover:text-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none ${STAT_PILL_VARIANT[variant]}`}
       >
         {children}
       </span>
@@ -170,7 +170,7 @@ export function CompaniesDirectory() {
 
   return (
     <div>
-      <div className="border-border bg-surface-container-lowest focus-within:ring-ring mb-8 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2">
+      <div className="border-border bg-surface-container-lowest focus-within:ring-ring/30 focus-within:ring-offset-background mb-8 flex items-center overflow-visible rounded-full border shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2 focus-within:ring-offset-2">
         <div className="flex flex-1 items-center gap-3 px-5 py-3">
           <Search size={18} className="text-on-surface-variant shrink-0" />
           <input

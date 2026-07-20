@@ -193,7 +193,7 @@ export function OrgContent({ data }: { data: OrgProfile }) {
 
   return (
     <div className="mx-auto max-w-7xl px-5 md:px-12">
-      <div className="border-border bg-surface-container-lowest focus-within:ring-ring mb-4 flex items-center rounded-full border px-4 py-2.5 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2 sm:mb-6 sm:px-5 sm:py-3">
+      <div className="border-border bg-surface-container-lowest focus-within:ring-ring/30 focus-within:ring-offset-background mb-4 flex items-center rounded-full border px-4 py-2.5 shadow-[0_20px_60px_rgba(5,8,7,0.08)] focus-within:ring-2 focus-within:ring-offset-2 sm:mb-6 sm:px-5 sm:py-3">
         <Search size={18} className="text-on-surface-variant pointer-events-none shrink-0" />
         <input
           type="text"

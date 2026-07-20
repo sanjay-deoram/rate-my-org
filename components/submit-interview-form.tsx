@@ -225,7 +225,7 @@ export function SubmitInterviewForm() {
               </div>
               {field.state.value > 0 && (
                 <p className="text-on-surface-variant text-sm">
-                  {DIFFICULTY_LABELS[field.state.value]}
+                  {DIFFICULTY_LABELS[field.state.value - 1]}
                 </p>
               )}
               {field.state.meta.errors[0] && (

@@ -5,6 +5,7 @@ import { companies } from "@/drizzle/schema";
 import { sql, gt, ilike, desc, eq, and } from "drizzle-orm";
 import { createCompanySchema } from "@/lib/schemas/company";
 import { roundToOneDecimal } from "@/lib/utils";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -28,6 +29,14 @@ const statsFields = {
 };
 
 export async function GET(req: NextRequest) {
+  const allowed = await checkRateLimit(req, { key: "companies-list", kind: "read" });
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   const parsed = querySchema.safeParse(Object.fromEntries(req.nextUrl.searchParams));
 
   if (!parsed.success) {
@@ -95,6 +104,14 @@ function toSlug(text: string): string {
 }
 
 export async function POST(req: NextRequest) {
+  const allowed = await checkRateLimit(req, { key: "companies", kind: "write" });
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   let body: unknown;
   try {
     body = await req.json();

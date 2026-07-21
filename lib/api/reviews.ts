@@ -160,9 +160,10 @@ export async function submitReview(body: ReviewPostBody): Promise<SubmitReviewRe
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(body),
   });
-  if (!res.ok) {
+  if (res.status === 409 || res.status === 429) {
     const data = await res.json();
     throw new Error(typeof data.error === "string" ? data.error : "Oops, failed to submit review.");
   }
+  if (!res.ok) throw new Error("Oops, failed to submit review.");
   return res.json();
 }

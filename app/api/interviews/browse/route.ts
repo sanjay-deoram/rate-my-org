@@ -3,6 +3,7 @@ import { z } from "zod";
 import { db } from "@/lib/db";
 import { interviews, companies } from "@/drizzle/schema";
 import { eq, desc, ilike, or, and, sql } from "drizzle-orm";
+import { checkRateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -24,6 +25,14 @@ const SINCE_INTERVAL: Record<string, string> = {
 };
 
 export async function GET(req: NextRequest) {
+  const allowed = await checkRateLimit(req, { key: "interviews-browse", kind: "read" });
+  if (!allowed) {
+    return NextResponse.json(
+      { error: "Too many requests. Please try again later." },
+      { status: 429 },
+    );
+  }
+
   const parsed = querySchema.safeParse(Object.fromEntries(req.nextUrl.searchParams));
   if (!parsed.success) {
     return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });

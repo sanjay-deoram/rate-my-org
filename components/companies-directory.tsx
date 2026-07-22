@@ -2,96 +2,12 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import Link from "next/link";
-import { Search, X, Building2, Star, MessageSquare, Users, ArrowRight } from "lucide-react";
+import { Search, X, Building2, ArrowRight } from "lucide-react";
 import { useCompanySearch } from "@/hooks/use-company-search";
 import { FadeIn } from "@/components/motion-primitives";
 import { useCompanyBrowse } from "@/hooks/use-company-browse";
 import type { CompanySuggestion } from "@/types/review";
-
-const STAT_PILL_VARIANT = {
-  amber: "bg-tertiary-fixed-dim/10 text-token-green-deep",
-  neutral: "bg-surface-container text-on-surface-variant",
-} as const;
-
-function StatPill({
-  label,
-  value,
-  variant,
-  children,
-}: {
-  label: string;
-  value: string | number;
-  variant: keyof typeof STAT_PILL_VARIANT;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className="group/pill relative">
-      <span
-        tabIndex={0}
-        aria-label={`${label}: ${value}`}
-        className={`focus-visible:ring-ring/30 focus-visible:ring-offset-background flex items-center gap-1 rounded-full px-2 py-0.5 font-mono text-[10px] transition-colors duration-300 group-hover:bg-white/10 group-hover:text-white focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:outline-none ${STAT_PILL_VARIANT[variant]}`}
-      >
-        {children}
-      </span>
-      <div className="bg-foreground pointer-events-none absolute bottom-full left-1/2 mb-1.5 -translate-x-1/2 rounded px-2 py-1 font-mono text-[10px] font-medium whitespace-nowrap text-white opacity-0 transition-opacity duration-150 group-focus-within/pill:opacity-100 group-hover/pill:opacity-100">
-        {label}
-      </div>
-    </div>
-  );
-}
-
-function CompanyCard({ company }: { company: CompanySuggestion }) {
-  return (
-    <Link
-      href={`/orgs/${company.slug}`}
-      className="group relative isolate flex items-center gap-3 overflow-hidden rounded-xl px-4 py-4 md:gap-5 md:px-6 md:py-5"
-    >
-      <div className="bg-primary absolute inset-0 origin-left scale-x-0 rounded-xl transition-transform duration-300 ease-out group-hover:scale-x-100" />
-
-      <div className="relative shrink-0">
-        {company.logoUrl ? (
-          <img
-            src={company.logoUrl}
-            alt=""
-            className="bg-surface-container h-10 w-10 rounded-lg object-contain p-1 transition-colors duration-300 group-hover:bg-white/10 md:h-14 md:w-14"
-          />
-        ) : (
-          <div className="bg-surface-container text-on-surface-variant group-hover:text-primary-foreground flex h-10 w-10 items-center justify-center rounded-lg text-base font-black transition-colors duration-300 group-hover:bg-white/10 md:h-14 md:w-14 md:text-xl">
-            {company.name[0]}
-          </div>
-        )}
-      </div>
-
-      <div className="relative min-w-0 flex-1">
-        <h3 className="text-foreground group-hover:text-primary-foreground truncate text-sm font-bold transition-colors duration-300 md:text-base">
-          {company.name}
-        </h3>
-        <p className="text-on-surface-variant group-hover:text-primary-foreground/50 label-meta transition-colors duration-300">
-          {company.slug}
-        </p>
-        <div className="mt-1.5 flex flex-wrap items-center gap-1.5">
-          <StatPill label="Rating" value={company.avgRating ?? "—"} variant="amber">
-            <Star size={9} className="fill-current" />
-            {company.avgRating ?? "—"}
-          </StatPill>
-          <StatPill label="Reviews" value={company.reviewCount} variant="neutral">
-            <MessageSquare size={9} />
-            {company.reviewCount}
-          </StatPill>
-          <StatPill label="Interviews" value={company.interviewCount} variant="neutral">
-            <Users size={9} />
-            {company.interviewCount}
-          </StatPill>
-        </div>
-      </div>
-
-      <ArrowRight
-        size={16}
-        className="text-on-surface-variant group-hover:text-primary-foreground relative shrink-0 transition-colors duration-300"
-      />
-    </Link>
-  );
-}
+import { CompanyCard } from "@/components/company-card";
 
 function LoadingSkeleton() {
   return (
@@ -202,7 +118,7 @@ export function CompaniesDirectory() {
       </div>
 
       <div
-        className={`divide-outline-variant/20 divide-y rounded-2xl bg-white px-3 pt-2 shadow-sm transition-opacity duration-200 sm:px-6 ${isSearchTransitioning ? "opacity-40" : "opacity-100"}`}
+        className={`space-y-3 transition-opacity duration-200 ${isSearchTransitioning ? "opacity-40" : "opacity-100"}`}
       >
         {isInitialLoad && Array.from({ length: 8 }).map((_, i) => <LoadingSkeleton key={i} />)}
 
